@@ -1,4 +1,3 @@
-
 public class Tree {
 	private static Tree tree;
     private Node root;
@@ -19,6 +18,7 @@ public class Tree {
     public boolean isEmpty() {
         return root == null;
     }
+
     public Node getRoot() {
         return root;
     }

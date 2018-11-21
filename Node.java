@@ -1,10 +1,9 @@
 import java.util.ArrayList;
-import java.util.List;
 
 public class Node {
     private String id;
     private Node parent;
-    private List<Node> children;
+    private ArrayList<Node> children;
     
 
     public Node(String id) {
@@ -26,9 +25,10 @@ public class Node {
         return this.parent;
     }
 
-    public List<Node> getChildren() {
+    public ArrayList<Node> getChildren() {
         return this.children;
     }
+
 
     @Override
     public boolean equals(Object obj) {

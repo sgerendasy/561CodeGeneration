@@ -7,9 +7,11 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Options;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class Main {
@@ -49,7 +51,20 @@ public class Main {
             outputStream.write("#ifndef " + outputFileName.replace(".", "_") + '\n');
             outputStream.write("#define " + outputFileName.replace(".", "_") + '\n');
             // fill in .h stuff here
-            
+
+            // adds 'struct class_[className]_struct' in breadth-first search manner from tree
+            ArrayList<Node> childToAdd = new ArrayList<>();
+            childToAdd.add(typeChecker.tree.getRoot());
+            while(childToAdd.size() > 0)
+            {
+                String className = childToAdd.get(0).getId();
+                String structName = "class_" + className + "_struct";
+                outputStream.write("struct " + structName + ";\n");
+                outputStream.write("typedef struct " + structName + "*" + " " + "class_" + className + ";\n\n");
+                childToAdd.addAll(childToAdd.get(0).getChildren());
+                childToAdd.remove(0);
+            }
+
 
             outputStream.write("#endif" + '\n');
             outputStream.flush();
