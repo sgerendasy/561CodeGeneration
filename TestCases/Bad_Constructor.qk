@@ -1,0 +1,11 @@
+class C()
+{
+	def foo() : Boolean
+	{
+		return true;
+	}
+}
+
+a = C().foo();
+// check constructor method of type checker. This should fail.
+b = C.foo();

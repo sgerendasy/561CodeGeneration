@@ -1,0 +1,8 @@
+#! /bin/bash
+#
+# Usage: scanner path/to/source.qk
+#
+# Adjust search path for libraries:
+JARS=lib/jflex-full-1.7.0.jar:lib/java-cup-11b-runtime.jar:lib/commons-cli-1.4.jar
+
+java -cp .:${JARS} ScanDriver  $* 

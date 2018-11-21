@@ -1,0 +1,5 @@
+class Foo() extends Bar {
+	def answer_me(): Int { return 5; }
+}
+class Bar() {}
+

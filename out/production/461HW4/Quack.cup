@@ -1,0 +1,205 @@
+import java.util.*;
+import java.io.*;
+import java_cup.runtime.Symbol;
+import java_cup.runtime.ComplexSymbolFactory.ComplexSymbol;
+import java_cup.runtime.ComplexSymbolFactory;
+
+/*. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . */
+
+
+parser code {:
+  protected Lexer lexer;
+//  protected ComplexSymbolFactory factory;
+
+  public parser(Lexer lxr, ComplexSymbolFactory f)
+  {
+    super(lxr, f);
+    lexer = lxr;
+//    factory = f;
+  }
+  int errorCount = 0;
+  static int MAX_ERRORS = 20;
+  ErrorReport report = null;
+         public void setErrorReport( ErrorReport _report) {
+         	      report = _report;
+         }
+
+         public void syntax_error(java_cup.runtime.Symbol cur_token) {
+             ComplexSymbolFactory.ComplexSymbol the_token =
+  	      (ComplexSymbolFactory.ComplexSymbol) cur_token;
+  	   report_error("Syntax error in line " +
+  			the_token.xleft.getLine() +
+  			", near column " +
+  			the_token.xleft.getColumn() + ": " + the_token.getName() + "", null);
+  	   ++ errorCount;
+  	   if (errorCount > MAX_ERRORS) {
+  	       System.err.println("More than " + MAX_ERRORS + " errors. " +
+  				"Giving up");
+  	       done_parsing();
+  	       System.exit(1);
+  	   }
+         }
+
+         // Overrides default error reporting
+         public void report_error(String msg, Object ignored) {
+         	     if (report == null) {
+  	        System.err.println(msg);
+  	     } else {
+  	        report.err(msg);
+               }
+         }
+
+         // Convenience form
+         public void report_error(String msg) {
+         	      report_error(msg, null);
+         }
+:}
+
+
+scan with {: return lexer.next_token(); :};
+
+/* Terminals (tokens returned by the scanner). */
+terminal            CLASS, DEF, EXTENDS, IF, ELIF, ELSE, WHILE, RETURN, TYPECASE, ATLEAST,
+                    ATMOST, EQUALS, AND, OR, NOT, GETS, GREATER, LESS, LPAREN,
+                    RPAREN, LBRACE, RBRACE, COLON, COMMA, SEMI, TIMES, DIV, PLUS, MINUS, DOT, NEG;
+
+terminal String     STRING_LIT, IDENT;
+terminal Integer    INT_LIT;
+
+/* Non terminals */
+nonterminal Program                 prog;
+nonterminal List<Class_Block>       clazz_block;
+nonterminal Class_Block.Class_Body  class_body;
+nonterminal Class_Block.Clazz       clss;
+nonterminal List<Statement>         stmtlist, type_block;
+nonterminal Expression              expr;
+nonterminal Statement               stmt, asmt_stmt, return_stmt, while_expr, ifstmt, elsestmt, typecase, type_stmts;
+nonterminal String                  op;
+nonterminal Args                    formal_args, inf_args;
+nonterminal List<Methods>           mthd_block;
+nonterminal Methods                 method;
+
+nonterminal Empty      empty;
+
+
+
+/* Precedences */
+precedence right GETS;
+precedence left PLUS, MINUS, OR, AND;
+precedence left NOT;
+precedence left TIMES, DIV;
+precedence nonassoc EQUALS, ATMOST, ATLEAST, LESS, GREATER;
+precedence left INT_LIT, IDENT;
+precedence left DOT;
+
+
+start with prog;
+
+/* The grammar rules */
+prog        ::= clazz_block:cb stmtlist:sl                      {: RESULT = new Program(cb, sl); :}
+            ;
+
+formal_args ::= formal_args:fh COMMA IDENT:i1 COLON IDENT:i2    {: fh.addArg(i1, i2); RESULT = fh; :}
+            |   IDENT:i1 COLON IDENT:i2                         {: RESULT = Args.formalArgs(i1, i2); :}
+            |   empty                                           {: RESULT = Args.formalArgs(); :}
+            ;
+
+inf_args    ::= inf_args:ia COMMA expr:e                        {: ia.addArg(e); RESULT = ia; :}
+            |   expr:e                                          {: RESULT = Args.informalArgs(e); :}
+            |   empty                                           {: RESULT = Args.informalArgs(); :}
+            ;
+
+clazz_block ::= clazz_block:cb clss:c                           {: cb.add(c); RESULT = cb; :}
+            |   empty                                           {: RESULT = new LinkedList<Class_Block>(); :}
+            ;
+
+clss        ::= CLASS:c IDENT:i1 LPAREN formal_args:fa RPAREN EXTENDS IDENT:i2 LBRACE class_body:cb RBRACE
+                                                                {: RESULT = Class_Block.clazz(i1, fa, i2, cb); :}
+            |   CLASS:c IDENT:i LPAREN formal_args:fa RPAREN LBRACE class_body:cb RBRACE
+                                                                {: RESULT = Class_Block.clazz(i, fa, cb); :}
+            ;
+
+class_body  ::= stmtlist:sl mthd_block:mb                       {: RESULT = Class_Block.classBody(sl, mb); :}
+            ;
+
+stmtlist    ::= stmtlist:sl stmt:s                              {: sl.add(s); RESULT = sl; :}
+            |   empty                                           {: RESULT = new LinkedList<Statement>(); :}
+            ;
+
+stmt        ::= asmt_stmt:as SEMI                               {: RESULT = as; :}
+            |   ifstmt:i                                        {: RESULT = i; :}
+            |   return_stmt:r SEMI                              {: RESULT = r; :}
+            |   typecase:t                                      {: RESULT = t; :}
+            |   while_expr:we                                   {: RESULT = we; :}
+            |   expr:e SEMI                                     {: RESULT = Statement.expressionStatement(e); :}
+            ;
+
+mthd_block  ::= mthd_block:mb method:m                          {: mb.add(m); RESULT = mb; :}
+            |   empty                                           {: RESULT = new LinkedList<Methods>(); :}
+            ;
+
+method      ::= DEF IDENT:i1 LPAREN formal_args:fa RPAREN COLON IDENT:i2 LBRACE stmtlist:sl RBRACE
+                                                                {: RESULT = Methods.method(i1, fa, i2, sl); :}
+            |   DEF IDENT:i LPAREN formal_args:fa RPAREN LBRACE stmtlist:sl RBRACE
+                                                                {: RESULT = Methods.method(i, fa, sl); :}
+            ;
+
+return_stmt ::= RETURN expr:e                                   {: RESULT = Statement.returnStatement(e); :}
+            |   RETURN                                          {: RESULT = Statement.returnStatement(null); :}
+            ;
+
+asmt_stmt  ::= expr:e1 GETS expr:e2                             {: RESULT = Statement.asmt_stmt(e1, e2); :}
+            |  expr:e1 COLON IDENT:i GETS expr:e2               {: RESULT = Statement.asmt_stmt(e1, i, e2); :}
+            ;
+
+typecase    ::= TYPECASE IDENT:i LBRACE type_block:ta RBRACE    {: RESULT = Statement.typecase(i, ta); :}
+            ;
+
+type_block  ::= type_block:ta type_stmts:ts                     {: ta.add(ts); RESULT = ta; :}
+            |   empty                                           {: RESULT = new LinkedList<Statement>(); :}
+            ;
+
+type_stmts  ::= IDENT:i COLON IDENT:t LBRACE stmtlist:sl RBRACE {: RESULT = Statement.typeStatement(i, t, sl); :}
+            ;
+
+ifstmt      ::= IF expr:e LBRACE stmtlist:sl RBRACE             {: RESULT = Statement.ifStatement(e, sl); :}
+            |   IF expr:e LBRACE stmtlist:sl RBRACE elsestmt:es {: RESULT = Statement.ifStatement(e, sl, es ); :}
+            ;
+
+elsestmt    ::= ELSE LBRACE stmtlist:sl RBRACE                  {: RESULT = Statement.elseStatement(sl); :}
+            |   ELIF expr:e LBRACE stmtlist:sl RBRACE elsestmt:es
+                                                                {: RESULT = Statement.ifStatement(e, sl, es); :}
+            ;
+
+
+while_expr  ::= WHILE LPAREN expr:e RPAREN LBRACE stmtlist:sb RBRACE
+                                                                {: RESULT = Statement.whileStatement(e, sb); :}
+            ;
+
+
+op          ::= PLUS                                            {: RESULT = "+"; :}
+            |   MINUS                                           {: RESULT = "-"; :}
+            |   TIMES                                           {: RESULT = "*"; :}
+            |   DIV                                             {: RESULT = "/"; :}
+            |   LESS                                            {: RESULT = "<"; :}
+            |   GREATER                                         {: RESULT = ">"; :}
+            |   EQUALS                                          {: RESULT = "=="; :}
+            |   ATLEAST                                         {: RESULT = ">="; :}
+            |   ATMOST                                          {: RESULT = "<="; :}
+            |   AND                                             {: RESULT = "and"; :}
+            |   OR                                              {: RESULT = "or"; :}
+            ;
+
+expr        ::= expr:e1 op:o expr:e2                            {: RESULT = Expression.binop(e1, o, e2); :}
+            |   MINUS expr:e                                    {: RESULT = Expression.unop("-", e); :}
+            |   NOT expr:b                                      {: RESULT = Expression.unop("!", b); :}
+            |   INT_LIT:i                                       {: RESULT = Expression.intconst(i); :}
+            |   STRING_LIT:s                                    {: RESULT = Expression.stringLit(s); :}
+            |   expr:e DOT IDENT:i                              {: RESULT = Expression.methodCall(e, i); :}
+            |   expr:e DOT IDENT:i LPAREN inf_args:ia RPAREN    {: RESULT = Expression.methodCall(e, i, ia); :}
+            |   IDENT:i LPAREN inf_args:ia RPAREN               {: RESULT = Expression.constructor(i, ia); :}
+            |   IDENT:i                                         {: RESULT = Expression.ident(i); :}
+            |   LPAREN expr:e RPAREN                            {: RESULT = Expression.priority(e); :}
+            ;
+
+empty       ::=                                                 {: :};

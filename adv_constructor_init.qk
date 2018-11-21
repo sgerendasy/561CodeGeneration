@@ -1,0 +1,11 @@
+//unsure what this one is supposed to return as the typecheck
+//no description was provided
+//return allowed??
+class C1_Fer(x: Int, y: Boolean, z: String) {
+    while (x > 5) {
+        w : Boolean = true;
+    }
+    return this; // Error: constructor shouldn't return
+
+}
+

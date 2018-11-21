@@ -1,0 +1,11 @@
+class C()
+{
+	// should fail because the implicit return none isn't a subtype of Boolean
+	def foo(x : Int) : Boolean
+	{
+		typecase x 
+		{
+            x1: Int { return x1 > 0; }
+        }
+	}
+}

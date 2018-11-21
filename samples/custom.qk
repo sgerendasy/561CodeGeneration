@@ -1,0 +1,10 @@
+class A() extends Obj
+{
+}
+class B() extends Obj
+{
+	def foo(): B
+	{
+		return A();
+	}
+}

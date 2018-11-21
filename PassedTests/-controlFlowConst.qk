@@ -1,0 +1,9 @@
+//variables not independent of control flow
+class Schroedinger(box: Int) {
+if box > 0 {
+this.living = 1;
+} else {
+this.dead = 0;
+}
+}
+

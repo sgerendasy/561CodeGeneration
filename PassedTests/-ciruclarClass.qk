@@ -1,0 +1,2 @@
+class Foo() extends Bar { }
+class Bar() extends Foo { } // Circular!

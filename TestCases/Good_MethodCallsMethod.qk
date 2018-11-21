@@ -1,0 +1,21 @@
+class C1(x: Boolean)
+{
+    this.x = x;
+    def foo() : C2
+    {
+        return C2();
+    }
+    
+}
+
+class C2()
+{
+	def bar(b: Boolean) : Boolean
+    {
+        return not b;
+    }
+}
+
+A = C1(false);
+// test methods calling methods with argument expression.
+B = A.foo().bar(not A.x);

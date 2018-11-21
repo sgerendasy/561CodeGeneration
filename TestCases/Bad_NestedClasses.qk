@@ -1,0 +1,17 @@
+class Outer() extends Obj
+{
+	this.x = "x";
+	class Inner() // shouldn't allow nested classes
+	{
+		def foo() : Int
+		{
+			return 1;
+		}
+	}
+	def foo() : Int
+	{
+		return Inner().foo();
+	}
+}
+
+A = Outer().foo();

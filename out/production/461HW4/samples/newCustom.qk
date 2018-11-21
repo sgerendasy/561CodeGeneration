@@ -1,0 +1,28 @@
+if a_square == b_square {
+   x = 4 + 3;
+} else {
+   (b_square.STR() + " is different").PRINT();
+}
+
+
+if a_square == b_square {
+   "They are the same".PRINT();
+} else {
+   (x.y() + " is different").PRINT();
+}
+
+
+if a_square == b_square {
+   x.x() : Int = 5;
+} else {
+   (f).PRINT();
+}
+
+
+if a_square == b_square {
+   x : Int = 6;
+} else {
+   (error).PRINT();
+}
+
+

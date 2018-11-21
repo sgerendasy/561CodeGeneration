@@ -1,0 +1,8 @@
+//this.living depends on control flow, it has been initialized type Boolean in either case.
+class Schroedinger(box: Int) {
+if box > 0 {
+this.living = true;
+} else {
+this.living = false;
+}
+}

@@ -1,0 +1,38 @@
+class C() {
+	def f(x: int): Obj{
+		 if x>0 {
+		 	return;
+		 }else{
+		 	return 5;
+		 }
+	}
+
+
+}
+
+//should fail
+class C() {
+	def f(x: int): Int{
+		 if x>0 {
+		 	return;
+		 }else{
+		 	return 5;
+		 }
+	}
+
+
+}
+
+
+//should also fail
+class C() {
+	def f(x: int){
+		 if x>0 {
+		 	return;
+		 }else{
+		 	return 5;
+		 }
+	}
+
+
+}

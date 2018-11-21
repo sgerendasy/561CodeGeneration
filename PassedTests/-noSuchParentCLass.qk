@@ -1,0 +1,1 @@
+class OhNo() extends NoSuch { } // No such parent!
