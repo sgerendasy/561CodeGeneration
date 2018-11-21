@@ -8,6 +8,8 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Options;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 
 public class Main {
@@ -19,7 +21,8 @@ public class Main {
     ErrorReport report;
 
     boolean DebugMode = false; // True => parse in debug mode 
-
+    Program builtinAST = null;
+    Program ast = null;
 
     static public void main(String args[])
     {
@@ -31,7 +34,31 @@ public class Main {
     {
         report = new ErrorReport();
         parseCommandLine(args);
-        parseProgram();
+        TypeChecker typeChecker = parseProgram();
+        BuildHFile(typeChecker);
+    }
+
+    void BuildHFile(TypeChecker typeChecker)
+    {
+        // use typeChecker.tree, typechecker.classesTable, & VarTableSingleton.TheTable to generate output
+        String[] tempSource = this.sourceFile.split("/");
+        String outputFileName = tempSource[tempSource.length - 1].replace("qk", "h");
+        try
+        {
+            FileWriter outputStream = new FileWriter(outputFileName);
+            outputStream.write("#ifndef " + outputFileName.replace(".", "_") + '\n');
+            outputStream.write("#define " + outputFileName.replace(".", "_") + '\n');
+            // fill in .h stuff here
+            
+
+            outputStream.write("#endif" + '\n');
+            outputStream.flush();
+        }
+        catch (IOException e)
+        {
+            System.out.println(e.getMessage());
+        }
+
     }
 
     void parseCommandLine(String args[])
@@ -68,10 +95,8 @@ public class Main {
         }
     }
 
-    void parseProgram()
+    TypeChecker parseProgram()
     {
-    	Program builtinAST=null;
-    	Program ast=null;
         System.out.println("Beginning parse ...");
         try
         {
@@ -121,6 +146,7 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
+        return typeChecker;
 
     }
 }

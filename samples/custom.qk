@@ -1,10 +1,10 @@
 class A() extends Obj
 {
 }
-class B() extends Obj
+class B() extends A
 {
-	def foo(): B
+	def foo(): A
 	{
-		return A();
+		return B();
 	}
 }

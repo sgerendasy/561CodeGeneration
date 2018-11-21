@@ -4,12 +4,12 @@ import java.util.Map.Entry;
 
 public class TypeChecker {
 	
-	static Program builtinAST;
-	static Program ast;
+	public static Program builtinAST;
+	public static Program ast;
 	public static String currentClass;
 	public static String currentMethod;
-	ClassesTable classesTable;
-	Tree tree;
+	public ClassesTable classesTable;
+	public Tree tree;
 	
 	public TypeChecker(Program builtinAST, Program ast){
 		TypeChecker.ast = ast;
