@@ -9,24 +9,29 @@ public class TypeChecker {
 	public static String currentClass;
 	public static String currentMethod;
 	public ClassesTable classesTable;
-	public Tree tree;
+	public Tree tree = Tree.getInstance();
 	
 	public TypeChecker(Program builtinAST, Program ast){
 		TypeChecker.ast = ast;
 		TypeChecker.builtinAST = builtinAST;
 		classesTable = ClassesTable.getInstance();
-		tree = Tree.getInstance();
 	}
 	
 	public boolean TypeCheck() throws Exception
     {
         //first visit only classes
+
+        builtinAST.visit();
+        builtinAST.methodVisit();
+        createLattice();
+        builtinAST.visit2();
         ast.visit();
         ast.methodVisit();
+        createLattice();
         checkForUndefined();
         System.out.println("Passed check for undefined class inheritance");
         checkForCycles();
-        createLattice();
+
         System.out.println("Passed check for class cycles");
 
         //Second Visit to typeCheck everything

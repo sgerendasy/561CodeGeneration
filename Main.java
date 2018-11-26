@@ -12,6 +12,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 
 public class Main {
@@ -25,6 +28,7 @@ public class Main {
     boolean DebugMode = false; // True => parse in debug mode 
     Program builtinAST = null;
     Program ast = null;
+    HashMap<String, CHeaderNode> classHeaderDictionary = new HashMap<>();
 
     static public void main(String args[])
     {
@@ -49,22 +53,127 @@ public class Main {
         {
             FileWriter outputStream = new FileWriter(outputFileName);
             outputStream.write("#ifndef " + outputFileName.replace(".", "_") + '\n');
-            outputStream.write("#define " + outputFileName.replace(".", "_") + '\n');
+            outputStream.write("#define " + outputFileName.replace(".", "_") + "\n\n\n");
             // fill in .h stuff here
 
             // adds 'struct class_[className]_struct' in breadth-first search manner from tree
             ArrayList<Node> childToAdd = new ArrayList<>();
             childToAdd.add(typeChecker.tree.getRoot());
+
+            // write declarations
             while(childToAdd.size() > 0)
             {
                 String className = childToAdd.get(0).getId();
                 String structName = "class_" + className + "_struct";
                 outputStream.write("struct " + structName + ";\n");
-                outputStream.write("typedef struct " + structName + "*" + " " + "class_" + className + ";\n\n");
+                String instanceName = "class_" + className;
+                CHeaderNode newNode = new CHeaderNode(structName, instanceName);
+                classHeaderDictionary.put(className, newNode);
+                outputStream.write("typedef struct " + structName + "*" + " " + instanceName + ";\n\n");
                 childToAdd.addAll(childToAdd.get(0).getChildren());
                 childToAdd.remove(0);
             }
 
+            // create typedef instances
+            for (VarTable vt : VarTableSingleton.TheTable)
+            {
+                String typeDefString = "typedef struct obj_" + vt.className + "_struct {\n";
+                outputStream.write(typeDefString);
+
+                String classIdent = "clazz";
+                String instanceName = classHeaderDictionary.get(vt.className).classInstanceName + " " + classIdent + ";\n";
+                outputStream.write("\t" + instanceName);
+                classHeaderDictionary.get(vt.className).objectInstanceStructVariables.add(classIdent);
+
+                if(vt.className.equals("String"))
+                {
+                    classHeaderDictionary.get(vt.className).objectInstanceStructVariables.add("value");
+                    String value = "char* value;\n";
+                    outputStream.write("\t" + value);
+                }
+                else if (vt.className.equals("Int") || vt.className.equals("Boolean"))
+                {
+                    classHeaderDictionary.get(vt.className).objectInstanceStructVariables.add("value");
+                    String value = "int value;\n";
+                    outputStream.write("\t" + value);
+                }
+                else
+                {
+                    for (Var v : vt.constructorTable)
+                    {
+                        String type = classHeaderDictionary.get(v.type).objectInstanceName;
+                        String varName = v.ident.replace("this.", "");
+                        classHeaderDictionary.get(vt.className).objectInstanceStructVariables.add(varName);
+                        outputStream.write("\t" + type + " " + varName + ";\n");
+                    }
+                }
+
+                String objectInstanceName = "obj_" + vt.className;
+                classHeaderDictionary.get(vt.className).objectInstanceName = objectInstanceName;
+                outputStream.write("} *" + objectInstanceName + ";\n\n");
+            }
+
+            // write definitions
+            for (VarTable vt : VarTableSingleton.TheTable)
+            {
+                String structDef = "struct " + classHeaderDictionary.get(vt.className).classTypeName + " {\n";
+                outputStream.write(structDef);
+
+                // write constructor
+                String constructorType = classHeaderDictionary.get(vt.className).objectInstanceName;
+                String constructorArgs = "( ";
+                int constructArgLength = vt.classArgTypes.size();
+                if (constructArgLength == 0)
+                {
+                    constructorArgs += "void );\n";
+                }
+                else
+                {
+                    constructorArgs += classHeaderDictionary.get(vt.classArgTypes.get(0)).objectInstanceName;
+                    for (int i = 1; i < constructArgLength; i++)
+                    {
+                        constructorArgs += ", " + classHeaderDictionary.get(vt.classArgTypes.get(i)).objectInstanceName;
+                    }
+                    constructorArgs += ");\n";
+                }
+                outputStream.write("\t" + constructorType + " (*constructor) " + constructorArgs);
+
+                // write methods
+                LinkedList<Var> completedMethodTable = new LinkedList<>();
+//                HashMap<String, LinkedList<Var>> completeMethodArgs = GetCompleteMethodArgs(vt.className);
+                HashMap<String, LinkedList<Var>> completedMethodArgs = new HashMap<>();
+                String currentClassName = vt.className;
+                while(true)
+                {
+                    for (Var v : VarTableSingleton.getTableByClassName(currentClassName).methodTable)
+                    {
+                        if (!completedMethodTable.contains(v))
+                        {
+                            completedMethodTable.add(v);
+                            String methodReturnType = classHeaderDictionary.get(v.type).objectInstanceName;
+                            String methodArgs = "( " + classHeaderDictionary.get(currentClassName).objectInstanceName;
+                            completedMethodArgs.put(v.ident, VarTableSingleton.getTableByClassName(currentClassName).methodVars.get(v.ident));
+                            LinkedList<Var> methodArgList = completedMethodArgs.get(v.ident);
+                            int methodArgsLenth = methodArgList.size();
+                            for (int i = 0; i < methodArgsLenth; i++) {
+                                methodArgs += ", " + classHeaderDictionary.get(methodArgList.get(i).type).objectInstanceName;
+                            }
+                            methodArgs += " );\n";
+                            String methodName = "(*" + v.ident + ") ";
+                            outputStream.write("\t" + methodReturnType + " " + methodName + " " + methodArgs);
+                        }
+
+                    }
+                    if (currentClassName.equals("Obj"))
+                        break;
+                    currentClassName = ClassesTable.getInstance().getParentClass(currentClassName);
+                }
+
+
+
+
+                outputStream.write("};\n\n");
+            }
 
             outputStream.write("#endif" + '\n');
             outputStream.flush();
@@ -74,6 +183,46 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
+    }
+
+    HashMap<String, LinkedList<Var>> GetCompleteMethodArgs(String className)
+    {
+        HashMap<String, LinkedList<Var>> classMethodArgs = VarTableSingleton.getTableByClassName(className).methodVars;
+        String currentClassName = className;
+        while (!currentClassName.equals("Obj"))
+        {
+            currentClassName = ClassesTable.getInstance().getParentClass(currentClassName);
+            HashMap<String, LinkedList<Var>> parentMethodArgs = VarTableSingleton.getTableByClassName(currentClassName).methodVars;
+            for (Map.Entry<String, LinkedList<Var>> entry : parentMethodArgs.entrySet())
+            {
+                if (!classMethodArgs.containsKey(entry.getKey()))
+                {
+                    classMethodArgs.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        return classMethodArgs;
+    }
+
+    // gets methods from class plus inherited methods
+    LinkedList<Var> GetCompleteMethodTable(String className)
+    {
+        LinkedList<Var> classMethods = VarTableSingleton.getTableByClassName(className).methodTable;
+        String currentClassName = className;
+        while(!currentClassName.equals("Obj"))
+        {
+            currentClassName = ClassesTable.getInstance().getParentClass(currentClassName);
+            LinkedList<Var> parentMethodTable = VarTableSingleton.getTableByClassName(currentClassName).methodTable;
+            for (Var v : parentMethodTable)
+            {
+                if (!classMethods.contains(v))
+                {
+                    classMethods.add(v);
+                }
+            }
+        }
+        return classMethods;
     }
 
     void parseCommandLine(String args[])
@@ -124,8 +273,7 @@ public class Main {
                 result = p.parse();
             //ast of built in clasess
             builtinAST = (Program) result.value;
-            builtinAST.visit();
-            builtinAST.methodVisit();
+
             System.out.println("Built in classes parsed, built-in ast built");
 
             scanner = new Lexer (new FileReader ( sourceFile), symbolFactory);
@@ -165,3 +313,4 @@ public class Main {
 
     }
 }
+

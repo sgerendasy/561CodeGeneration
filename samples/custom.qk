@@ -1,10 +1,9 @@
-class A() extends Obj
+class C1(x: Int, y: Obj)
 {
-}
-class B() extends A
-{
-	def foo(): A
-	{
-		return B();
-	}
+    y = 5;
+    this.x = x;
+    def foo(a: Boolean, c: Int) : String
+    {
+        return a.STR() + c.STR();
+    }
 }

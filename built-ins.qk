@@ -6,30 +6,34 @@
 
  class Obj() {
     def PRINT() { }
-    def STR(): String { }
-    def EQUALS(other: Obj): Boolean {} // Default is object identity
+    def STR(): String { return ""; }
+    def EQUALS(other: Obj): Boolean { return true; } // Default is object identity
  }
 
  class Nothing() { }
 
  class String() {
-    def PLUS(other: String): String { }      // +
-    def EQUALS(other: String): Boolean { }   // ==
-    def ATMOST(other: String): Boolean { }   // <=
-    def LESS(other: String): Boolean { }     // <
-    def ATLEAST(other: String): Boolean { }  // >=
-    def MORE(other: String): Boolean { }     // >
+    this.value = "";
+    def PLUS(other: String): String { return this.value + other.value; }      // +
+    def EQUALS(other: String): Boolean { return this.value == other.value; }   // ==
+    def ATMOST(other: String): Boolean { return this.value <= other.value; }   // <=
+    def LESS(other: String): Boolean { return this.value < other.value; }     // <
+    def ATLEAST(other: String): Boolean { return this.value >= other.value; }  // >=
+    def MORE(other: String): Boolean { return this.value > other.value; }     // >
  }
 
- class Boolean() { }
+ class Boolean() {
+    this.value = 0;
+  }
 
  class Int() {
-    def PLUS(right: Int): Int {}   // this + right
-    def TIMES(right: Int): Int {}  // this * right
-    def MINUS(right: Int): Int {}  // this - right
-    def DIVIDE(right: Int): Int {}    // this / right
-    def ATMOST(other: Int): Boolean { }     // <=
-    def LESS(other: Int): Boolean { }       // <
-    def ATLEAST(other: Int): Boolean { }    // >=
-    def MORE(other: Int): Boolean { }       // >
+    this.value = 0;
+    def PLUS(right: Int): Int { return this.value + right.value;}   // this + right
+    def TIMES(right: Int): Int { return this.value * right.value; }  // this * right
+    def MINUS(right: Int): Int { return this.value - right.value; }  // this - right
+    def DIVIDE(right: Int): Int { return this.value / right.value; }    // this / right
+    def ATMOST(other: Int): Boolean { return this.value <= other.value; }     // <=
+    def LESS(other: Int): Boolean { return this.value < other.value; }       // <
+    def ATLEAST(other: Int): Boolean { return this.value >= other.value; }    // >=
+    def MORE(other: Int): Boolean { return this.value > other.value; }       // >
  }
