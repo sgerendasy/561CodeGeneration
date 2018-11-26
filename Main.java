@@ -11,10 +11,7 @@ import org.apache.commons.cli.Options;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 
 public class Main {
@@ -140,18 +137,30 @@ public class Main {
 
                 // write methods
                 LinkedList<Var> completedMethodTable = new LinkedList<>();
-//                HashMap<String, LinkedList<Var>> completeMethodArgs = GetCompleteMethodArgs(vt.className);
                 HashMap<String, LinkedList<Var>> completedMethodArgs = new HashMap<>();
                 String currentClassName = vt.className;
-                while(true)
+
+                Stack<String> classInheritanceStack = new Stack<>();
+                while (!currentClassName.equals("Obj"))
                 {
+                    classInheritanceStack.push(currentClassName);
+                    currentClassName = ClassesTable.getInstance().getParentClass(currentClassName);
+                }
+                classInheritanceStack.push(currentClassName);
+
+                while(!classInheritanceStack.empty())
+                {
+                    currentClassName = classInheritanceStack.pop();
                     for (Var v : VarTableSingleton.getTableByClassName(currentClassName).methodTable)
                     {
                         if (!completedMethodTable.contains(v))
                         {
                             completedMethodTable.add(v);
                             String methodReturnType = classHeaderDictionary.get(v.type).objectInstanceName;
-                            String methodArgs = "( " + classHeaderDictionary.get(currentClassName).objectInstanceName;
+
+                            // add 'self' as first method arg
+                            String methodArgs = "( " + classHeaderDictionary.get(vt.className).objectInstanceName;
+
                             completedMethodArgs.put(v.ident, VarTableSingleton.getTableByClassName(currentClassName).methodVars.get(v.ident));
                             LinkedList<Var> methodArgList = completedMethodArgs.get(v.ident);
                             int methodArgsLenth = methodArgList.size();
@@ -162,11 +171,10 @@ public class Main {
                             String methodName = "(*" + v.ident + ") ";
                             outputStream.write("\t" + methodReturnType + " " + methodName + " " + methodArgs);
                         }
-
                     }
-                    if (currentClassName.equals("Obj"))
-                        break;
-                    currentClassName = ClassesTable.getInstance().getParentClass(currentClassName);
+//                    if (currentClassName.equals("Obj"))
+//                        break;
+//                    currentClassName = ClassesTable.getInstance().getParentClass(currentClassName);
                 }
 
 

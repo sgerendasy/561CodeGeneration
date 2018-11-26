@@ -57,33 +57,36 @@ struct class_Obj_struct {
 
 struct class_Nothing_struct {
 	obj_Nothing (*constructor) ( void );
-	obj_Nothing (*PRINT)  ( obj_Obj );
-	obj_String (*STR)  ( obj_Obj );
-	obj_Boolean (*EQUALS)  ( obj_Obj, obj_Obj );
+	obj_Nothing (*PRINT)  ( obj_Nothing );
+	obj_String (*STR)  ( obj_Nothing );
+	obj_Boolean (*EQUALS)  ( obj_Nothing, obj_Obj );
 };
 
 struct class_String_struct {
 	obj_String (*constructor) ( void );
+	obj_Nothing (*PRINT)  ( obj_String );
+	obj_String (*STR)  ( obj_String );
+	obj_Boolean (*EQUALS)  ( obj_String, obj_Obj );
 	obj_String (*PLUS)  ( obj_String, obj_String );
 	obj_Boolean (*EQUALS)  ( obj_String, obj_String );
 	obj_Boolean (*ATMOST)  ( obj_String, obj_String );
 	obj_Boolean (*LESS)  ( obj_String, obj_String );
 	obj_Boolean (*ATLEAST)  ( obj_String, obj_String );
 	obj_Boolean (*MORE)  ( obj_String, obj_String );
-	obj_Nothing (*PRINT)  ( obj_Obj );
-	obj_String (*STR)  ( obj_Obj );
-	obj_Boolean (*EQUALS)  ( obj_Obj, obj_Obj );
 };
 
 struct class_Boolean_struct {
 	obj_Boolean (*constructor) ( void );
-	obj_Nothing (*PRINT)  ( obj_Obj );
-	obj_String (*STR)  ( obj_Obj );
-	obj_Boolean (*EQUALS)  ( obj_Obj, obj_Obj );
+	obj_Nothing (*PRINT)  ( obj_Boolean );
+	obj_String (*STR)  ( obj_Boolean );
+	obj_Boolean (*EQUALS)  ( obj_Boolean, obj_Obj );
 };
 
 struct class_Int_struct {
 	obj_Int (*constructor) ( void );
+	obj_Nothing (*PRINT)  ( obj_Int );
+	obj_String (*STR)  ( obj_Int );
+	obj_Boolean (*EQUALS)  ( obj_Int, obj_Obj );
 	obj_Int (*PLUS)  ( obj_Int, obj_Int );
 	obj_Int (*TIMES)  ( obj_Int, obj_Int );
 	obj_Int (*MINUS)  ( obj_Int, obj_Int );
@@ -92,17 +95,14 @@ struct class_Int_struct {
 	obj_Boolean (*LESS)  ( obj_Int, obj_Int );
 	obj_Boolean (*ATLEAST)  ( obj_Int, obj_Int );
 	obj_Boolean (*MORE)  ( obj_Int, obj_Int );
-	obj_Nothing (*PRINT)  ( obj_Obj );
-	obj_String (*STR)  ( obj_Obj );
-	obj_Boolean (*EQUALS)  ( obj_Obj, obj_Obj );
 };
 
 struct class_C1_struct {
 	obj_C1 (*constructor) ( obj_Int, obj_Obj);
+	obj_Nothing (*PRINT)  ( obj_C1 );
+	obj_String (*STR)  ( obj_C1 );
+	obj_Boolean (*EQUALS)  ( obj_C1, obj_Obj );
 	obj_String (*foo)  ( obj_C1, obj_Boolean, obj_Int );
-	obj_Nothing (*PRINT)  ( obj_Obj );
-	obj_String (*STR)  ( obj_Obj );
-	obj_Boolean (*EQUALS)  ( obj_Obj, obj_Obj );
 };
 
 #endif
