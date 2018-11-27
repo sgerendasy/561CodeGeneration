@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.Map.Entry;
 
 
 public class Main {
@@ -39,6 +40,7 @@ public class Main {
         parseCommandLine(args);
         TypeChecker typeChecker = parseProgram();
         BuildHFile(typeChecker);
+        BuildCFile(typeChecker);
     }
 
     void BuildHFile(TypeChecker typeChecker)
@@ -228,6 +230,251 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
+    }
+    void BuildCFile(TypeChecker typeChecker) 
+    {
+      
+        String[] tempSource = this.sourceFile.split("/");
+        String outputFileName = tempSource[tempSource.length - 1].replace("qk", "c");
+        String headerFileName = tempSource[tempSource.length - 1].replace("qk", "h");
+        try {
+			FileWriter outputStream = new FileWriter(outputFileName);
+            outputStream.write("#include <stdio.h>\n");
+            outputStream.write("#include <stdlib.h>\n");
+            outputStream.write("#include <String.h>\n");
+            outputStream.write("#include <stdlib.h>\n");
+            outputStream.write("#include \"" + headerFileName+"\"\n\n\n");
+         // c file code generation
+            
+            for(VarTable c : VarTableSingleton.TheTable)
+            {
+            	int i=0;
+            	int size = c.methodTable.size()-1;
+            	for(Var m : c.methodTable)
+            	{
+            		if (c.className.equals("Obj"))
+            		{	if(i==0) {
+            			outputStream.write("class_Obj the_class_Obj; \n");
+            			/* Constructor */
+            			  outputStream.write("obj_Obj new_Obj(  ) { \n");
+            			  outputStream.write("obj_Obj new_thing = (obj_Obj) malloc(sizeof(struct obj_Obj_struct));\n");
+            			  outputStream.write("new_thing->clazz = the_class_Obj;\n");
+            			  outputStream.write("return new_thing; \n}\n");	
+            			}
+            		   if (m.ident.equals("STR")) {
+            				outputStream.write("obj_String Obj_method_STRING(obj_Obj this) {\n");
+            				outputStream.write("long addr = (long) this;\n");
+            				outputStream.write("char *rep;\n");
+            				outputStream.write("asprintf(&rep, \"<Object at %ld>\", addr);\n");
+            				outputStream.write("obj_String str = str_literal(rep); \n");
+            				outputStream.write("return str; \n}\n");
+            			}
+            			else if (m.ident.equals("PRINT")) {
+            				outputStream.write("obj_Obj Obj_method_PRINT(obj_Obj this) {\n");
+            				outputStream.write("  obj_String str = this->clazz->STRING(this);\n");
+            				outputStream.write("  fprintf(stdout, \"%s\", str->text);\n");
+            				outputStream.write("  return this; \n}\n");
+            			}
+            		
+            			else if (m.ident.equals("EQUALS")) {
+            				outputStream.write("obj_Boolean Obj_method_EQUALS(obj_Obj this, obj_Obj other) {\n");
+            				outputStream.write("  if (this == other) {\n");
+            				outputStream.write("    return lit_true;\n");
+            				outputStream.write("  } else {\n");
+            				outputStream.write("    return lit_false; \n} \n}\n");
+            			}
+            			if(i==size) {
+            				/* The Obj Class (a singleton) */
+            				outputStream.write(" struct  class_Obj_struct  the_class_Obj_struct = {\n");
+            				outputStream.write("  new_Obj,     \n");
+            				outputStream.write("  Obj_method_STRING, \n");
+            				outputStream.write("  Obj_method_PRINT, \n");
+            				outputStream.write("  Obj_method_EQUALS \n};\n");
+            				outputStream.write("class_Obj the_class_Obj = &the_class_Obj_struct;\n");
+            			}
+            			i++;	
+            		}
+            		else if (c.className.equals("String"))
+            		{	if(i==0) {
+            			outputStream.write("obj_String new_String(  ) {\n");
+            			outputStream.write("  obj_String new_thing = (obj_String) malloc(sizeof(struct obj_String_struct));\n");
+            			outputStream.write("  new_thing->clazz = the_class_String;\n");
+            			outputStream.write("  return new_thing; \n}\n");
+            			}
+            			if (m.ident.equals("STR")) {
+            				outputStream.write("obj_String String_method_STRING(obj_String this) {\n");
+            				outputStream.write("  return this;\n}\n");
+            			}
+            			else if (m.ident.equals("PRINT")) {
+							outputStream.write("obj_String String_method_PRINT(obj_String this) {\n");
+							outputStream.write("  fprintf(stdout, \"%s\", this->text);\n");
+							outputStream.write("  return this;\n}\n");
+            			}
+            		
+            			else if (m.ident.equals("EQUALS")) {
+            				outputStream.write("obj_Boolean String_method_EQUALS(obj_String this, obj_Obj other) {\n");
+            				outputStream.write("  obj_String other_str = (obj_String) other;\n");
+            				outputStream.write("  if (other_str->clazz != the_class_String) {\n");
+            				outputStream.write("    return lit_false;\n");
+            				outputStream.write("  }\n");
+            				outputStream.write("  if (strcmp(this->text,other_str->text) == 0) {\n");
+            				outputStream.write("    return lit_true;\n");
+            				outputStream.write("  } else {\n");
+            				outputStream.write("    return lit_false;\n");
+            				outputStream.write("  }\n}\n");
+            			}
+            			if(i==size) {
+            				outputStream.write("struct  class_String_struct  the_class_String_struct = {\n");
+            				outputStream.write("  new_String,     \n");
+            				outputStream.write("  String_method_STRING, \n");
+            				outputStream.write("  String_method_PRINT, \n");
+            				outputStream.write("  String_method_EQUALS\n};\n");
+            				outputStream.write("class_String the_class_String = &the_class_String_struct; \n");
+            				outputStream.write("obj_String str_literal(char *s) {\n");
+            				outputStream.write("  char *rep;\n");
+            				outputStream.write("  obj_String str = the_class_String->constructor(); \n");
+            				outputStream.write("  str->text = s;\n");
+            				outputStream.write("  return str;\n}\n");
+            			}
+            			i++;
+            			
+            		}
+            		else if (c.className.equals("Boolean"))
+            		{	
+            			if(i==0) {
+            			outputStream.write("obj_Boolean new_Boolean(  ) {\n");
+            			outputStream.write("  obj_Boolean new_thing = (obj_Boolean)\n");
+            			outputStream.write("    malloc(sizeof(struct obj_Boolean_struct));\n");
+            			outputStream.write("  new_thing->clazz = the_class_Boolean;\n");
+            			outputStream.write("  return new_thing; \n}\n");
+            			}
+            			if (m.ident.equals("STR")) {
+            				outputStream.write("obj_String Boolean_method_STRING(obj_Boolean this) {\n");
+            				outputStream.write("  if (this == lit_true) {\n");
+            				outputStream.write("    return str_literal(\"true\");\n");
+            				outputStream.write("  } else if (this == lit_false) {\n");
+            				outputStream.write("    return str_literal(\"false\");\n");
+            				outputStream.write("  } else {\n");
+            				outputStream.write("    return str_literal(\"!!!BOGUS BOOLEAN\");\n");
+            				outputStream.write("  }\n}\n");
+            			}
+            			if(i==size) {
+            				outputStream.write("struct  class_Boolean_struct  the_class_Boolean_struct = {\n");
+            				outputStream.write("  new_Boolean,     \n");
+            				outputStream.write("  Boolean_method_STRING, \n");
+            				outputStream.write("  Obj_method_PRINT, \n");
+            				outputStream.write("  Obj_method_EQUALS\n};\n");
+            				outputStream.write("class_Boolean the_class_Boolean = &the_class_Boolean_struct; \n");
+            				outputStream.write("struct obj_Boolean_struct lit_false_struct =\n");
+            				outputStream.write("  { &the_class_Boolean_struct, 0 };\n");
+            				outputStream.write("obj_Boolean lit_false = &lit_false_struct;\n");
+            				outputStream.write("struct obj_Boolean_struct lit_true_struct =\n");
+            				outputStream.write("  { &the_class_Boolean_struct, 1 };\n");
+            				outputStream.write("obj_Boolean lit_true = &lit_true_struct;\n");
+            			}
+            			i++;
+            			
+            		}
+            		else if (c.className.equals("Nothing"))
+            		{	if(i==0) {
+            			outputStream.write("obj_Nothing new_Nothing(  ) {\n");
+            			outputStream.write("  return nothing; \n}\n");
+            			}
+            			if (m.ident.equals("STR")) {
+            				outputStream.write("obj_String Nothing_method_STRING(obj_Nothing this) {\n");
+            				outputStream.write("    return str_literal(\"<nothing>\");\n}\n");
+            			}
+            			else if(i==size) {
+            				outputStream.write("struct  class_Nothing_struct  the_class_Nothing_struct = {\n");
+            				outputStream.write("  new_Nothing,     \n");
+            				outputStream.write("  Nothing_method_STRING, \n");
+            				outputStream.write("  Obj_method_PRINT, \n");
+            				outputStream.write("  Obj_method_EQUALS\n};\n");
+            				outputStream.write("class_Nothing the_class_Nothing = &the_class_Nothing_struct; \n");
+            				outputStream.write("struct obj_Nothing_struct nothing_struct =\n");
+            				outputStream.write("  { &the_class_Nothing_struct };\n");
+            				outputStream.write("obj_Nothing nothing = &nothing_struct; \n");
+            			}
+            			i++;
+            			
+            		}
+            		else if (c.className.equals("Int"))
+            		{	if(i==0) {
+            			outputStream.write("obj_Int new_Int(  ) {\n");
+            			outputStream.write("  obj_Int new_thing = (obj_Int)\n");
+            			outputStream.write("    malloc(sizeof(struct obj_Int_struct));\n");
+            			outputStream.write("  new_thing->clazz = the_class_Int;\n");
+            			outputStream.write("  new_thing->value = 0;          \n");
+            			outputStream.write("  return new_thing; \n}\n");
+            			}
+            			if (m.ident.equals("STR")) {
+            				outputStream.write("obj_String Int_method_STRING(obj_Int this) {\n");
+            				outputStream.write("  char *rep;\n");
+            				outputStream.write("  asprintf(&rep, \"%d\", this->value);\n");
+            				outputStream.write("  return str_literal(rep); \n}\n");
+            			}
+            			else if (m.ident.equals("PRINT")) {
+							outputStream.write("obj_String String_method_PRINT(obj_String this) {\n");
+							outputStream.write("  fprintf(stdout, \"%s\", this->text);\n");
+							outputStream.write("  return this;\n}\n");
+            			}
+            		
+            			else if (m.ident.equals("EQUALS")) {
+            				outputStream.write("obj_Boolean Int_method_EQUALS(obj_Int this, obj_Obj other) {\n");
+            				outputStream.write("  obj_Int other_int = (obj_Int) other; \n");
+            				outputStream.write("  \n");
+            				outputStream.write("  if (other_int->clazz != this->clazz) {\n");
+            				outputStream.write("    return lit_false;\n");
+            				outputStream.write("  }\n");
+            				outputStream.write("  if (this->value != other_int->value) {\n");
+            				outputStream.write("    return lit_false;\n");
+            				outputStream.write("  }\n");
+            				outputStream.write("  return lit_true;\n}\n");
+            			}
+            			else if (m.ident.equals("PLUS")) {
+            				outputStream.write("obj_Int Int_method_PLUS(obj_Int this, obj_Int other) {\n");
+            				outputStream.write("  return int_literal(this->value + other->value);\n}\n");
+            			}
+            			else if (m.ident.equals("LESS")) {
+            				outputStream.write("obj_Boolean Int_method_LESS(obj_Int this, obj_Int other) {\n");
+            				outputStream.write("  if (this->value < other->value) {\n");
+            				outputStream.write("    return lit_true;\n");
+            				outputStream.write("  }\n");
+            				outputStream.write("  return lit_false;\n}\n");
+            			}
+            			if(i==size) {
+            				outputStream.write("struct  class_Int_struct  the_class_Int_struct = {\n");
+            				outputStream.write("  new_Int,     \n");
+            				outputStream.write("  Int_method_STRING, \n");
+            				outputStream.write("  Obj_method_PRINT, \n");
+            				outputStream.write("  Int_method_EQUALS,\n");
+            				outputStream.write("  Int_method_LESS,\n");
+            				outputStream.write("  Int_method_PLUS\n};\n");
+            				outputStream.write("class_Int the_class_Int = &the_class_Int_struct; \n");
+            				outputStream.write("obj_Int int_literal(int n) {\n");
+            				outputStream.write("  obj_Int boxed = new_Int();\n");
+            				outputStream.write("  boxed->value = n;\n");
+            				outputStream.write("  return boxed;\n}\n");
+
+            			}
+            			i++;
+            			
+            		}
+            		// ... other build in cases
+            		else
+            		{
+            			// do regular code generation
+            		}
+            	}	
+        
+            }
+            outputStream.flush();  
+        } 
+        catch (IOException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        
     }
 
     HashMap<String, LinkedList<Var>> GetCompleteMethodArgs(String className)
