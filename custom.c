@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <String.h>
-#include <stdlib.h>
 #include "custom.h"
 
 
@@ -37,6 +36,25 @@ obj_Boolean Obj_method_EQUALS(obj_Obj this, obj_Obj other) {
   Obj_method_EQUALS 
 };
 class_Obj class_Obj_Instance = &the_class_Obj_struct;
+obj_Nothing new_Nothing(  ) {
+  return nothing; 
+}
+obj_Nothing Nothing_method_PRINT(obj_Nothing this) {
+  obj_String str = this->clazz->STR(this);
+  fprintf(stdout, "%s", str->value);
+  return nothing; 
+}
+obj_String Nothing_method_STRING(obj_Nothing this) {
+    return str_lit("<nothing>");
+}
+obj_Boolean Nothing_method_EQUALS(obj_Nothing this, obj_Obj other) {
+obj_Nothing other_nothing = (obj_Nothing) other;
+  if (this == other_nothing) {
+    return lit_true;
+  } else {
+    return lit_false; 
+} 
+}
 obj_String new_String(  ) {
   obj_String new_thing = (obj_String) malloc(sizeof(struct obj_String_struct));
   new_thing->clazz = class_String_Instance;
@@ -54,7 +72,7 @@ obj_Boolean String_method_EQUALS(obj_String this, obj_Obj other) {
   if (other_str->clazz != class_String_Instance) {
     return lit_false;
   }
-  if (strcmp(this->value,other_str->value) == 0) {
+  if (strcmp(this->value, other_str->value) == 0) {
     return lit_true;
   } else {
     return lit_false;
@@ -106,6 +124,41 @@ obj_String str_lit(char *s) {
   obj_String str = class_String_Instance->constructor(); 
   str->value = s;
   return str;
+}
+obj_Nothing String_method_PRINT(obj_String this) {
+  fprintf(stdout, "%s", this->value);
+  return nothing;
+}
+obj_String String_method_STR(obj_String this) {
+  return this;
+}
+obj_Boolean new_Boolean(  ) {
+  obj_Boolean new_thing = (obj_Boolean)
+    malloc(sizeof(struct obj_Boolean_struct));
+  new_thing->clazz = class_Boolean_Instance;
+  return new_thing; 
+}
+obj_Nothing Boolean_method_PRINT(obj_Boolean this) {
+  obj_String str = this->clazz->STR(this);
+  fprintf(stdout, "%s", str->value);
+  return nothing; 
+}
+obj_String Boolean_method_STR(obj_Boolean this) {
+  if (this == lit_true) {
+    return str_lit("true");
+  } else if (this == lit_false) {
+    return str_lit("false");
+  } else {
+    return str_lit("!!!BOGUS BOOLEAN");
+  }
+}
+obj_Boolean Boolean_method_EQUALS(obj_Boolean this, obj_Obj other) {
+obj_Boolean other_bool = (obj_Boolean) other;
+  if (this->value == other_bool->value) {
+    return lit_true;
+  } else {
+    return lit_false; 
+} 
 }
 obj_Int new_Int(  ) {
   obj_Int new_thing = (obj_Int)
@@ -167,4 +220,20 @@ obj_Int int_lit(int n) {
   obj_Int boxed = new_Int();
   boxed->value = n;
   return boxed;
+}
+obj_String Int_method_STR(obj_Int this) {
+  char *rep;
+  asprintf(&rep, "%d", this->value);
+  return str_lit(rep); 
+}
+obj_Boolean Int_method_EQUALS(obj_Int this, obj_Obj other) {
+  obj_Int other_int = (obj_Int) other; 
+  
+  if (other_int->clazz != this->clazz) {
+    return lit_false;
+  }
+  if (this->value != other_int->value) {
+    return lit_false;
+  }
+  return lit_true;
 }

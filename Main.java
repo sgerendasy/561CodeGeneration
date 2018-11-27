@@ -268,7 +268,7 @@ public class Main {
             {
             	int i=0;
             	int size = c.methodTable.size()-1;
-            	for(Var m : c.methodTable)
+            	for(MethodNode m : GetCompleteMethodTable(c.className))
             	{
             		if (c.className.equals("Obj"))
             		{	if(i==0) {
@@ -326,7 +326,7 @@ public class Main {
             			else if (m.ident.equals("PRINT")) {
 							outputStream.write("obj_Nothing String_method_PRINT(obj_String this) {\n");
 							outputStream.write("  fprintf(stdout, \"%s\", this->value);\n");
-							outputStream.write("  return this;\n}\n");
+							outputStream.write("  return nothing;\n}\n");
             			}
             		
             			else if (m.ident.equals("EQUALS")) {
@@ -335,7 +335,7 @@ public class Main {
             				outputStream.write("  if (other_str->clazz != class_String_Instance) {\n");
             				outputStream.write("    return lit_false;\n");
             				outputStream.write("  }\n");
-            				outputStream.write("  if (strcmp(this->value,other_str->value) == 0) {\n");
+            				outputStream.write("  if (strcmp(this->value, other_str->value) == 0) {\n");
             				outputStream.write("    return lit_true;\n");
             				outputStream.write("  } else {\n");
             				outputStream.write("    return lit_false;\n");
@@ -377,8 +377,9 @@ public class Main {
             				outputStream.write("  } else {\n");
             				outputStream.write("    return lit_false;\n}\n}\n");
             			}
-            			
-            			if(i==size) {
+
+
+                        if(i==size) {
             				outputStream.write("struct  class_String_struct  the_class_String_struct = {\n");
             				outputStream.write("  new_String,   \n");
                             outputStream.write("  String_method_PRINT, \n");
@@ -410,8 +411,15 @@ public class Main {
             			outputStream.write("  new_thing->clazz = class_Boolean_Instance;\n");
             			outputStream.write("  return new_thing; \n}\n");
             			}
-            			if (m.ident.equals("STR")) {
-            				outputStream.write("obj_String Boolean_method_STRING(obj_Boolean this) {\n");
+                        if (m.ident.equals("PRINT"))
+                        {
+                            outputStream.write("obj_Nothing Boolean_method_PRINT(obj_Boolean this) {\n");
+                            outputStream.write("  obj_String str = this->clazz->STR(this);\n");
+                            outputStream.write("  fprintf(stdout, \"%s\", str->value);\n");
+                            outputStream.write("  return nothing; \n}\n");
+                        }
+            			else if (m.ident.equals("STR")) {
+            				outputStream.write("obj_String Boolean_method_STR(obj_Boolean this) {\n");
             				outputStream.write("  if (this == lit_true) {\n");
             				outputStream.write("    return str_lit(\"true\");\n");
             				outputStream.write("  } else if (this == lit_false) {\n");
@@ -420,6 +428,15 @@ public class Main {
             				outputStream.write("    return str_lit(\"!!!BOGUS BOOLEAN\");\n");
             				outputStream.write("  }\n}\n");
             			}
+            			else if (m.ident.equals("EQUALS"))
+                        {
+                            outputStream.write("obj_Boolean Boolean_method_EQUALS(obj_Boolean this, obj_Obj other) {\n");
+                            outputStream.write("obj_Boolean other_bool = (obj_Boolean) other;\n");
+                            outputStream.write("  if (this->value == other_bool->value) {\n");
+                            outputStream.write("    return lit_true;\n");
+                            outputStream.write("  } else {\n");
+                            outputStream.write("    return lit_false; \n} \n}\n");
+                        }
             			if(i==size) {
             				outputStream.write("struct  class_Boolean_struct  the_class_Boolean_struct = {\n");
             				outputStream.write("  new_Boolean,     \n");
@@ -442,10 +459,26 @@ public class Main {
             			outputStream.write("obj_Nothing new_Nothing(  ) {\n");
             			outputStream.write("  return nothing; \n}\n");
             			}
-            			if (m.ident.equals("STR")) {
-            				outputStream.write("obj_String Nothing_method_STRING(obj_Nothing this) {\n");
-            				outputStream.write("    return str_lit(\"<nothing>\");\n}\n");
-            			}
+                        if (m.ident.equals("PRINT"))
+                        {
+                            outputStream.write("obj_Nothing Nothing_method_PRINT(obj_Nothing this) {\n");
+                            outputStream.write("  obj_String str = this->clazz->STR(this);\n");
+                            outputStream.write("  fprintf(stdout, \"%s\", str->value);\n");
+                            outputStream.write("  return nothing; \n}\n");
+                        }
+                        else if (m.ident.equals("STR")) {
+                            outputStream.write("obj_String Nothing_method_STRING(obj_Nothing this) {\n");
+                            outputStream.write("    return str_lit(\"<nothing>\");\n}\n");
+                        }
+                        else if (m.ident.equals("EQUALS"))
+                        {
+                            outputStream.write("obj_Boolean Nothing_method_EQUALS(obj_Nothing this, obj_Obj other) {\n");
+                            outputStream.write("obj_Nothing other_nothing = (obj_Nothing) other;\n");
+                            outputStream.write("  if (this == other_nothing) {\n");
+                            outputStream.write("    return lit_true;\n");
+                            outputStream.write("  } else {\n");
+                            outputStream.write("    return lit_false; \n} \n}\n");
+                        }
             			if(i==size) {
             				outputStream.write("struct  class_Nothing_struct  the_class_Nothing_struct = {\n");
             				outputStream.write("  new_Nothing,     \n");
@@ -588,25 +621,39 @@ public class Main {
         return classMethodArgs;
     }
 
-    // gets methods from class plus inherited methods
-    LinkedList<Var> GetCompleteMethodTable(String className)
+    // this method returns methods of provided class, including ones inherited from its parents
+    LinkedList<MethodNode> GetCompleteMethodTable(String className)
     {
-        LinkedList<Var> classMethods = VarTableSingleton.getTableByClassName(className).methodTable;
+        LinkedList<MethodNode> completeMethods = new LinkedList<>();
         String currentClassName = className;
-        while(!currentClassName.equals("Obj"))
+
+        while(true)
         {
-            currentClassName = ClassesTable.getInstance().getParentClass(currentClassName);
-            LinkedList<Var> parentMethodTable = VarTableSingleton.getTableByClassName(currentClassName).methodTable;
-            for (Var v : parentMethodTable)
+            LinkedList<Var> classMethods = VarTableSingleton.getTableByClassName(currentClassName).methodTable;
+            for (Var v : classMethods)
             {
-                if (!classMethods.contains(v))
+
+                boolean exists = false;
+                for (MethodNode m : completeMethods)
                 {
-                    classMethods.add(v);
+                    if (m.ident.equals(v.ident))
+                        exists = true;
                 }
+                if (!exists)
+                {
+                    MethodNode methodNode = new MethodNode(v.ident, v.type);
+                    methodNode.classIdent = currentClassName;
+                    completeMethods.add(methodNode);
+                }
+
             }
+            if (currentClassName.equals("Obj"))
+                break;
+            currentClassName = ClassesTable.getInstance().getParentClass(currentClassName);
         }
-        return classMethods;
+        return completeMethods;
     }
+
 
     void parseCommandLine(String args[])
     {
