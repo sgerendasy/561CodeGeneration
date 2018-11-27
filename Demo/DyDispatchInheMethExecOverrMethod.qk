@@ -3,15 +3,14 @@ class Pt(x: Int, y: Int) {
     this.y = y; 
 
      def foo():Int {
-         pt=Pt(x,y);
-         return pt.sub(); 
+         return sub(); 
      }
      def sub():Int {
          return x-y; 
      }
 }
 
-class P(x: Int, y: Int) extends Pt{
+class P() extends Pt{
   this.x = x;
   this.y = y;
 

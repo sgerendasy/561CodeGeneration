@@ -1,0 +1,7 @@
+class A(){
+
+}
+
+f: Obj = A();
+
+f.PRINT();

@@ -1,0 +1,11 @@
+class Pt(x: Int, y: Int) {
+    this.x = x;
+    this.y = y; 
+
+     def PLUS(other: Pt):Pt {
+         return Pt(this.x+other.x, this.y+other.y); 
+     }
+}
+
+f: Obj = Pt(4,5);
+f.PLUS();
