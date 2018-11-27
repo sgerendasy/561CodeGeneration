@@ -5,8 +5,8 @@
  */
 
  class Obj() {
-    def PRINT() { }
-    def STR(): String { return ""; }
+    def PRINT() { printf("How do I print?"); }
+    def STR(): String { return "TODO: I am an Obj"; }
     def EQUALS(other: Obj): Boolean { return true; } // Default is object identity
  }
 
@@ -14,7 +14,7 @@
 
  class String() {
     this.value = "";
-    def PLUS(other: String): String { return this.value + other.value; }      // +
+    def PLUS(other: String): String {  }      // +
     def EQUALS(other: String): Boolean { return this.value == other.value; }   // ==
     def ATMOST(other: String): Boolean { return this.value <= other.value; }   // <=
     def LESS(other: String): Boolean { return this.value < other.value; }     // <

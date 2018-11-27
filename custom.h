@@ -105,4 +105,48 @@ struct class_C1_struct {
 	obj_String (*foo)  ( obj_C1, obj_Boolean, obj_Int );
 };
 
+extern obj_String str_lit(char *s);
+extern obj_Int int_lit(int n);
+extern class_Obj class_Obj_Instance;
+extern class_String class_String_Instance;
+extern class_Boolean class_Boolean_Instance;
+extern class_Nothing class_Nothing_Instance;
+extern class_Int class_Int_Instance;
+};
+
+obj_Nothing Obj_method_PRINT(obj_Obj this );
+obj_String Obj_method_STR(obj_Obj this );
+obj_Boolean Obj_method_EQUALS(obj_Obj this, obj_Obj other );
+obj_Nothing Nothing_method_PRINT(obj_Nothing this );
+obj_String Nothing_method_STR(obj_Nothing this );
+obj_Boolean Nothing_method_EQUALS(obj_Nothing this, obj_Obj other );
+obj_Nothing String_method_PRINT(obj_String this );
+obj_String String_method_STR(obj_String this );
+obj_Boolean String_method_EQUALS(obj_String this, obj_Obj other );
+obj_String String_method_PLUS(obj_String this, obj_String other );
+obj_Boolean String_method_EQUALS(obj_String this, obj_String other );
+obj_Boolean String_method_ATMOST(obj_String this, obj_String other );
+obj_Boolean String_method_LESS(obj_String this, obj_String other );
+obj_Boolean String_method_ATLEAST(obj_String this, obj_String other );
+obj_Boolean String_method_MORE(obj_String this, obj_String other );
+obj_Nothing Boolean_method_PRINT(obj_Boolean this );
+obj_String Boolean_method_STR(obj_Boolean this );
+obj_Boolean Boolean_method_EQUALS(obj_Boolean this, obj_Obj other );
+obj_Nothing Int_method_PRINT(obj_Int this );
+obj_String Int_method_STR(obj_Int this );
+obj_Boolean Int_method_EQUALS(obj_Int this, obj_Obj other );
+obj_Int Int_method_PLUS(obj_Int this, obj_Int right );
+obj_Int Int_method_TIMES(obj_Int this, obj_Int right );
+obj_Int Int_method_MINUS(obj_Int this, obj_Int right );
+obj_Int Int_method_DIVIDE(obj_Int this, obj_Int right );
+obj_Boolean Int_method_ATMOST(obj_Int this, obj_Int other );
+obj_Boolean Int_method_LESS(obj_Int this, obj_Int other );
+obj_Boolean Int_method_ATLEAST(obj_Int this, obj_Int other );
+obj_Boolean Int_method_MORE(obj_Int this, obj_Int other );
+obj_Nothing C1_method_PRINT(obj_C1 this );
+obj_String C1_method_STR(obj_C1 this );
+obj_Boolean C1_method_EQUALS(obj_C1 this, obj_Obj other );
+obj_String C1_method_foo(obj_C1 this, obj_Boolean a, obj_Int c );
+
+
 #endif

@@ -24,7 +24,7 @@ public class TypeChecker {
         builtinAST.visit();
         builtinAST.methodVisit();
         createLattice();
-        builtinAST.visit2();
+        builtinAST.builtinVisit2();
         ast.visit();
         ast.methodVisit();
         createLattice();

@@ -56,6 +56,16 @@ public class Program
         }
     }
 
+    public void builtinVisit2()throws Exception
+    {
+        //second visit to typeCheck
+        for (Class_Block.Clazz_Block cb : _cbs)
+        {
+            TypeChecker.currentClass = cb._classIdent;
+            cb.builtinVisit2();
+        }
+    }
+
     public List<Class_Block.Clazz_Block> get_cbs()
     {
         return this._cbs;

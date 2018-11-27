@@ -5,7 +5,7 @@ public abstract class Methods
 {
     public Methods() { }
     abstract void visit(String classIdent) throws Exception;
-    abstract void visit2(String classIdent) throws Exception;
+    abstract void visit2(String classIdent, boolean isBuiltin) throws Exception;
 
     public static class Method extends Methods
     {
@@ -39,63 +39,49 @@ public abstract class Methods
             this._formalArgs.visit2(classIdent, this._methodIdent);
         }
 
-        public void visit2(String classIdent) throws Exception
+        public void visit2(String classIdent, boolean isBuiltIn) throws Exception
         {
         	//Make sure args have existing type
         	_formalArgs.visit2(classIdent, this._methodIdent);
+            if (!isBuiltIn) {
+                boolean hasReturnStmt = false;
+                boolean hasTypecase = false;
 
-            boolean hasReturnStmt = false;
-            boolean hasTypecase = false;
-            //such as if and while
-            boolean hasOtherCase = false;
-            for (Statement stmt : this._statements)
-            {
-                if (stmt.StatementType().toLowerCase().equals("return"))
-                {
-                    hasReturnStmt = true;
-                    break;
+                //such as if and while
+                boolean hasOtherCase = false;
+
+                // check for return statement
+                for (Statement stmt : this._statements) {
+                    if (stmt.StatementType().toLowerCase().equals("return")) {
+                        hasReturnStmt = true;
+                        break;
+                    }
+                    if (stmt.StatementType().toLowerCase().equals("typecase")) {
+                        hasTypecase = true;
+                        break;
+                    }
+                    if (stmt.toString().contains("return")) {
+                        hasOtherCase = true;
+                    }
+
                 }
-                if (stmt.StatementType().toLowerCase().equals("typecase"))
-                {
-                    hasTypecase = true;
-                    break;
+                // add return none if method doesn't have a return statement
+                if (!hasReturnStmt && !hasTypecase && !hasOtherCase) {
+                    Expression.Identifier none = new Expression.Identifier("none", -1, -1);
+                    Statement.Return_Statement return_statement = new Statement.Return_Statement(none);
+                    this._statements.add(return_statement);
                 }
-                if(stmt.toString().contains("return")) {
-                	hasOtherCase =true;
+
+                String statementIdent = "";
+                int statementIndex = 0;
+                int statementCount = this._statements.size();
+                Statement s = null;
+                while (!statementIdent.toLowerCase().equals("return") && statementIndex < statementCount && !statementIdent.toLowerCase().equals("typecase")) {
+                    s = this._statements.get(statementIndex++);
+                    statementIdent = s.StatementType();
+                    s.visit2(classIdent, this._methodIdent);
                 }
-              
-                
             }
-            if (!hasReturnStmt&&!hasTypecase &&!hasOtherCase )
-            {
-                Expression.Identifier none = new Expression.Identifier("none", -1, -1);
-                Statement.Return_Statement return_statement = new Statement.Return_Statement(none);
-                this._statements.add(return_statement);
-            }
-
-            String statementIdent = "";
-            int statementIndex = 0;
-            int statementCount = this._statements.size();
-            Statement s = null;
-        	while (!statementIdent.toLowerCase().equals("return") && statementIndex < statementCount &&!statementIdent.toLowerCase().equals("typecase"))
-            {
-                s = this._statements.get(statementIndex++);
-                statementIdent = s.StatementType();
-                s.visit2(classIdent, this._methodIdent);
-            }
-
-            // error if statements after return in the type checking phase
-//            if (statementIndex < statementCount)
-//            {
-//                throw new Exception("Statement after return: " + s);
-//            }
-
-//            if (s != null && !s.StatementType().toLowerCase().equals("return")&& !s.StatementType().toLowerCase().equals("typecase"))
-//            {
-//                throw new Exception("Method " + this._methodIdent + " lacks a return statement");
-//            }
-//            s.visit2(classIdent, this._methodIdent);
-
         }
 
         public String toString()

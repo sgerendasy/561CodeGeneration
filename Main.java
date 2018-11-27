@@ -45,6 +45,7 @@ public class Main {
     {
         // use typeChecker.tree, typechecker.classesTable, & VarTableSingleton.TheTable to generate output
         String[] tempSource = this.sourceFile.split("/");
+        LinkedList<String> publicMethodList = new LinkedList<>();
         String outputFileName = tempSource[tempSource.length - 1].replace("qk", "h");
         try
         {
@@ -113,7 +114,7 @@ public class Main {
             // write definitions
             for (VarTable vt : VarTableSingleton.TheTable)
             {
-                String structDef = "struct " + classHeaderDictionary.get(vt.className).classTypeName + " {\n";
+                String structDef = "struct " + classHeaderDictionary.get(vt.className).classStructName + " {\n";
                 outputStream.write(structDef);
 
                 // write constructor
@@ -155,6 +156,8 @@ public class Main {
                     {
                         if (!completedMethodTable.contains(v))
                         {
+                            String methodReturnName = VarTableSingleton.getTableByClassName(currentClassName).GetTypeFromMethodTable(v.ident);
+                            String publicMethodTemp = classHeaderDictionary.get(methodReturnName).objectInstanceName + " " + vt.className + "_method_" + v.ident + "(";
                             completedMethodTable.add(v);
                             String methodReturnType = classHeaderDictionary.get(v.type).objectInstanceName;
 
@@ -162,26 +165,60 @@ public class Main {
                             String methodArgs = "( " + classHeaderDictionary.get(vt.className).objectInstanceName;
 
                             completedMethodArgs.put(v.ident, VarTableSingleton.getTableByClassName(currentClassName).methodVars.get(v.ident));
+                            publicMethodTemp += classHeaderDictionary.get(vt.className).objectInstanceName + " this";
                             LinkedList<Var> methodArgList = completedMethodArgs.get(v.ident);
                             int methodArgsLenth = methodArgList.size();
                             for (int i = 0; i < methodArgsLenth; i++) {
                                 methodArgs += ", " + classHeaderDictionary.get(methodArgList.get(i).type).objectInstanceName;
+                                publicMethodTemp += ", " + classHeaderDictionary.get(methodArgList.get(i).type).objectInstanceName + " " + methodArgList.get(i).ident;
                             }
                             methodArgs += " );\n";
+                            publicMethodTemp += " );\n";
+                            publicMethodList.add(publicMethodTemp);
                             String methodName = "(*" + v.ident + ") ";
                             outputStream.write("\t" + methodReturnType + " " + methodName + " " + methodArgs);
                         }
                     }
-//                    if (currentClassName.equals("Obj"))
-//                        break;
-//                    currentClassName = ClassesTable.getInstance().getParentClass(currentClassName);
                 }
-
-
-
-
                 outputStream.write("};\n\n");
             }
+
+            // write externs
+            String strLitExtern = "extern " + classHeaderDictionary.get("String").objectInstanceName + " str_lit(char *s);\n";
+            outputStream.write(strLitExtern);
+
+            String intLitExtern = "extern " + classHeaderDictionary.get("Int").objectInstanceName + " int_lit(int n);\n";
+            outputStream.write(intLitExtern);
+
+            String objExtern = "extern " + classHeaderDictionary.get("Obj").classInstanceName + " class_Obj_Instance;\n";
+            classHeaderDictionary.get("Obj").classInstanceSingletonName = "class_Obj_Instance";
+            outputStream.write(objExtern);
+
+            String stringExtern = "extern " + classHeaderDictionary.get("String").classInstanceName + " class_String_Instance;\n";
+            classHeaderDictionary.get("String").classInstanceSingletonName = "class_String_Instance";
+            outputStream.write(stringExtern);
+
+            String booleanExtern = "extern " + classHeaderDictionary.get("Boolean").classInstanceName + " class_Boolean_Instance;\n";
+            classHeaderDictionary.get("Boolean").classInstanceSingletonName = "class_Boolean_Instance";
+            outputStream.write(booleanExtern);
+
+            String nothingExtern = "extern " + classHeaderDictionary.get("Nothing").classInstanceName + " class_Nothing_Instance;\n";
+            classHeaderDictionary.get("Nothing").classInstanceSingletonName = "class_Nothing_Instance";
+            outputStream.write(nothingExtern);
+
+            String intExtern = "extern " + classHeaderDictionary.get("Int").classInstanceName + " class_Int_Instance;\n";
+            classHeaderDictionary.get("Int").classInstanceSingletonName = "class_Int_Instance";
+            outputStream.write(intExtern);
+
+            outputStream.write("};\n\n");
+
+            // write method declaration
+            for (String s : publicMethodList)
+            {
+                outputStream.write(s);
+            }
+            outputStream.write("\n\n");
+
 
             outputStream.write("#endif" + '\n');
             outputStream.flush();

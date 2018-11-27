@@ -1,9 +1,10 @@
 import java.util.LinkedList;
 
 public class CHeaderNode {
-    public String classTypeName;
+    public String classStructName;
     public String classInstanceName;
     public String objectInstanceName;
+    public String classInstanceSingletonName;
 
     // a list of <variable name, type> for each struct
     public LinkedList<String> objectInstanceStructVariables = new LinkedList<>();
@@ -13,7 +14,7 @@ public class CHeaderNode {
     }
     public  CHeaderNode(String classTypeName, String instanceName)
     {
-        this.classTypeName = classTypeName;
+        this.classStructName = classTypeName;
         this.classInstanceName = instanceName;
     }
 }

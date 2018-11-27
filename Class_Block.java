@@ -111,7 +111,34 @@ public abstract class Class_Block
                 if(ClassesTable.getInstance().classTable.containsKey(m.getMethodIdent()))
                     throw new Exception("Method " + m.getMethodIdent() + " has same name as class ");
                 TypeChecker.currentMethod = m.getMethodIdent();
-                m.visit2(_classIdent);
+                m.visit2(_classIdent, false);
+                TypeChecker.currentMethod = null;
+            }
+        }
+
+        public void builtinVisit2() throws Exception
+        {
+            for (Args.Arg a : this._argList._args)
+            {
+                a.visit2(_classIdent);
+            }
+            for (Statement s : this._stmtList)
+            {
+                s.visit2(_classIdent);
+            }
+
+            for (Methods m : this._methods)
+            {
+                if(VarTableSingleton.getTableByClassName(_classIdent).ConstructorIdentExists(m.getMethodIdent()))
+                    throw new Exception("Method "+ m.getMethodIdent() + " has same name as a variable");
+
+                if(VarTableSingleton.getTableByClassName(_classIdent).VarIdentExists(m.getMethodIdent()))
+                    throw new Exception("Method "+ m.getMethodIdent() + " has same name as a variable");
+
+                if(ClassesTable.getInstance().classTable.containsKey(m.getMethodIdent()))
+                    throw new Exception("Method " + m.getMethodIdent() + " has same name as class ");
+                TypeChecker.currentMethod = m.getMethodIdent();
+                m.visit2(_classIdent, true);
                 TypeChecker.currentMethod = null;
             }
 
