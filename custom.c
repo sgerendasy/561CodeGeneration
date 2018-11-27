@@ -57,9 +57,9 @@ obj_Nothing other_nothing = (obj_Nothing) other;
 }
 struct  class_Nothing_struct  the_class_Nothing_struct = {
   new_Nothing,     
-  Obj_method_PRINT, 
+  Nothing_method_PRINT, 
   Nothing_method_STRING, 
-  Obj_method_EQUALS
+  Nothing_method_EQUALS
 };
 class_Nothing class_Nothing_Instance = &the_class_Nothing_struct; 
 struct obj_Nothing_struct nothing_struct =
@@ -172,9 +172,9 @@ obj_Boolean other_bool = (obj_Boolean) other;
 }
 struct  class_Boolean_struct  the_class_Boolean_struct = {
   new_Boolean,     
-  Obj_method_PRINT, 
+  Boolean_method_PRINT, 
   Boolean_method_STR, 
-  Obj_method_EQUALS
+  Boolean_method_EQUALS
 };
 class_Boolean class_Boolean_Instance = &the_class_Boolean_struct; 
 struct obj_Boolean_struct lit_false_struct =

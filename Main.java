@@ -454,9 +454,9 @@ public class Main {
             			if(i==size) {
             				outputStream.write("struct  class_Boolean_struct  the_class_Boolean_struct = {\n");
             				outputStream.write("  new_Boolean,     \n");
-                            outputStream.write("  Obj_method_PRINT, \n");
+                            outputStream.write("  Boolean_method_PRINT, \n");
             				outputStream.write("  Boolean_method_STR, \n");
-            				outputStream.write("  Obj_method_EQUALS\n};\n");
+            				outputStream.write("  Boolean_method_EQUALS\n};\n");
             				outputStream.write("class_Boolean class_Boolean_Instance = &the_class_Boolean_struct; \n");
             				outputStream.write("struct obj_Boolean_struct lit_false_struct =\n");
             				outputStream.write("  { &the_class_Boolean_struct, 0 };\n");
@@ -496,9 +496,9 @@ public class Main {
             			if(i==size) {
             				outputStream.write("struct  class_Nothing_struct  the_class_Nothing_struct = {\n");
             				outputStream.write("  new_Nothing,     \n");
-                            outputStream.write("  Obj_method_PRINT, \n");
+                            outputStream.write("  Nothing_method_PRINT, \n");
             				outputStream.write("  Nothing_method_STRING, \n");
-            				outputStream.write("  Obj_method_EQUALS\n};\n");
+            				outputStream.write("  Nothing_method_EQUALS\n};\n");
             				outputStream.write("class_Nothing class_Nothing_Instance = &the_class_Nothing_struct; \n");
             				outputStream.write("struct obj_Nothing_struct nothing_struct =\n");
             				outputStream.write("  { &the_class_Nothing_struct };\n");
