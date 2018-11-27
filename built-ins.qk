@@ -35,8 +35,8 @@ class Boolean() {
     def STR(): String {  }
     def EQUALS(other: Obj): Boolean { } 
     def PLUS(right: Int): Int { }   // this + right
-    def TIMES(right: Int): Int {  }  // this * right
     def MINUS(right: Int): Int { }  // this - right
+    def TIMES(right: Int): Int {  }  // this * right
     def DIVIDE(right: Int): Int { }    // this / right
     def ATMOST(other: Int): Boolean { }     // <=
     def LESS(other: Int): Boolean { }       // <

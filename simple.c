@@ -60,12 +60,54 @@ obj_Boolean String_method_EQUALS(obj_String this, obj_Obj other) {
     return lit_false;
   }
 }
+obj_String String_method_PLUS(obj_String this, obj_Obj other) {
+  obj_String other_str = (obj_String) other;
+  return other_str;
+}
+obj_Boolean String_method_ATMOST(obj_String this, obj_Obj other) {
+  obj_String other_str = (obj_String) other;
+  if (strcmp(this->text,other_str->text) <= 0) {
+    return lit_true;
+  } 
+  else {
+    return lit_false;
+}
+}
+obj_Boolean String_method_LESS(obj_String this, obj_Obj other) {
+  obj_String other_str = (obj_String) other;
+  if (strcmp(this->text,other_str->text) < 0) {
+    return lit_true;
+  } else {
+    return lit_false;
+}
+}
+obj_Boolean String_method_ATLEAST(obj_String this, obj_Obj other) {
+  obj_String other_str = (obj_String) other;
+   if (strcmp(this->text,other_str->text) >= 0) {
+      return lit_true;
+    } else {
+      return lit_false;
+}
+}
+obj_Boolean String_method_MORE(obj_String this, obj_Obj other) {
+  obj_String other_str = (obj_String) other;
+  if (strcmp(this->text,other_str->text) > 0) {
+    return lit_true;
+  } else {
+    return lit_false;
+}
+}
 struct  class_String_struct  the_class_String_struct = {
-  new_String,     
+  new_String,   
   String_method_STRING, 
   String_method_PRINT, 
-  String_method_EQUALS
-};
+  String_method_EQUALS,
+  String_method_PLUS,
+  String_method_ATMOST,
+  String_method_LESS,
+  String_method_ATLEAST,
+  String_method_MORE
+ };
 class_String the_class_String = &the_class_String_struct; 
 obj_String str_literal(char *s) {
   char *rep;
@@ -79,6 +121,16 @@ obj_Nothing new_Nothing(  ) {
 obj_String Nothing_method_STRING(obj_Nothing this) {
     return str_literal("<nothing>");
 }
+struct  class_Nothing_struct  the_class_Nothing_struct = {
+  new_Nothing,     
+  Nothing_method_STRING, 
+  Obj_method_PRINT, 
+  Obj_method_EQUALS
+};
+class_Nothing the_class_Nothing = &the_class_Nothing_struct; 
+struct obj_Nothing_struct nothing_struct =
+  { &the_class_Nothing_struct };
+obj_Nothing nothing = &nothing_struct; 
 obj_Boolean new_Boolean(  ) {
   obj_Boolean new_thing = (obj_Boolean)
     malloc(sizeof(struct obj_Boolean_struct));
@@ -133,20 +185,51 @@ obj_Boolean Int_method_EQUALS(obj_Int this, obj_Obj other) {
 obj_Int Int_method_PLUS(obj_Int this, obj_Int other) {
   return int_literal(this->value + other->value);
 }
+obj_Int Int_method_MINUS(obj_Int this, obj_Int other) {
+  return int_literal(this->value - other->value);
+}
+obj_Int Int_method_TIMES(obj_Int this, obj_Int other) {
+  return int_literal(this->value * other->value);
+}
+obj_Boolean Int_method_ATMOST(obj_Int this, obj_Int other) {
+  if (this->value <= other->value) {
+    return lit_true;
+}
+  return lit_false;
+}
 obj_Boolean Int_method_LESS(obj_Int this, obj_Int other) {
   if (this->value < other->value) {
     return lit_true;
-  }
+}
+  return lit_false;
+}
+obj_Boolean Int_method_ATLEAST(obj_Int this, obj_Int other) {
+  if (this->value >= other->value) {
+    return lit_true;
+}
+  return lit_false;
+}
+obj_Boolean Int_method_MORE(obj_Int this, obj_Int other) {
+  if (this->value > other->value) {
+    return lit_true;
+}
   return lit_false;
 }
 struct  class_Int_struct  the_class_Int_struct = {
-  new_Int,     
+  new_Int,     /* Constructor */
   Int_method_STRING, 
   Obj_method_PRINT, 
   Int_method_EQUALS,
+  Int_method_PLUS,
+  Int_method_MINUS,
+  Int_method_TIMES,
+  Int_method_DIV,
+  Int_method_ATMOST,
   Int_method_LESS,
-  Int_method_PLUS
+  Int_method_ATLEAST,
+  Int_method_MORE
 };
+
 class_Int the_class_Int = &the_class_Int_struct; 
 obj_Int int_literal(int n) {
   obj_Int boxed = new_Int();
