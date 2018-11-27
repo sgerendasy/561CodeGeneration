@@ -15,7 +15,7 @@ obj_Nothing Obj_method_PRINT(obj_Obj this) {
   fprintf(stdout, "%s", str->value);
   return nothing; 
 }
-obj_String Obj_method_STRING(obj_Obj this) {
+obj_String Obj_method_STR(obj_Obj this) {
 long addr = (long) this;
 char *rep;
 asprintf(&rep, "<Object at %ld>", addr);
@@ -55,6 +55,16 @@ obj_Nothing other_nothing = (obj_Nothing) other;
     return lit_false; 
 } 
 }
+struct  class_Nothing_struct  the_class_Nothing_struct = {
+  new_Nothing,     
+  Obj_method_PRINT, 
+  Nothing_method_STRING, 
+  Obj_method_EQUALS
+};
+class_Nothing class_Nothing_Instance = &the_class_Nothing_struct; 
+struct obj_Nothing_struct nothing_struct =
+  { &the_class_Nothing_struct };
+obj_Nothing nothing = &nothing_struct; 
 obj_String new_String(  ) {
   obj_String new_thing = (obj_String) malloc(sizeof(struct obj_String_struct));
   new_thing->clazz = class_String_Instance;
@@ -107,6 +117,13 @@ obj_Boolean String_method_MORE(obj_String this, obj_String other) {
     return lit_false;
 }
 }
+obj_Nothing String_method_PRINT(obj_String this) {
+  fprintf(stdout, "%s", this->value);
+  return nothing;
+}
+obj_String String_method_STR(obj_String this) {
+  return this;
+}
 struct  class_String_struct  the_class_String_struct = {
   new_String,   
   String_method_PRINT, 
@@ -124,13 +141,6 @@ obj_String str_lit(char *s) {
   obj_String str = class_String_Instance->constructor(); 
   str->value = s;
   return str;
-}
-obj_Nothing String_method_PRINT(obj_String this) {
-  fprintf(stdout, "%s", this->value);
-  return nothing;
-}
-obj_String String_method_STR(obj_String this) {
-  return this;
 }
 obj_Boolean new_Boolean(  ) {
   obj_Boolean new_thing = (obj_Boolean)
@@ -160,6 +170,19 @@ obj_Boolean other_bool = (obj_Boolean) other;
     return lit_false; 
 } 
 }
+struct  class_Boolean_struct  the_class_Boolean_struct = {
+  new_Boolean,     
+  Obj_method_PRINT, 
+  Boolean_method_STR, 
+  Obj_method_EQUALS
+};
+class_Boolean class_Boolean_Instance = &the_class_Boolean_struct; 
+struct obj_Boolean_struct lit_false_struct =
+  { &the_class_Boolean_struct, 0 };
+obj_Boolean lit_false = &lit_false_struct;
+struct obj_Boolean_struct lit_true_struct =
+  { &the_class_Boolean_struct, 1 };
+obj_Boolean lit_true = &lit_true_struct;
 obj_Int new_Int(  ) {
   obj_Int new_thing = (obj_Int)
     malloc(sizeof(struct obj_Int_struct));
@@ -175,6 +198,9 @@ obj_Int Int_method_TIMES(obj_Int this, obj_Int other) {
 }
 obj_Int Int_method_MINUS(obj_Int this, obj_Int other) {
   return int_lit(this->value - other->value);
+}
+obj_Int Int_method_DIVIDE(obj_Int this, obj_Int other) {
+  return int_lit(this->value / other->value);
 }
 obj_Boolean Int_method_ATMOST(obj_Int this, obj_Int other) {
   if (this->value <= other->value) {
@@ -200,26 +226,10 @@ obj_Boolean Int_method_MORE(obj_Int this, obj_Int other) {
 }
   return lit_false;
 }
-struct  class_Int_struct  the_class_Int_struct = {
-  new_Int,     /* Constructor */
-  Int_method_PRINT, 
-  Int_method_STR, 
-  Int_method_EQUALS,
-  Int_method_PLUS,
-  Int_method_MINUS,
-  Int_method_TIMES,
-  Int_method_DIVIDE,
-  Int_method_ATMOST,
-  Int_method_LESS,
-  Int_method_ATLEAST,
-  Int_method_MORE
-};
-
-class_Int class_Int_Instance = &the_class_Int_struct; 
-obj_Int int_lit(int n) {
-  obj_Int boxed = new_Int();
-  boxed->value = n;
-  return boxed;
+obj_Nothing Int_method_PRINT(obj_Int this) {
+  obj_String str = this->clazz->STR(this);
+  fprintf(stdout, "%s", str->value);
+  return nothing; 
 }
 obj_String Int_method_STR(obj_Int this) {
   char *rep;
@@ -236,4 +246,28 @@ obj_Boolean Int_method_EQUALS(obj_Int this, obj_Obj other) {
     return lit_false;
   }
   return lit_true;
+}
+struct  class_Int_struct  the_class_Int_struct = {
+  new_Int,     /* Constructor */
+  Int_method_PRINT, 
+  Int_method_STR, 
+  Int_method_EQUALS,
+  Int_method_PLUS,
+  Int_method_TIMES,
+  Int_method_MINUS,
+  Int_method_DIVIDE,
+  Int_method_ATMOST,
+  Int_method_LESS,
+  Int_method_ATLEAST,
+  Int_method_MORE
+};
+
+class_Int class_Int_Instance = &the_class_Int_struct; 
+obj_Int int_lit(int n) {
+  obj_Int boxed = new_Int();
+  boxed->value = n;
+  return boxed;
+}
+int main(void){
+	return 0;
 }
