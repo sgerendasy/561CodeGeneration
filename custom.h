@@ -68,7 +68,6 @@ struct class_String_struct {
 	obj_String (*STR)  ( obj_String );
 	obj_Boolean (*EQUALS)  ( obj_String, obj_Obj );
 	obj_String (*PLUS)  ( obj_String, obj_String );
-	obj_Boolean (*EQUALS)  ( obj_String, obj_String );
 	obj_Boolean (*ATMOST)  ( obj_String, obj_String );
 	obj_Boolean (*LESS)  ( obj_String, obj_String );
 	obj_Boolean (*ATLEAST)  ( obj_String, obj_String );
@@ -112,7 +111,10 @@ extern class_String class_String_Instance;
 extern class_Boolean class_Boolean_Instance;
 extern class_Nothing class_Nothing_Instance;
 extern class_Int class_Int_Instance;
-};
+extern obj_Boolean lit_true;
+extern obj_Boolean lit_false;
+extern obj_Nothing nothing;
+
 
 obj_Nothing Obj_method_PRINT(obj_Obj this );
 obj_String Obj_method_STR(obj_Obj this );
@@ -124,7 +126,6 @@ obj_Nothing String_method_PRINT(obj_String this );
 obj_String String_method_STR(obj_String this );
 obj_Boolean String_method_EQUALS(obj_String this, obj_Obj other );
 obj_String String_method_PLUS(obj_String this, obj_String other );
-obj_Boolean String_method_EQUALS(obj_String this, obj_String other );
 obj_Boolean String_method_ATMOST(obj_String this, obj_String other );
 obj_Boolean String_method_LESS(obj_String this, obj_String other );
 obj_Boolean String_method_ATLEAST(obj_String this, obj_String other );

@@ -5,41 +5,31 @@
  */
 
  class Obj() {
-    def STR(): String {  }
-    def PRINT():Obj { }
-    def EQUALS(other: Obj): Boolean { } 
+    def PRINT() { }
+    def STR(): String { }
+    def EQUALS(other: Obj): Boolean {} // Default is object identity
  }
+
+ class Nothing() { }
 
  class String() {
-    def STR(): String {  }
-    def PRINT():String { }
-    def EQUALS(other: Obj): Boolean { } 
-    def PLUS(other: String): String {  }      // +
+    def PLUS(other: String): String { }      // +
+    def EQUALS(other: String): Boolean { }   // ==
     def ATMOST(other: String): Boolean { }   // <=
-    def LESS(other: String): Boolean {  }     // <
-    def ATLEAST(other: String): Boolean {  }  // >=
-    def MORE(other: String): Boolean {  }     // >
+    def LESS(other: String): Boolean { }     // <
+    def ATLEAST(other: String): Boolean { }  // >=
+    def MORE(other: String): Boolean { }     // >
  }
- class Nothing() {
-    def STR(): String {  }
 
-}
+ class Boolean() { }
 
-
-
-class Boolean() {
-  def STR(): String {  }
-
-}
  class Int() {
-    def STR(): String {  }
-    def EQUALS(other: Obj): Boolean { } 
-    def PLUS(right: Int): Int { }   // this + right
-    def MINUS(right: Int): Int { }  // this - right
-    def TIMES(right: Int): Int {  }  // this * right
-    def DIVIDE(right: Int): Int { }    // this / right
+    def PLUS(right: Int): Int {}   // this + right
+    def TIMES(right: Int): Int {}  // this * right
+    def MINUS(right: Int): Int {}  // this - right
+    def DIVIDE(right: Int): Int {}    // this / right
     def ATMOST(other: Int): Boolean { }     // <=
     def LESS(other: Int): Boolean { }       // <
-    def ATLEAST(other: Int): Boolean {  }    // >=
-    def MORE(other: Int): Boolean {  }       // >
+    def ATLEAST(other: Int): Boolean { }    // >=
+    def MORE(other: Int): Boolean { }       // >
  }
