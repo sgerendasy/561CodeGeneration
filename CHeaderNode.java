@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class CHeaderNode {
@@ -5,6 +6,7 @@ public class CHeaderNode {
     public String classInstanceName;
     public String objectInstanceName;
     public String classInstanceSingletonName;
+    HashMap<String, String> QuackMethodToCMethod = new HashMap<>();
 
     // a list of <variable name, type> for each struct
     public LinkedList<String> objectInstanceStructVariables = new LinkedList<>();

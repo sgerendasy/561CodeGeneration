@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <String.h>
+#include <string.h>
 #include "custom.h"
 
 
@@ -269,7 +269,9 @@ obj_Int int_lit(int n) {
   return boxed;
 }
 int main(void){
-obj_Int main_a = int_lit(1);
-obj_Int main_b = int_lit(2);
+	obj_Int temp_0 = int_lit(1);
+	obj_Int temp_2 = int_lit(2);
+	obj_Int temp_3 = temp_0;
+	obj_Int temp_1 = Int_method_PLUS( temp_2, temp_3);
 	return 0;
 }

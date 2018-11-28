@@ -25,7 +25,7 @@ public class Main {
     boolean DebugMode = false; // True => parse in debug mode 
     Program builtinAST = null;
     Program ast = null;
-    HashMap<String, CHeaderNode> classHeaderDictionary = new HashMap<>();
+    public static HashMap<String, CHeaderNode> classHeaderDictionary = new HashMap<>();
 
     static public void main(String args[])
     {
@@ -279,6 +279,8 @@ public class Main {
             {
             	int i=0;
             	int size = GetCompleteMethodTable(c.className).size() - 1;
+
+            	// check to see if the class is a built in one
             	if (ClassIsBuiltIn(c.className)) {
                     for (MethodNode m : GetCompleteMethodTable(c.className)) {
                         if (c.className.equals("Obj")) {
@@ -549,16 +551,27 @@ public class Main {
                                 outputStream.write("struct  class_Int_struct  the_class_Int_struct = {\n");
                                 outputStream.write("  new_Int,     /* Constructor */\n");
                                 outputStream.write("  Int_method_PRINT, \n");
+                                classHeaderDictionary.get("Int").QuackMethodToCMethod.put("PRINT", "Int_method_PRINT");
                                 outputStream.write("  Int_method_STR, \n");
+                                classHeaderDictionary.get("Int").QuackMethodToCMethod.put("STR", "Int_method_STR");
                                 outputStream.write("  Int_method_EQUALS,\n");
+                                classHeaderDictionary.get("Int").QuackMethodToCMethod.put("EQUALS", "Int_method_EQUALS");
                                 outputStream.write("  Int_method_PLUS,\n");
+                                classHeaderDictionary.get("Int").QuackMethodToCMethod.put("PLUS", "Int_method_PLUS");
                                 outputStream.write("  Int_method_TIMES,\n");
+                                classHeaderDictionary.get("Int").QuackMethodToCMethod.put("TIMES", "Int_method_TIMES");
                                 outputStream.write("  Int_method_MINUS,\n");
+                                classHeaderDictionary.get("Int").QuackMethodToCMethod.put("MINUS", "Int_method_MINUS");
                                 outputStream.write("  Int_method_DIVIDE,\n");
+                                classHeaderDictionary.get("Int").QuackMethodToCMethod.put("DIVIDE", "Int_method_DIVIDE");
                                 outputStream.write("  Int_method_ATMOST,\n");
+                                classHeaderDictionary.get("Int").QuackMethodToCMethod.put("ATMOST", "Int_method_ATMOST");
                                 outputStream.write("  Int_method_LESS,\n");
+                                classHeaderDictionary.get("Int").QuackMethodToCMethod.put("LESS", "Int_method_LESS");
                                 outputStream.write("  Int_method_ATLEAST,\n");
+                                classHeaderDictionary.get("Int").QuackMethodToCMethod.put("ATLEAST", "Int_method_ATLEAST");
                                 outputStream.write("  Int_method_MORE\n};\n\n");
+                                classHeaderDictionary.get("Int").QuackMethodToCMethod.put("MORE", "Int_method_MORE");
 
                                 outputStream.write("class_Int class_Int_Instance = &the_class_Int_struct; \n");
                                 outputStream.write("obj_Int int_lit(int n) {\n");
@@ -574,57 +587,14 @@ public class Main {
                     }
                     
                 }
-            	//Create struct for class
-            	else if (!c.className.equals("$statementsDummyClass")) {
-            		for (MethodNode m : GetCompleteMethodTable(c.className)) {
-                	if (i == 0) {
-                		outputStream.write("  obj_"+c.className+" new_"+c.className+"(  ) {\n");
-                        outputStream.write("  obj_"+c.className+" new_thing = (obj_"+c.className+") malloc(sizeof(struct obj_"+c.className+"_struct));\n");
-                        outputStream.write("  new_thing->clazz = class_"+c.className+"_Instance;\n");
-                        //??? NEED to add instance variables
-                        outputStream.write("  return new_thing; \n}\n");
-                        
-                    }
-                	//create method object for each method
-                	
-                	//???Need to fix adding arguments
-                	outputStream.write("obj_"+m.returnType+" "+c.className+"_method_"+m.ident+"(obj_"+c.className +"this) {\n");
-                	//????fill in method
-                    outputStream.write(";\n}\n");
-                	
-                	if (i == size) {
-                		outputStream.write("struct  class_"+c.className+"_struct  the_class_"+c.className+"_struct = {\n");
-                        outputStream.write("  new_"+c.className);
-                        if(size>1) {
-                        outputStream.write(", \n");
-                        //loop through inherited methods??
-                        //loop through overridden??
-                        String parent=typeChecker.tree.findNode(typeChecker.tree.getRoot(),c.className).getParent().getId();
-                        LinkedList<MethodNode> t = GetCompleteMethodTable(parent);
-                        
-//                        for(MethodNode Super : GetCompleteMethodTable(parent)) {
-//                        	outputStream.write(c.className+"_method_"+Super.ident+",\n");
-//                        	System.out.println(c.className+"_method_"+Super.ident+",\n");
-//                		}
-                        //??? ordering is off. Seems like when added to the GetCompleteMethodTable, new methods get added
-                        //to the top
-                        for (MethodNode meth : GetCompleteMethodTable(c.className)) {
-                        		
-                        		outputStream.write(c.className+"_method_"+meth.ident+",\n");
-                        }
-                        }
-                        outputStream.write("};\n");
-                        outputStream.write("class_String class_String_Instance = &the_class_String_struct; \n");
-                	}
-                	
-                	i++;
-            		}
-                }
                 else if (c.className.equals("$statementsDummyClass"))
                 {
                     String mainDecl = "int main(void){\n";
                     outputStream.write(mainDecl);
                     Class_Block.Clazz_Block theClassBlock = GetClassBlock(c.className);
+                    HashMap<String, Var> theRegisterTable = new HashMap<>();
+                    GenTreeNode GenTreeRoot = new GenTreeNode();
+                    int nodeIndex = 0;
                     for (Statement s : theClassBlock._stmtList)
                     {
                         if (s.StatementType().equals("ASSIGNMENT"))
@@ -632,15 +602,14 @@ public class Main {
                             try
                             {
                                 String statementType = s.getRexpr().getType();
-                                String LHident =  classHeaderDictionary.get(statementType).objectInstanceName + " main_" + s.getLexpr().getIdent();
-                                String RHconstructor = "";
-                                if (s.getRexpr().ExpressionType().equals("INTCONST"))
-                                {
-                                    Expression.IntConst RHexpr = (Expression.IntConst) s.getRexpr();
-                                    RHconstructor = "int_lit(" + RHexpr.i + ");\n";
-                                }
+                                String LHident =  classHeaderDictionary.get(statementType).objectInstanceName + " temp_" + nodeIndex;
+                                Var tempVar = new Var("temp_" + nodeIndex, classHeaderDictionary.get(statementType).objectInstanceName);
+                                theRegisterTable.put(s.getLexpr().getIdent(), tempVar);
 
-                                outputStream.write("\t" + LHident + " = " + RHconstructor);
+
+                                GenTreeRoot = s.getRexpr().CreateGenTree(theRegisterTable, nodeIndex);
+                                nodeIndex = WriteCFromGenTree(GenTreeRoot, outputStream, nodeIndex);
+                                System.out.println(nodeIndex);
                             }
                             catch (Exception e)
                             {
@@ -680,9 +649,53 @@ public class Main {
                     String endMain = "\treturn 0;\n}\n";
                     outputStream.write(endMain);
                 }
+                //Create struct for class
                 else
                 {
                     // do regular code generation for all other classes here
+                    for (MethodNode m : GetCompleteMethodTable(c.className)) {
+                        if (i == 0) {
+                            outputStream.write("  obj_"+c.className+" new_"+c.className+"(  ) {\n");
+                            outputStream.write("  obj_"+c.className+" new_thing = (obj_"+c.className+") malloc(sizeof(struct obj_"+c.className+"_struct));\n");
+                            outputStream.write("  new_thing->clazz = class_"+c.className+"_Instance;\n");
+                            //??? NEED to add instance variables
+                            outputStream.write("  return new_thing; \n}\n");
+
+                        }
+                        //create method object for each method
+
+                        //???Need to fix adding arguments
+                        outputStream.write("obj_"+m.returnType+" "+c.className+"_method_"+m.ident+"(obj_"+c.className +"this) {\n");
+                        //????fill in method
+                        outputStream.write(";\n}\n");
+
+                        if (i == size) {
+                            outputStream.write("struct  class_"+c.className+"_struct  the_class_"+c.className+"_struct = {\n");
+                            outputStream.write("  new_"+c.className);
+                            if(size>1) {
+                                outputStream.write(", \n");
+                                //loop through inherited methods??
+                                //loop through overridden??
+                                String parent=typeChecker.tree.findNode(typeChecker.tree.getRoot(),c.className).getParent().getId();
+                                LinkedList<MethodNode> t = GetCompleteMethodTable(parent);
+
+//                        for(MethodNode Super : GetCompleteMethodTable(parent)) {
+//                        	outputStream.write(c.className+"_method_"+Super.ident+",\n");
+//                        	System.out.println(c.className+"_method_"+Super.ident+",\n");
+//                		}
+                                //??? ordering is off. Seems like when added to the GetCompleteMethodTable, new methods get added
+                                //to the top
+                                for (MethodNode meth : GetCompleteMethodTable(c.className)) {
+
+                                    outputStream.write(c.className+"_method_"+meth.ident+",\n");
+                                }
+                            }
+                            outputStream.write("};\n");
+                            outputStream.write("class_String class_String_Instance = &the_class_String_struct; \n");
+                        }
+
+                        i++;
+                    }
                 }
 
             }
@@ -696,6 +709,25 @@ public class Main {
             System.out.println(e.getMessage());
         }
         
+    }
+
+    int WriteCFromGenTree(GenTreeNode root, FileWriter outputStream, int nodeIndex)
+    {
+        for (GenTreeNode node : root.children)
+        {
+//            nodeIndex++;
+            nodeIndex = WriteCFromGenTree(node, outputStream, nodeIndex);
+        }
+        try
+        {
+            outputStream.write("\t" + root.registerType + " " + root.registerName + " = " + root.rightHandExpression + ";\n");
+        }
+        catch (IOException e)
+        {
+            System.out.println(e.getMessage());
+        }
+
+        return ++nodeIndex;
     }
 
     private Class_Block.Clazz_Block GetClassBlock(String className)
