@@ -13,7 +13,7 @@ public abstract class Expression
     abstract void SetClassIdent(String ci);
     abstract void SetMethodIdent(String mi);
     abstract String ExpressionType() throws Exception;
-    abstract GenTreeNode CreateGenTree(HashMap<String, Var> registerTable, int nodeIndex) throws Exception;
+    abstract GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception;
     
     public static class Priority extends Expression
     {
@@ -27,9 +27,9 @@ public abstract class Expression
             this._right = right;
         }
 
-        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable, int nodeIndex) throws Exception
+        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-            return null;
+            return this.e.CreateGenTree(registerTable);
         }
 
         public void SetClassIdent(String ci)
@@ -106,16 +106,15 @@ public abstract class Expression
             this.op = op;
         }
 
-        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable, int nodeIndex) throws Exception
+        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
             String leftChildType = Main.classHeaderDictionary.get(e1.getType()).objectInstanceName;
-            String tempVarName = "temp_" + nodeIndex;
-            nodeIndex++;
+            String tempVarName = "temp_" + Main.nodeIndex;
+            Main.nodeIndex++;
             String rightHandExpression = Main.classHeaderDictionary.get(e1.getType()).QuackMethodToCMethod.get(OperatorToString.getOperatorDict().get(op)) + "( ";
             GenTreeNode self = new GenTreeNode(tempVarName, leftChildType);
-            self.children.add(e1.CreateGenTree(registerTable, nodeIndex));
-            nodeIndex++;
-            self.children.add(e2.CreateGenTree(registerTable, nodeIndex));
+            self.children.add(e1.CreateGenTree(registerTable));
+            self.children.add(e2.CreateGenTree(registerTable));
             rightHandExpression += self.children.get(0).registerName + ", " + self.children.get(1).registerName + ")";
             self.rightHandExpression = rightHandExpression;
             return self;
@@ -252,7 +251,7 @@ public abstract class Expression
             this._right = right;
         }
 
-        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable, int nodeIndex) throws Exception
+        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
             return null;
         }
@@ -348,7 +347,7 @@ public abstract class Expression
             this._right = right;
         }
 
-        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable, int nodeIndex) throws Exception
+        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
             return null;
         }
@@ -427,9 +426,10 @@ public abstract class Expression
             this._right = right;
         }
 
-        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable, int nodeIndex) throws Exception
+        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-            String varName = "temp_" + nodeIndex;
+            String varName = "temp_" + Main.nodeIndex;
+            Main.nodeIndex++;
             String varType = Main.classHeaderDictionary.get("Int").objectInstanceName;
             String rightHandExpression = "int_lit(" + this.i + ")";
             GenTreeNode self = new GenTreeNode(varName, varType, rightHandExpression);
@@ -515,9 +515,10 @@ public abstract class Expression
             this._right = right;
         }
 
-        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable, int nodeIndex) throws Exception
+        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-            String varName = "temp_" + nodeIndex;
+            String varName = "temp_" + Main.nodeIndex;
+            Main.nodeIndex++;
             GenTreeNode self = new GenTreeNode(varName, registerTable.get(this.ident).type, registerTable.get(this.ident).ident);
             return self;
         }
@@ -675,7 +676,7 @@ public abstract class Expression
             isMethod = false;
         }
 
-        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable, int nodeIndex) throws Exception
+        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
             return null;
         }
@@ -815,7 +816,7 @@ public abstract class Expression
             this._right = right;
         }
 
-        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable, int nodeIndex) throws Exception
+        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
             return null;
         }

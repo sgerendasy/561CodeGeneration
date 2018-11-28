@@ -270,8 +270,10 @@ obj_Int int_lit(int n) {
 }
 int main(void){
 	obj_Int temp_0 = int_lit(1);
-	obj_Int temp_2 = int_lit(2);
-	obj_Int temp_3 = temp_0;
-	obj_Int temp_1 = Int_method_PLUS( temp_2, temp_3);
+	obj_Int temp_3 = int_lit(2);
+	obj_Int temp_4 = temp_0;
+	obj_Int temp_2 = Int_method_PLUS( temp_3, temp_4);
+	obj_Int temp_5 = int_lit(5);
+	obj_Int temp_1 = Int_method_TIMES( temp_2, temp_5);
 	return 0;
 }

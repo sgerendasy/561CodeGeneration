@@ -26,6 +26,8 @@ public class Main {
     Program builtinAST = null;
     Program ast = null;
     public static HashMap<String, CHeaderNode> classHeaderDictionary = new HashMap<>();
+    // used to name register variables in each class
+    public static int nodeIndex = 0;
 
     static public void main(String args[])
     {
@@ -594,7 +596,6 @@ public class Main {
                     Class_Block.Clazz_Block theClassBlock = GetClassBlock(c.className);
                     HashMap<String, Var> theRegisterTable = new HashMap<>();
                     GenTreeNode GenTreeRoot = new GenTreeNode();
-                    int nodeIndex = 0;
                     for (Statement s : theClassBlock._stmtList)
                     {
                         if (s.StatementType().equals("ASSIGNMENT"))
@@ -602,14 +603,10 @@ public class Main {
                             try
                             {
                                 String statementType = s.getRexpr().getType();
-                                String LHident =  classHeaderDictionary.get(statementType).objectInstanceName + " temp_" + nodeIndex;
                                 Var tempVar = new Var("temp_" + nodeIndex, classHeaderDictionary.get(statementType).objectInstanceName);
                                 theRegisterTable.put(s.getLexpr().getIdent(), tempVar);
-
-
-                                GenTreeRoot = s.getRexpr().CreateGenTree(theRegisterTable, nodeIndex);
-                                nodeIndex = WriteCFromGenTree(GenTreeRoot, outputStream, nodeIndex);
-                                System.out.println(nodeIndex);
+                                GenTreeRoot = s.getRexpr().CreateGenTree(theRegisterTable);
+                                WriteCFromGenTree(GenTreeRoot, outputStream);
                             }
                             catch (Exception e)
                             {
@@ -645,7 +642,6 @@ public class Main {
 
                         }
                     }
-
                     String endMain = "\treturn 0;\n}\n";
                     outputStream.write(endMain);
                 }
@@ -699,9 +695,6 @@ public class Main {
                 }
 
             }
-
-            // write main
-
             outputStream.flush();  
         } 
         catch (IOException e)
@@ -711,12 +704,11 @@ public class Main {
         
     }
 
-    int WriteCFromGenTree(GenTreeNode root, FileWriter outputStream, int nodeIndex)
+    void WriteCFromGenTree(GenTreeNode root, FileWriter outputStream)
     {
         for (GenTreeNode node : root.children)
         {
-//            nodeIndex++;
-            nodeIndex = WriteCFromGenTree(node, outputStream, nodeIndex);
+            WriteCFromGenTree(node, outputStream);
         }
         try
         {
@@ -726,8 +718,6 @@ public class Main {
         {
             System.out.println(e.getMessage());
         }
-
-        return ++nodeIndex;
     }
 
     private Class_Block.Clazz_Block GetClassBlock(String className)
