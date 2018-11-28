@@ -291,10 +291,10 @@ obj_Int Pt_method_sub(obj_Pt) {
 struct  class_Pt_struct  the_class_Pt_struct = {
   new_Pt, 
 Pt_method_PRINT,
-Pt_method_foo,
-Pt_method_sub,
 Obj_method_STR,
 Obj_method_EQUALS,
+Pt_method_foo,
+Pt_method_sub,
 };
 class_String class_String_Instance = &the_class_String_struct; 
   obj_P new_P(obj_Int x ,obj_Int y ) {
@@ -310,12 +310,12 @@ obj_Int P_method_d(obj_P, obj_Int z ,obj_String q ) {
 }
 struct  class_P_struct  the_class_P_struct = {
   new_P, 
-P_method_sub,
-P_method_d,
 Pt_method_PRINT,
-Pt_method_foo,
 Obj_method_STR,
 Obj_method_EQUALS,
+Pt_method_foo,
+P_method_sub,
+P_method_d,
 };
 class_String class_String_Instance = &the_class_String_struct; 
   obj_D new_D() {

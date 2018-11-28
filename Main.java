@@ -824,9 +824,10 @@ public class Main {
 
                         }
                         //create method object for each method
+                        
                         if(c.MethodIdentExists(m.ident)) {
                         LinkedList<String> args = VarTableSingleton.getTableByClassName(c.className).GetMethodArgs(m.ident);
-                       
+                        List<Statement> statements=null;
                         if(args.isEmpty()) {
                         	outputStream.write("obj_"+m.returnType+" "+classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident)+"(obj_"+c.className +") {\n");
                         }
@@ -834,9 +835,11 @@ public class Main {
                         {
                         Class_Block.Clazz_Block theClassBlock = GetClassBlock(c.className);
                         LinkedList<Args.Arg> methArgs = null;
+                        
                         for(Methods.Method x:theClassBlock._methods) {
                         		if(x._methodIdent.equals(m.ident)){
                         			methArgs= x._formalArgs._args;
+                        			statements = x._statements;
                         		}
                         }
                         String methArg = "obj_"+c.className+", ";
@@ -848,8 +851,11 @@ public class Main {
                         
                         outputStream.write("obj_"+m.returnType+" "+classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident)+"("+methArg+") {\n");
                         }
-                        //????fill in method
-                        //
+                        
+//                        for(Statement st: statements) {
+//                        	//????fill in method statements
+//                        }
+                        
                         outputStream.write("\n}\n");
                         classHeaderDictionary.get(c.className).CMethodToReturnType.put(classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident), "obj_"+m.returnType);
                         }
@@ -859,8 +865,8 @@ public class Main {
                             outputStream.write("  new_"+c.className);
                             if(size>1) {
                                 outputStream.write(", \n");
-                                for(MethodNode s :GetCompleteMethodTable(c.className)) {
-                                	outputStream.write(classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(s.ident)+",\n");
+								for(Entry<String, String> e : classHeaderDictionary.get(c.className).QuackMethodToCMethod.entrySet()) {
+                                	outputStream.write(e.getValue()+",\n");
                                 }
                                 
                             }
