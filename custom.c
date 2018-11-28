@@ -44,7 +44,7 @@ obj_Nothing Nothing_method_PRINT(obj_Nothing this) {
   fprintf(stdout, "%s", str->value);
   return nothing; 
 }
-obj_String Nothing_method_STRING(obj_Nothing this) {
+obj_String Nothing_method_STR(obj_Nothing this) {
     return str_lit("<nothing>");
 }
 obj_Boolean Nothing_method_EQUALS(obj_Nothing this, obj_Obj other) {
@@ -58,7 +58,7 @@ obj_Nothing other_nothing = (obj_Nothing) other;
 struct  class_Nothing_struct  the_class_Nothing_struct = {
   new_Nothing,     
   Nothing_method_PRINT, 
-  Nothing_method_STRING, 
+  Nothing_method_STR, 
   Nothing_method_EQUALS
 };
 class_Nothing class_Nothing_Instance = &the_class_Nothing_struct; 
@@ -275,5 +275,9 @@ int main(void){
 	obj_Int temp_2 = Int_method_PLUS( temp_3, temp_4);
 	obj_Int temp_5 = int_lit(5);
 	obj_Int temp_1 = Int_method_TIMES( temp_2, temp_5);
+	obj_String temp_6 = str_lit(left);
+	obj_String temp_8 = temp_6;
+	obj_String temp_9 = str_lit(right);
+	obj_String temp_7 = String_method_PLUS( temp_8, temp_9);
 	return 0;
 }

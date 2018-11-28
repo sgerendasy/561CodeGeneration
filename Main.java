@@ -318,8 +318,12 @@ public class Main {
                                 outputStream.write(" struct  class_Obj_struct  the_class_Obj_struct = {\n");
                                 outputStream.write("  new_Obj,     \n");
                                 outputStream.write("  Obj_method_PRINT, \n");
+                                classHeaderDictionary.get("Obj").QuackMethodToCMethod.put("PRINT", "Obj_method_PRINT");
                                 outputStream.write("  Obj_method_STR, \n");
+                                classHeaderDictionary.get("Obj").QuackMethodToCMethod.put("STR", "Obj_method_STR");
                                 outputStream.write("  Obj_method_EQUALS \n};\n");
+                                classHeaderDictionary.get("Obj").QuackMethodToCMethod.put("EQUALS", "Obj_method_EQUALS");
+
                                 outputStream.write("class_Obj class_Obj_Instance = &the_class_Obj_struct;\n");
                             }
                             i++;
@@ -387,13 +391,21 @@ public class Main {
                                 outputStream.write("struct  class_String_struct  the_class_String_struct = {\n");
                                 outputStream.write("  new_String,   \n");
                                 outputStream.write("  String_method_PRINT, \n");
+                                classHeaderDictionary.get("String").QuackMethodToCMethod.put("PRINT", "String_method_PRINT");
                                 outputStream.write("  String_method_STR, \n");
+                                classHeaderDictionary.get("String").QuackMethodToCMethod.put("STR", "String_method_STR");
                                 outputStream.write("  String_method_EQUALS,\n");
+                                classHeaderDictionary.get("String").QuackMethodToCMethod.put("EQUALS", "String_method_EQUALS");
                                 outputStream.write("  String_method_PLUS,\n");
+                                classHeaderDictionary.get("String").QuackMethodToCMethod.put("PLUS", "String_method_PLUS");
                                 outputStream.write("  String_method_ATMOST,\n");
+                                classHeaderDictionary.get("String").QuackMethodToCMethod.put("ATMOST", "String_method_ATMOST");
                                 outputStream.write("  String_method_LESS,\n");
+                                classHeaderDictionary.get("String").QuackMethodToCMethod.put("LESS", "String_method_LESS");
                                 outputStream.write("  String_method_ATLEAST,\n");
+                                classHeaderDictionary.get("String").QuackMethodToCMethod.put("ATLEAST", "String_method_ATLEAST");
                                 outputStream.write("  String_method_MORE\n };\n");
+                                classHeaderDictionary.get("String").QuackMethodToCMethod.put("MORE", "String_method_MORE");
 
 
                                 outputStream.write("class_String class_String_Instance = &the_class_String_struct; \n");
@@ -439,8 +451,12 @@ public class Main {
                                 outputStream.write("struct  class_Boolean_struct  the_class_Boolean_struct = {\n");
                                 outputStream.write("  new_Boolean,     \n");
                                 outputStream.write("  Boolean_method_PRINT, \n");
+                                classHeaderDictionary.get("Boolean").QuackMethodToCMethod.put("PRINT", "Boolean_method_PRINT");
                                 outputStream.write("  Boolean_method_STR, \n");
+                                classHeaderDictionary.get("Boolean").QuackMethodToCMethod.put("STR", "Boolean_method_STR");
                                 outputStream.write("  Boolean_method_EQUALS\n};\n");
+                                classHeaderDictionary.get("Boolean").QuackMethodToCMethod.put("EQUALS", "Boolean_method_EQUALS");
+
                                 outputStream.write("class_Boolean class_Boolean_Instance = &the_class_Boolean_struct; \n");
                                 outputStream.write("struct obj_Boolean_struct lit_false_struct =\n");
                                 outputStream.write("  { &the_class_Boolean_struct, 0 };\n");
@@ -462,7 +478,7 @@ public class Main {
                                 outputStream.write("  fprintf(stdout, \"%s\", str->value);\n");
                                 outputStream.write("  return nothing; \n}\n");
                             } else if (m.ident.equals("STR")) {
-                                outputStream.write("obj_String Nothing_method_STRING(obj_Nothing this) {\n");
+                                outputStream.write("obj_String Nothing_method_STR(obj_Nothing this) {\n");
                                 outputStream.write("    return str_lit(\"<nothing>\");\n}\n");
                             } else if (m.ident.equals("EQUALS")) {
                                 outputStream.write("obj_Boolean Nothing_method_EQUALS(obj_Nothing this, obj_Obj other) {\n");
@@ -476,8 +492,12 @@ public class Main {
                                 outputStream.write("struct  class_Nothing_struct  the_class_Nothing_struct = {\n");
                                 outputStream.write("  new_Nothing,     \n");
                                 outputStream.write("  Nothing_method_PRINT, \n");
-                                outputStream.write("  Nothing_method_STRING, \n");
+                                classHeaderDictionary.get("Nothing").QuackMethodToCMethod.put("PRINT", "Nothing_method_PRINT");
+                                outputStream.write("  Nothing_method_STR, \n");
+                                classHeaderDictionary.get("Nothing").QuackMethodToCMethod.put("STR", "Nothing_method_STR");
                                 outputStream.write("  Nothing_method_EQUALS\n};\n");
+                                classHeaderDictionary.get("Nothing").QuackMethodToCMethod.put("EQUALS", "Nothing_method_EQUALS");
+
                                 outputStream.write("class_Nothing class_Nothing_Instance = &the_class_Nothing_struct; \n");
                                 outputStream.write("struct obj_Nothing_struct nothing_struct =\n");
                                 outputStream.write("  { &the_class_Nothing_struct };\n");
