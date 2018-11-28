@@ -32,4 +32,5 @@
     def LESS(other: Int): Boolean { }       // <
     def ATLEAST(other: Int): Boolean { }    // >=
     def MORE(other: Int): Boolean { }       // >
+    def NEG(): Int {}
  }

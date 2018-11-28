@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public abstract class Args
@@ -11,6 +12,7 @@ public abstract class Args
     abstract ArrayList<String> getArgTypes() throws Exception;
     abstract void visit2(String s) throws Exception;
 	abstract void visit2(String s, String methodIdent) throws Exception;
+    abstract GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception;
 
     public static class Formal_Args extends Args
     {
@@ -22,6 +24,11 @@ public abstract class Args
         {
             this._args = new LinkedList<>();
             this._args.add(new Arg(ident, type));
+        }
+
+        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
+        {
+            return null;
         }
 
         public void addArg(String ident, String type)
@@ -139,8 +146,11 @@ public abstract class Args
             }
             return argTypes;
         }
-        
 
+        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
+        {
+            return null;
+        }
 
         public void visit2(String classIdent) throws Exception
         {
@@ -194,6 +204,11 @@ public abstract class Args
         {
             this._ident = ident;
             this._type = type;
+        }
+
+        public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
+        {
+            return null;
         }
 
         public ArrayList<String> getArgTypes()

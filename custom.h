@@ -93,6 +93,7 @@ struct class_Int_struct {
 	obj_Boolean (*LESS)  ( obj_Int, obj_Int );
 	obj_Boolean (*ATLEAST)  ( obj_Int, obj_Int );
 	obj_Boolean (*MORE)  ( obj_Int, obj_Int );
+	obj_Int (*NEG)  ( obj_Int );
 };
 
 struct class_$statementsDummyClass_struct {
@@ -142,6 +143,7 @@ obj_Boolean Int_method_ATMOST(obj_Int this, obj_Int other );
 obj_Boolean Int_method_LESS(obj_Int this, obj_Int other );
 obj_Boolean Int_method_ATLEAST(obj_Int this, obj_Int other );
 obj_Boolean Int_method_MORE(obj_Int this, obj_Int other );
+obj_Int Int_method_NEG(obj_Int this );
 obj_Nothing $statementsDummyClass_method_PRINT(obj_$statementsDummyClass this );
 obj_String $statementsDummyClass_method_STR(obj_$statementsDummyClass this );
 obj_Boolean $statementsDummyClass_method_EQUALS(obj_$statementsDummyClass this, obj_Obj other );

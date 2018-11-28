@@ -73,8 +73,10 @@ obj_String new_String(  ) {
 obj_String String_method_PLUS(obj_String this, obj_String other) {
 char* thisString = this->value;
 char* otherString = other->value;
-strcat(thisString, otherString);
-return str_lit(thisString);
+char* combinedStrings = malloc(strlen(thisString) + strlen(otherString) + 1);
+strcat(combinedStrings, thisString);
+strcat(combinedStrings, otherString);
+return str_lit(combinedStrings);
 }
 
 obj_Boolean String_method_EQUALS(obj_String this, obj_Obj other) {
@@ -226,6 +228,9 @@ obj_Boolean Int_method_MORE(obj_Int this, obj_Int other) {
 }
   return lit_false;
 }
+obj_Int Int_method_NEG(obj_Int this) {
+  return int_lit(- this->value);
+}
 obj_Nothing Int_method_PRINT(obj_Int this) {
   obj_String str = this->clazz->STR(this);
   fprintf(stdout, "%s", str->value);
@@ -259,7 +264,8 @@ struct  class_Int_struct  the_class_Int_struct = {
   Int_method_ATMOST,
   Int_method_LESS,
   Int_method_ATLEAST,
-  Int_method_MORE
+  Int_method_MORE,
+  Int_method_NEG
 };
 
 class_Int class_Int_Instance = &the_class_Int_struct; 
@@ -270,14 +276,6 @@ obj_Int int_lit(int n) {
 }
 int main(void){
 	obj_Int temp_0 = int_lit(1);
-	obj_Int temp_3 = int_lit(2);
-	obj_Int temp_4 = temp_0;
-	obj_Int temp_2 = Int_method_PLUS( temp_3, temp_4);
-	obj_Int temp_5 = int_lit(5);
-	obj_Int temp_1 = Int_method_TIMES( temp_2, temp_5);
-	obj_String temp_6 = str_lit(left);
-	obj_String temp_8 = temp_6;
-	obj_String temp_9 = str_lit(right);
-	obj_String temp_7 = String_method_PLUS( temp_8, temp_9);
+	obj_String temp_1 = Int_method_STR(Var@73035e27);
 	return 0;
 }
