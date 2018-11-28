@@ -10,11 +10,13 @@ obj_Obj new_thing = (obj_Obj) malloc(sizeof(struct obj_Obj_struct));
 new_thing->clazz = class_Obj_Instance;
 return new_thing; 
 }
+
 obj_Nothing Obj_method_PRINT(obj_Obj this) {
   obj_String str = this->clazz->STR(this);
   fprintf(stdout, "%s", str->value);
   return nothing; 
 }
+
 obj_String Obj_method_STR(obj_Obj this) {
 long addr = (long) this;
 char *rep;
@@ -22,6 +24,7 @@ asprintf(&rep, "<Object at %ld>", addr);
 obj_String str = str_lit(rep); 
 return str; 
 }
+
 obj_Boolean Obj_method_EQUALS(obj_Obj this, obj_Obj other) {
   if (this == other) {
     return lit_true;
@@ -29,6 +32,7 @@ obj_Boolean Obj_method_EQUALS(obj_Obj this, obj_Obj other) {
     return lit_false; 
 } 
 }
+
  struct  class_Obj_struct  the_class_Obj_struct = {
   new_Obj,     
   Obj_method_PRINT, 
@@ -36,17 +40,21 @@ obj_Boolean Obj_method_EQUALS(obj_Obj this, obj_Obj other) {
   Obj_method_EQUALS 
 };
 class_Obj class_Obj_Instance = &the_class_Obj_struct;
+
 obj_Nothing new_Nothing(  ) {
   return nothing; 
 }
+
 obj_Nothing Nothing_method_PRINT(obj_Nothing this) {
   obj_String str = this->clazz->STR(this);
   fprintf(stdout, "%s", str->value);
   return nothing; 
 }
+
 obj_String Nothing_method_STR(obj_Nothing this) {
     return str_lit("<nothing>");
 }
+
 obj_Boolean Nothing_method_EQUALS(obj_Nothing this, obj_Obj other) {
 obj_Nothing other_nothing = (obj_Nothing) other;
   if (this == other_nothing) {
@@ -55,21 +63,27 @@ obj_Nothing other_nothing = (obj_Nothing) other;
     return lit_false; 
 } 
 }
+
 struct  class_Nothing_struct  the_class_Nothing_struct = {
   new_Nothing,     
   Nothing_method_PRINT, 
   Nothing_method_STR, 
   Nothing_method_EQUALS
 };
+
 class_Nothing class_Nothing_Instance = &the_class_Nothing_struct; 
+
 struct obj_Nothing_struct nothing_struct =
   { &the_class_Nothing_struct };
+
 obj_Nothing nothing = &nothing_struct; 
+
 obj_String new_String(  ) {
   obj_String new_thing = (obj_String) malloc(sizeof(struct obj_String_struct));
   new_thing->clazz = class_String_Instance;
   return new_thing; 
 }
+
 obj_String String_method_PLUS(obj_String this, obj_String other) {
 char* thisString = this->value;
 char* otherString = other->value;
@@ -90,6 +104,7 @@ obj_Boolean String_method_EQUALS(obj_String this, obj_Obj other) {
     return lit_false;
   }
 }
+
 obj_Boolean String_method_ATMOST(obj_String this, obj_String other) {
   if (strcmp(this->value, other->value) <= 0) {
     return lit_true;
@@ -98,6 +113,7 @@ obj_Boolean String_method_ATMOST(obj_String this, obj_String other) {
     return lit_false;
 }
 }
+
 obj_Boolean String_method_LESS(obj_String this, obj_String other) {
   if (strcmp(this->value, other->value) < 0) {
     return lit_true;
@@ -105,6 +121,7 @@ obj_Boolean String_method_LESS(obj_String this, obj_String other) {
     return lit_false;
 }
 }
+
 obj_Boolean String_method_ATLEAST(obj_String this, obj_String other) {
    if (strcmp(this->value, other->value) >= 0) {
       return lit_true;
@@ -112,6 +129,7 @@ obj_Boolean String_method_ATLEAST(obj_String this, obj_String other) {
       return lit_false;
 }
 }
+
 obj_Boolean String_method_MORE(obj_String this, obj_String other) {
   if (strcmp(this->value, other->value) > 0) {
     return lit_true;
@@ -119,13 +137,16 @@ obj_Boolean String_method_MORE(obj_String this, obj_String other) {
     return lit_false;
 }
 }
+
 obj_Nothing String_method_PRINT(obj_String this) {
   fprintf(stdout, "%s", this->value);
   return nothing;
 }
+
 obj_String String_method_STR(obj_String this) {
   return this;
 }
+
 struct  class_String_struct  the_class_String_struct = {
   new_String,   
   String_method_PRINT, 
@@ -137,24 +158,29 @@ struct  class_String_struct  the_class_String_struct = {
   String_method_ATLEAST,
   String_method_MORE
  };
+
 class_String class_String_Instance = &the_class_String_struct; 
+
 obj_String str_lit(char *s) {
   char *rep;
   obj_String str = class_String_Instance->constructor(); 
   str->value = s;
   return str;
 }
+
 obj_Boolean new_Boolean(  ) {
   obj_Boolean new_thing = (obj_Boolean)
     malloc(sizeof(struct obj_Boolean_struct));
   new_thing->clazz = class_Boolean_Instance;
   return new_thing; 
 }
+
 obj_Nothing Boolean_method_PRINT(obj_Boolean this) {
   obj_String str = this->clazz->STR(this);
   fprintf(stdout, "%s", str->value);
   return nothing; 
 }
+
 obj_String Boolean_method_STR(obj_Boolean this) {
   if (this == lit_true) {
     return str_lit("true");
@@ -162,6 +188,7 @@ obj_String Boolean_method_STR(obj_Boolean this) {
     return str_lit("false");
   } else {
     return str_lit("!!!BOGUS BOOLEAN");
+
   }
 }
 obj_Boolean Boolean_method_EQUALS(obj_Boolean this, obj_Obj other) {
@@ -172,19 +199,26 @@ obj_Boolean other_bool = (obj_Boolean) other;
     return lit_false; 
 } 
 }
+
 struct  class_Boolean_struct  the_class_Boolean_struct = {
   new_Boolean,     
   Boolean_method_PRINT, 
   Boolean_method_STR, 
   Boolean_method_EQUALS
 };
+
 class_Boolean class_Boolean_Instance = &the_class_Boolean_struct; 
+
 struct obj_Boolean_struct lit_false_struct =
   { &the_class_Boolean_struct, 0 };
+
 obj_Boolean lit_false = &lit_false_struct;
+
 struct obj_Boolean_struct lit_true_struct =
   { &the_class_Boolean_struct, 1 };
+
 obj_Boolean lit_true = &lit_true_struct;
+
 obj_Int new_Int(  ) {
   obj_Int new_thing = (obj_Int)
     malloc(sizeof(struct obj_Int_struct));
@@ -192,55 +226,67 @@ obj_Int new_Int(  ) {
   new_thing->value = 0;          
   return new_thing; 
 }
+
 obj_Int Int_method_PLUS(obj_Int this, obj_Int other) {
   return int_lit(this->value + other->value);
 }
+
 obj_Int Int_method_TIMES(obj_Int this, obj_Int other) {
   return int_lit(this->value * other->value);
 }
+
 obj_Int Int_method_MINUS(obj_Int this, obj_Int other) {
   return int_lit(this->value - other->value);
 }
+
 obj_Int Int_method_DIVIDE(obj_Int this, obj_Int other) {
   return int_lit(this->value / other->value);
 }
+
 obj_Boolean Int_method_ATMOST(obj_Int this, obj_Int other) {
   if (this->value <= other->value) {
     return lit_true;
 }
   return lit_false;
 }
+
 obj_Boolean Int_method_LESS(obj_Int this, obj_Int other) {
   if (this->value < other->value) {
     return lit_true;
 }
   return lit_false;
 }
+
 obj_Boolean Int_method_ATLEAST(obj_Int this, obj_Int other) {
   if (this->value >= other->value) {
     return lit_true;
 }
   return lit_false;
 }
+
 obj_Boolean Int_method_MORE(obj_Int this, obj_Int other) {
   if (this->value > other->value) {
     return lit_true;
 }
   return lit_false;
 }
+
 obj_Int Int_method_NEG(obj_Int this) {
   return int_lit(- this->value);
 }
+
 obj_Nothing Int_method_PRINT(obj_Int this) {
   obj_String str = this->clazz->STR(this);
   fprintf(stdout, "%s", str->value);
   return nothing; 
 }
+
 obj_String Int_method_STR(obj_Int this) {
   char *rep;
   asprintf(&rep, "%d", this->value);
   return str_lit(rep); 
 }
+
 obj_Boolean Int_method_EQUALS(obj_Int this, obj_Obj other) {
   obj_Int other_int = (obj_Int) other; 
   
@@ -252,6 +298,7 @@ obj_Boolean Int_method_EQUALS(obj_Int this, obj_Obj other) {
   }
   return lit_true;
 }
+
 struct  class_Int_struct  the_class_Int_struct = {
   new_Int,     /* Constructor */
   Int_method_PRINT, 
@@ -269,23 +316,26 @@ struct  class_Int_struct  the_class_Int_struct = {
 };
 
 class_Int class_Int_Instance = &the_class_Int_struct; 
+
 obj_Int int_lit(int n) {
   obj_Int boxed = new_Int();
   boxed->value = n;
   return boxed;
 }
+
   obj_Pt new_Pt(obj_Int x ,obj_Int y ) {
   obj_Pt new_thing = (obj_Pt) malloc(sizeof(struct obj_Pt_struct));
   new_thing->clazz = class_Pt_Instance;
   return new_thing; 
 }
-obj_Nothing Pt_method_PRINT(obj_Pt) {
+
+obj_Nothing Pt_method_PRINT(obj_Pt this) {
 
 }
-obj_Int Pt_method_foo(obj_Pt) {
+obj_Int Pt_method_foo(obj_Pt this) {
 
 }
-obj_Int Pt_method_sub(obj_Pt) {
+obj_Int Pt_method_sub(obj_Pt this) {
 
 }
 struct  class_Pt_struct  the_class_Pt_struct = {
@@ -302,10 +352,11 @@ class_String class_String_Instance = &the_class_String_struct;
   new_thing->clazz = class_P_Instance;
   return new_thing; 
 }
-obj_Int P_method_sub(obj_P) {
+
+obj_Int P_method_sub(obj_P this) {
 
 }
-obj_Int P_method_d(obj_P, obj_Int z ,obj_String q ) {
+obj_Int P_method_d(obj_P this, obj_Int z ,obj_String q ) {
 
 }
 struct  class_P_struct  the_class_P_struct = {
@@ -323,6 +374,7 @@ class_String class_String_Instance = &the_class_String_struct;
   new_thing->clazz = class_D_Instance;
   return new_thing; 
 }
+
 struct  class_D_struct  the_class_D_struct = {
   new_D, 
 Obj_method_PRINT,

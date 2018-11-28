@@ -295,7 +295,7 @@ public class Main {
                                 outputStream.write("obj_Obj new_Obj(  ) { \n");
                                 outputStream.write("obj_Obj new_thing = (obj_Obj) malloc(sizeof(struct obj_Obj_struct));\n");
                                 outputStream.write("new_thing->clazz = class_Obj_Instance;\n");
-                                outputStream.write("return new_thing; \n}\n");
+                                outputStream.write("return new_thing; \n}\n\n");
                             }
                             if (m.ident.equals("STR"))
                             {
@@ -304,7 +304,7 @@ public class Main {
                                 outputStream.write("char *rep;\n");
                                 outputStream.write("asprintf(&rep, \"<Object at %ld>\", addr);\n");
                                 outputStream.write("obj_String str = str_lit(rep); \n");
-                                outputStream.write("return str; \n}\n");
+                                outputStream.write("return str; \n}\n\n");
                                 classHeaderDictionary.get("Obj").CMethodToReturnType.put("Obj_method_STR", "obj_String");
                             }
                             else if (m.ident.equals("PRINT"))
@@ -312,7 +312,7 @@ public class Main {
                                 outputStream.write("obj_Nothing Obj_method_PRINT(obj_Obj this) {\n");
                                 outputStream.write("  obj_String str = this->clazz->STR(this);\n");
                                 outputStream.write("  fprintf(stdout, \"%s\", str->value);\n");
-                                outputStream.write("  return nothing; \n}\n");
+                                outputStream.write("  return nothing; \n}\n\n");
                                 classHeaderDictionary.get("Obj").CMethodToReturnType.put("Obj_method_PRINT", "obj_Nothing");
                             }
                             else if (m.ident.equals("EQUALS"))
@@ -321,7 +321,7 @@ public class Main {
                                 outputStream.write("  if (this == other) {\n");
                                 outputStream.write("    return lit_true;\n");
                                 outputStream.write("  } else {\n");
-                                outputStream.write("    return lit_false; \n} \n}\n");
+                                outputStream.write("    return lit_false; \n} \n}\n\n");
                                 classHeaderDictionary.get("Obj").CMethodToReturnType.put("Obj_method_EQUALS", "obj_Boolean");
                             }
 
@@ -336,7 +336,7 @@ public class Main {
                                 outputStream.write("  Obj_method_EQUALS \n};\n");
                                 classHeaderDictionary.get("Obj").QuackMethodToCMethod.put("EQUALS", "Obj_method_EQUALS");
 
-                                outputStream.write("class_Obj class_Obj_Instance = &the_class_Obj_struct;\n");
+                                outputStream.write("class_Obj class_Obj_Instance = &the_class_Obj_struct;\n\n");
                             }
                             i++;
                         }
@@ -348,19 +348,19 @@ public class Main {
                                 outputStream.write("obj_String new_String(  ) {\n");
                                 outputStream.write("  obj_String new_thing = (obj_String) malloc(sizeof(struct obj_String_struct));\n");
                                 outputStream.write("  new_thing->clazz = class_String_Instance;\n");
-                                outputStream.write("  return new_thing; \n}\n");
+                                outputStream.write("  return new_thing; \n}\n\n");
                             }
                             if (m.ident.equals("STR"))
                             {
                                 outputStream.write("obj_String String_method_STR(obj_String this) {\n");
-                                outputStream.write("  return this;\n}\n");
+                                outputStream.write("  return this;\n}\n\n");
                                 classHeaderDictionary.get("String").CMethodToReturnType.put("String_method_STR", "obj_String");
                             }
                             else if (m.ident.equals("PRINT"))
                             {
                                 outputStream.write("obj_Nothing String_method_PRINT(obj_String this) {\n");
                                 outputStream.write("  fprintf(stdout, \"%s\", this->value);\n");
-                                outputStream.write("  return nothing;\n}\n");
+                                outputStream.write("  return nothing;\n}\n\n");
                                 classHeaderDictionary.get("String").CMethodToReturnType.put("String_method_PRINT", "obj_Nothing");
                             }
                             else if (m.ident.equals("EQUALS"))
@@ -374,7 +374,7 @@ public class Main {
                                 outputStream.write("    return lit_true;\n");
                                 outputStream.write("  } else {\n");
                                 outputStream.write("    return lit_false;\n");
-                                outputStream.write("  }\n}\n");
+                                outputStream.write("  }\n}\n\n");
                                 classHeaderDictionary.get("String").CMethodToReturnType.put("String_method_EQUALS", "obj_Boolean");
                             }
                             else if (m.ident.equals("PLUS"))
@@ -396,7 +396,7 @@ public class Main {
                                 outputStream.write("    return lit_true;\n");
                                 outputStream.write("  } \n");
                                 outputStream.write("  else {\n");
-                                outputStream.write("    return lit_false;\n}\n}\n");
+                                outputStream.write("    return lit_false;\n}\n}\n\n");
                                 classHeaderDictionary.get("String").CMethodToReturnType.put("String_method_ATMOST", "obj_Boolean");
                             }
                             else if (m.ident.equals("LESS"))
@@ -405,7 +405,7 @@ public class Main {
                                 outputStream.write("  if (strcmp(this->value, other->value) < 0) {\n");
                                 outputStream.write("    return lit_true;\n");
                                 outputStream.write("  } else {\n");
-                                outputStream.write("    return lit_false;\n}\n}\n");
+                                outputStream.write("    return lit_false;\n}\n}\n\n");
                                 classHeaderDictionary.get("String").CMethodToReturnType.put("String_method_LESS", "obj_Boolean");
                             }
                             else if (m.ident.equals("ATLEAST"))
@@ -414,7 +414,7 @@ public class Main {
                                 outputStream.write("   if (strcmp(this->value, other->value) >= 0) {\n");
                                 outputStream.write("      return lit_true;\n");
                                 outputStream.write("    } else {\n");
-                                outputStream.write("      return lit_false;\n}\n}\n");
+                                outputStream.write("      return lit_false;\n}\n}\n\n");
                                 classHeaderDictionary.get("String").CMethodToReturnType.put("String_method_ATLEAST", "obj_Boolean");
                             }
                             else if (m.ident.equals("MORE"))
@@ -423,7 +423,7 @@ public class Main {
                                 outputStream.write("  if (strcmp(this->value, other->value) > 0) {\n");
                                 outputStream.write("    return lit_true;\n");
                                 outputStream.write("  } else {\n");
-                                outputStream.write("    return lit_false;\n}\n}\n");
+                                outputStream.write("    return lit_false;\n}\n}\n\n");
                                 classHeaderDictionary.get("String").CMethodToReturnType.put("String_method_MORE", "obj_Boolean");
                             }
 
@@ -445,16 +445,16 @@ public class Main {
                                 classHeaderDictionary.get("String").QuackMethodToCMethod.put("LESS", "String_method_LESS");
                                 outputStream.write("  String_method_ATLEAST,\n");
                                 classHeaderDictionary.get("String").QuackMethodToCMethod.put("ATLEAST", "String_method_ATLEAST");
-                                outputStream.write("  String_method_MORE\n };\n");
+                                outputStream.write("  String_method_MORE\n };\n\n");
                                 classHeaderDictionary.get("String").QuackMethodToCMethod.put("MORE", "String_method_MORE");
 
 
-                                outputStream.write("class_String class_String_Instance = &the_class_String_struct; \n");
+                                outputStream.write("class_String class_String_Instance = &the_class_String_struct; \n\n");
                                 outputStream.write("obj_String str_lit(char *s) {\n");
                                 outputStream.write("  char *rep;\n");
                                 outputStream.write("  obj_String str = class_String_Instance->constructor(); \n");
                                 outputStream.write("  str->value = s;\n");
-                                outputStream.write("  return str;\n}\n");
+                                outputStream.write("  return str;\n}\n\n");
                             }
                             i++;
 
@@ -468,14 +468,14 @@ public class Main {
                                 outputStream.write("  obj_Boolean new_thing = (obj_Boolean)\n");
                                 outputStream.write("    malloc(sizeof(struct obj_Boolean_struct));\n");
                                 outputStream.write("  new_thing->clazz = class_Boolean_Instance;\n");
-                                outputStream.write("  return new_thing; \n}\n");
+                                outputStream.write("  return new_thing; \n}\n\n");
                             }
                             if (m.ident.equals("PRINT"))
                             {
                                 outputStream.write("obj_Nothing Boolean_method_PRINT(obj_Boolean this) {\n");
                                 outputStream.write("  obj_String str = this->clazz->STR(this);\n");
                                 outputStream.write("  fprintf(stdout, \"%s\", str->value);\n");
-                                outputStream.write("  return nothing; \n}\n");
+                                outputStream.write("  return nothing; \n}\n\n");
                                 classHeaderDictionary.get("Boolean").CMethodToReturnType.put("Boolean_method_PRINT", "obj_Nothing");
                             }
                             else if (m.ident.equals("STR"))
@@ -486,7 +486,7 @@ public class Main {
                                 outputStream.write("  } else if (this == lit_false) {\n");
                                 outputStream.write("    return str_lit(\"false\");\n");
                                 outputStream.write("  } else {\n");
-                                outputStream.write("    return str_lit(\"!!!BOGUS BOOLEAN\");\n");
+                                outputStream.write("    return str_lit(\"!!!BOGUS BOOLEAN\");\n\n");
                                 classHeaderDictionary.get("Boolean").CMethodToReturnType.put("Boolean_method_STR", "obj_String");
                                 outputStream.write("  }\n}\n");
                             }
@@ -497,7 +497,7 @@ public class Main {
                                 outputStream.write("  if (this->value == other_bool->value) {\n");
                                 outputStream.write("    return lit_true;\n");
                                 outputStream.write("  } else {\n");
-                                outputStream.write("    return lit_false; \n} \n}\n");
+                                outputStream.write("    return lit_false; \n} \n}\n\n");
                                 classHeaderDictionary.get("Boolean").CMethodToReturnType.put("Boolean_method_EQUALS", "obj_Boolean");
                             }
                             if (i == size) {
@@ -507,16 +507,16 @@ public class Main {
                                 classHeaderDictionary.get("Boolean").QuackMethodToCMethod.put("PRINT", "Boolean_method_PRINT");
                                 outputStream.write("  Boolean_method_STR, \n");
                                 classHeaderDictionary.get("Boolean").QuackMethodToCMethod.put("STR", "Boolean_method_STR");
-                                outputStream.write("  Boolean_method_EQUALS\n};\n");
+                                outputStream.write("  Boolean_method_EQUALS\n};\n\n");
                                 classHeaderDictionary.get("Boolean").QuackMethodToCMethod.put("EQUALS", "Boolean_method_EQUALS");
 
-                                outputStream.write("class_Boolean class_Boolean_Instance = &the_class_Boolean_struct; \n");
+                                outputStream.write("class_Boolean class_Boolean_Instance = &the_class_Boolean_struct; \n\n");
                                 outputStream.write("struct obj_Boolean_struct lit_false_struct =\n");
-                                outputStream.write("  { &the_class_Boolean_struct, 0 };\n");
-                                outputStream.write("obj_Boolean lit_false = &lit_false_struct;\n");
+                                outputStream.write("  { &the_class_Boolean_struct, 0 };\n\n");
+                                outputStream.write("obj_Boolean lit_false = &lit_false_struct;\n\n");
                                 outputStream.write("struct obj_Boolean_struct lit_true_struct =\n");
-                                outputStream.write("  { &the_class_Boolean_struct, 1 };\n");
-                                outputStream.write("obj_Boolean lit_true = &lit_true_struct;\n");
+                                outputStream.write("  { &the_class_Boolean_struct, 1 };\n\n");
+                                outputStream.write("obj_Boolean lit_true = &lit_true_struct;\n\n");
                             }
                             i++;
                         }
@@ -526,20 +526,20 @@ public class Main {
                             if (i == 0)
                             {
                                 outputStream.write("obj_Nothing new_Nothing(  ) {\n");
-                                outputStream.write("  return nothing; \n}\n");
+                                outputStream.write("  return nothing; \n}\n\n");
                             }
                             if (m.ident.equals("PRINT"))
                             {
                                 outputStream.write("obj_Nothing Nothing_method_PRINT(obj_Nothing this) {\n");
                                 outputStream.write("  obj_String str = this->clazz->STR(this);\n");
                                 outputStream.write("  fprintf(stdout, \"%s\", str->value);\n");
-                                outputStream.write("  return nothing; \n}\n");
+                                outputStream.write("  return nothing; \n}\n\n");
                                 classHeaderDictionary.get("Nothing").CMethodToReturnType.put("Nothing_method_PRINT", "obj_Nothing");
                             }
                             else if (m.ident.equals("STR"))
                             {
                                 outputStream.write("obj_String Nothing_method_STR(obj_Nothing this) {\n");
-                                outputStream.write("    return str_lit(\"<nothing>\");\n}\n");
+                                outputStream.write("    return str_lit(\"<nothing>\");\n}\n\n");
                                 classHeaderDictionary.get("Nothing").CMethodToReturnType.put("Nothing_method_STR", "obj_String");
                             }
                             else if (m.ident.equals("EQUALS"))
@@ -549,7 +549,7 @@ public class Main {
                                 outputStream.write("  if (this == other_nothing) {\n");
                                 outputStream.write("    return lit_true;\n");
                                 outputStream.write("  } else {\n");
-                                outputStream.write("    return lit_false; \n} \n}\n");
+                                outputStream.write("    return lit_false; \n} \n}\n\n");
                                 classHeaderDictionary.get("Nothing").CMethodToReturnType.put("Nothing_method_EQUALS", "obj_Boolean");
                             }
                             if (i == size) {
@@ -559,13 +559,13 @@ public class Main {
                                 classHeaderDictionary.get("Nothing").QuackMethodToCMethod.put("PRINT", "Nothing_method_PRINT");
                                 outputStream.write("  Nothing_method_STR, \n");
                                 classHeaderDictionary.get("Nothing").QuackMethodToCMethod.put("STR", "Nothing_method_STR");
-                                outputStream.write("  Nothing_method_EQUALS\n};\n");
+                                outputStream.write("  Nothing_method_EQUALS\n};\n\n");
                                 classHeaderDictionary.get("Nothing").QuackMethodToCMethod.put("EQUALS", "Nothing_method_EQUALS");
 
-                                outputStream.write("class_Nothing class_Nothing_Instance = &the_class_Nothing_struct; \n");
+                                outputStream.write("class_Nothing class_Nothing_Instance = &the_class_Nothing_struct; \n\n");
                                 outputStream.write("struct obj_Nothing_struct nothing_struct =\n");
-                                outputStream.write("  { &the_class_Nothing_struct };\n");
-                                outputStream.write("obj_Nothing nothing = &nothing_struct; \n");
+                                outputStream.write("  { &the_class_Nothing_struct };\n\n");
+                                outputStream.write("obj_Nothing nothing = &nothing_struct; \n\n");
                             }
                             i++;
 
@@ -579,14 +579,14 @@ public class Main {
                                 outputStream.write("    malloc(sizeof(struct obj_Int_struct));\n");
                                 outputStream.write("  new_thing->clazz = class_Int_Instance;\n");
                                 outputStream.write("  new_thing->value = 0;          \n");
-                                outputStream.write("  return new_thing; \n}\n");
+                                outputStream.write("  return new_thing; \n}\n\n");
                             }
                             if (m.ident.equals("PRINT"))
                             {
                                 outputStream.write("obj_Nothing Int_method_PRINT(obj_Int this) {\n");
                                 outputStream.write("  obj_String str = this->clazz->STR(this);\n");
                                 outputStream.write("  fprintf(stdout, \"%s\", str->value);\n");
-                                outputStream.write("  return nothing; \n}\n");
+                                outputStream.write("  return nothing; \n}\n\n");
                                 classHeaderDictionary.get("Int").CMethodToReturnType.put("Int_method_PRINT", "obj_Nothing");
                             }
                             else if (m.ident.equals("STR"))
@@ -594,7 +594,7 @@ public class Main {
                                 outputStream.write("obj_String Int_method_STR(obj_Int this) {\n");
                                 outputStream.write("  char *rep;\n");
                                 outputStream.write("  asprintf(&rep, \"%d\", this->value);\n");
-                                outputStream.write("  return str_lit(rep); \n}\n");
+                                outputStream.write("  return str_lit(rep); \n}\n\n");
                                 classHeaderDictionary.get("Int").CMethodToReturnType.put("Int_method_STR", "obj_String");
                             }
                             else if (m.ident.equals("EQUALS"))
@@ -608,31 +608,31 @@ public class Main {
                                 outputStream.write("  if (this->value != other_int->value) {\n");
                                 outputStream.write("    return lit_false;\n");
                                 outputStream.write("  }\n");
-                                outputStream.write("  return lit_true;\n}\n");
+                                outputStream.write("  return lit_true;\n}\n\n");
                                 classHeaderDictionary.get("Int").CMethodToReturnType.put("Int_method_EQUALS", "obj_Boolean");
                             }
                             else if (m.ident.equals("PLUS"))
                             {
                                 outputStream.write("obj_Int Int_method_PLUS(obj_Int this, obj_Int other) {\n");
-                                outputStream.write("  return int_lit(this->value + other->value);\n}\n");
+                                outputStream.write("  return int_lit(this->value + other->value);\n}\n\n");
                                 classHeaderDictionary.get("Int").CMethodToReturnType.put("Int_method_PLUS", "obj_Int");
                             }
                             else if (m.ident.equals("MINUS"))
                             {
                                 outputStream.write("obj_Int Int_method_MINUS(obj_Int this, obj_Int other) {\n");
-                                outputStream.write("  return int_lit(this->value - other->value);\n}\n");
+                                outputStream.write("  return int_lit(this->value - other->value);\n}\n\n");
                                 classHeaderDictionary.get("Int").CMethodToReturnType.put("Int_method_MINUS", "obj_Int");
                             }
                             else if (m.ident.equals("TIMES"))
                             {
                                 outputStream.write("obj_Int Int_method_TIMES(obj_Int this, obj_Int other) {\n");
-                                outputStream.write("  return int_lit(this->value * other->value);\n}\n");
+                                outputStream.write("  return int_lit(this->value * other->value);\n}\n\n");
                                 classHeaderDictionary.get("Int").CMethodToReturnType.put("Int_method_TIMES", "obj_Int");
                             }
                             else if (m.ident.equals("DIVIDE"))
                             {
                                 outputStream.write("obj_Int Int_method_DIVIDE(obj_Int this, obj_Int other) {\n");
-                                outputStream.write("  return int_lit(this->value / other->value);\n}\n");
+                                outputStream.write("  return int_lit(this->value / other->value);\n}\n\n");
                                 classHeaderDictionary.get("Int").CMethodToReturnType.put("Int_method_DIVIDE", "obj_Int");
                             }
                             else if (m.ident.equals("ATMOST"))
@@ -640,7 +640,7 @@ public class Main {
                                 outputStream.write("obj_Boolean Int_method_ATMOST(obj_Int this, obj_Int other) {\n");
                                 outputStream.write("  if (this->value <= other->value) {\n");
                                 outputStream.write("    return lit_true;\n}\n");
-                                outputStream.write("  return lit_false;\n}\n");
+                                outputStream.write("  return lit_false;\n}\n\n");
                                 classHeaderDictionary.get("Int").CMethodToReturnType.put("Int_method_ATMOST", "obj_Boolean");
                             }
                             else if (m.ident.equals("LESS"))
@@ -648,7 +648,7 @@ public class Main {
                                 outputStream.write("obj_Boolean Int_method_LESS(obj_Int this, obj_Int other) {\n");
                                 outputStream.write("  if (this->value < other->value) {\n");
                                 outputStream.write("    return lit_true;\n}\n");
-                                outputStream.write("  return lit_false;\n}\n");
+                                outputStream.write("  return lit_false;\n}\n\n");
                                 classHeaderDictionary.get("Int").CMethodToReturnType.put("Int_method_LESS", "obj_Boolean");
                             }
                             else if (m.ident.equals("ATLEAST"))
@@ -656,7 +656,7 @@ public class Main {
                                 outputStream.write("obj_Boolean Int_method_ATLEAST(obj_Int this, obj_Int other) {\n");
                                 outputStream.write("  if (this->value >= other->value) {\n");
                                 outputStream.write("    return lit_true;\n}\n");
-                                outputStream.write("  return lit_false;\n}\n");
+                                outputStream.write("  return lit_false;\n}\n\n");
                                 classHeaderDictionary.get("Int").CMethodToReturnType.put("Int_method_ATLEAST", "obj_Boolean");
                             }
                             else if (m.ident.equals("MORE"))
@@ -664,13 +664,13 @@ public class Main {
                                 outputStream.write("obj_Boolean Int_method_MORE(obj_Int this, obj_Int other) {\n");
                                 outputStream.write("  if (this->value > other->value) {\n");
                                 outputStream.write("    return lit_true;\n}\n");
-                                outputStream.write("  return lit_false;\n}\n");
+                                outputStream.write("  return lit_false;\n}\n\n");
                                 classHeaderDictionary.get("Int").CMethodToReturnType.put("Int_method_MORE", "obj_Boolean");
                             }
                             else if (m.ident.equals("NEG"))
                             {
                                 outputStream.write("obj_Int Int_method_NEG(obj_Int this) {\n");
-                                outputStream.write("  return int_lit(- this->value);\n}\n");
+                                outputStream.write("  return int_lit(- this->value);\n}\n\n");
                                 classHeaderDictionary.get("Int").CMethodToReturnType.put("Int_method_NEG", "obj_Int");
                             }
                             if (i == size) {
@@ -701,11 +701,11 @@ public class Main {
                                 outputStream.write("  Int_method_NEG\n};\n\n");
                                 classHeaderDictionary.get("Int").QuackMethodToCMethod.put("NEG", "Int_method_NEG");
 
-                                outputStream.write("class_Int class_Int_Instance = &the_class_Int_struct; \n");
+                                outputStream.write("class_Int class_Int_Instance = &the_class_Int_struct; \n\n");
                                 outputStream.write("obj_Int int_lit(int n) {\n");
                                 outputStream.write("  obj_Int boxed = new_Int();\n");
                                 outputStream.write("  boxed->value = n;\n");
-                                outputStream.write("  return boxed;\n}\n");
+                                outputStream.write("  return boxed;\n}\n\n");
 
                             }
                             i++;
@@ -802,7 +802,7 @@ public class Main {
 //                            for(Var s: VarTableSingleton.getTableByClassName(c.className).constructorTable) {
 //                            	outputStream.write(" new_thing->"+s.ident.replace("this.", "")+" \n");
 //                            }
-                            outputStream.write("  return new_thing; \n}\n");
+                            outputStream.write("  return new_thing; \n}\n\n");
 
                             String parent=typeChecker.tree.findNode(typeChecker.tree.getRoot(),c.className).getParent().getId();
                             
@@ -829,7 +829,7 @@ public class Main {
                         LinkedList<String> args = VarTableSingleton.getTableByClassName(c.className).GetMethodArgs(m.ident);
                         List<Statement> statements=null;
                         if(args.isEmpty()) {
-                        	outputStream.write("obj_"+m.returnType+" "+classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident)+"(obj_"+c.className +") {\n");
+                        	outputStream.write("obj_"+m.returnType+" "+classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident)+"(obj_"+c.className +" this) {\n");
                         }
                         else 
                         {
@@ -842,7 +842,7 @@ public class Main {
                         			statements = x._statements;
                         		}
                         }
-                        String methArg = "obj_"+c.className+", ";
+                        String methArg = "obj_"+c.className+" this, ";
                     	for(Args.Arg a : methArgs) {
                     		methArg+="obj_"+a._type+" "+a._ident+" ,";
                     	}
