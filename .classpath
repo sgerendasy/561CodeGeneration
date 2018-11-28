@@ -6,10 +6,10 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/rene/Desktop/cis561/561CodeGeneration/lib/commons-cli-1.4.jar"/>
-	<classpathentry kind="lib" path="/Users/rene/Desktop/cis561/561CodeGeneration/lib/java-cup-11.jar"/>
-	<classpathentry kind="lib" path="/Users/rene/Desktop/cis561/561CodeGeneration/lib/java-cup-11b-runtime.jar"/>
-	<classpathentry kind="lib" path="/Users/rene/Desktop/cis561/561CodeGeneration/lib/java-cup-11b.jar"/>
-	<classpathentry kind="lib" path="/Users/rene/Desktop/cis561/561CodeGeneration/lib/jflex-full-1.7.0.jar"/>
+	<classpathentry kind="lib" path="/Users/rene/Desktop/cis561/561CodeGenerationOrig/lib/commons-cli-1.4.jar"/>
+	<classpathentry kind="lib" path="/Users/rene/Desktop/cis561/561CodeGenerationOrig/lib/java-cup-11.jar"/>
+	<classpathentry kind="lib" path="/Users/rene/Desktop/cis561/561CodeGenerationOrig/lib/java-cup-11b-runtime.jar"/>
+	<classpathentry kind="lib" path="/Users/rene/Desktop/cis561/561CodeGenerationOrig/lib/java-cup-11b.jar"/>
+	<classpathentry kind="lib" path="/Users/rene/Desktop/cis561/561CodeGenerationOrig/lib/jflex-full-1.7.0.jar"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

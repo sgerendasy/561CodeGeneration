@@ -1,27 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <String.h>
-#include <stdlib.h>
+#include <string.h>
 #include "simple.h"
 
 
-class_Obj the_class_Obj; 
+class_Obj class_Obj_Instance; 
 obj_Obj new_Obj(  ) { 
 obj_Obj new_thing = (obj_Obj) malloc(sizeof(struct obj_Obj_struct));
-new_thing->clazz = the_class_Obj;
+new_thing->clazz = class_Obj_Instance;
 return new_thing; 
 }
-obj_String Obj_method_STRING(obj_Obj this) {
+obj_Nothing Obj_method_PRINT(obj_Obj this) {
+  obj_String str = this->clazz->STR(this);
+  fprintf(stdout, "%s", str->value);
+  return nothing; 
+}
+obj_String Obj_method_STR(obj_Obj this) {
 long addr = (long) this;
 char *rep;
 asprintf(&rep, "<Object at %ld>", addr);
-obj_String str = str_literal(rep); 
+obj_String str = str_lit(rep); 
 return str; 
-}
-obj_Obj Obj_method_PRINT(obj_Obj this) {
-  obj_String str = this->clazz->STRING(this);
-  fprintf(stdout, "%s", str->text);
-  return this; 
 }
 obj_Boolean Obj_method_EQUALS(obj_Obj this, obj_Obj other) {
   if (this == other) {
@@ -32,75 +31,103 @@ obj_Boolean Obj_method_EQUALS(obj_Obj this, obj_Obj other) {
 }
  struct  class_Obj_struct  the_class_Obj_struct = {
   new_Obj,     
-  Obj_method_STRING, 
   Obj_method_PRINT, 
+  Obj_method_STR, 
   Obj_method_EQUALS 
 };
-class_Obj the_class_Obj = &the_class_Obj_struct;
+class_Obj class_Obj_Instance = &the_class_Obj_struct;
+obj_Nothing new_Nothing(  ) {
+  return nothing; 
+}
+obj_Nothing Nothing_method_PRINT(obj_Nothing this) {
+  obj_String str = this->clazz->STR(this);
+  fprintf(stdout, "%s", str->value);
+  return nothing; 
+}
+obj_String Nothing_method_STRING(obj_Nothing this) {
+    return str_lit("<nothing>");
+}
+obj_Boolean Nothing_method_EQUALS(obj_Nothing this, obj_Obj other) {
+obj_Nothing other_nothing = (obj_Nothing) other;
+  if (this == other_nothing) {
+    return lit_true;
+  } else {
+    return lit_false; 
+} 
+}
+struct  class_Nothing_struct  the_class_Nothing_struct = {
+  new_Nothing,     
+  Nothing_method_PRINT, 
+  Nothing_method_STRING, 
+  Nothing_method_EQUALS
+};
+class_Nothing class_Nothing_Instance = &the_class_Nothing_struct; 
+struct obj_Nothing_struct nothing_struct =
+  { &the_class_Nothing_struct };
+obj_Nothing nothing = &nothing_struct; 
 obj_String new_String(  ) {
   obj_String new_thing = (obj_String) malloc(sizeof(struct obj_String_struct));
-  new_thing->clazz = the_class_String;
+  new_thing->clazz = class_String_Instance;
   return new_thing; 
 }
-obj_String String_method_STRING(obj_String this) {
-  return this;
+obj_String String_method_PLUS(obj_String this, obj_String other) {
+char* thisString = this->value;
+char* otherString = other->value;
+strcat(thisString, otherString);
+return str_lit(thisString);
 }
-obj_String String_method_PRINT(obj_String this) {
-  fprintf(stdout, "%s", this->text);
-  return this;
-}
+
 obj_Boolean String_method_EQUALS(obj_String this, obj_Obj other) {
   obj_String other_str = (obj_String) other;
-  if (other_str->clazz != the_class_String) {
+  if (other_str->clazz != class_String_Instance) {
     return lit_false;
   }
-  if (strcmp(this->text,other_str->text) == 0) {
+  if (strcmp(this->value, other_str->value) == 0) {
     return lit_true;
   } else {
     return lit_false;
   }
 }
-obj_String String_method_PLUS(obj_String this, obj_Obj other) {
-  obj_String other_str = (obj_String) other;
-  return other_str;
-}
-obj_Boolean String_method_ATMOST(obj_String this, obj_Obj other) {
-  obj_String other_str = (obj_String) other;
-  if (strcmp(this->text,other_str->text) <= 0) {
+obj_Boolean String_method_ATMOST(obj_String this, obj_String other) {
+  if (strcmp(this->value, other->value) <= 0) {
     return lit_true;
   } 
   else {
     return lit_false;
 }
 }
-obj_Boolean String_method_LESS(obj_String this, obj_Obj other) {
-  obj_String other_str = (obj_String) other;
-  if (strcmp(this->text,other_str->text) < 0) {
+obj_Boolean String_method_LESS(obj_String this, obj_String other) {
+  if (strcmp(this->value, other->value) < 0) {
     return lit_true;
   } else {
     return lit_false;
 }
 }
-obj_Boolean String_method_ATLEAST(obj_String this, obj_Obj other) {
-  obj_String other_str = (obj_String) other;
-   if (strcmp(this->text,other_str->text) >= 0) {
+obj_Boolean String_method_ATLEAST(obj_String this, obj_String other) {
+   if (strcmp(this->value, other->value) >= 0) {
       return lit_true;
     } else {
       return lit_false;
 }
 }
-obj_Boolean String_method_MORE(obj_String this, obj_Obj other) {
-  obj_String other_str = (obj_String) other;
-  if (strcmp(this->text,other_str->text) > 0) {
+obj_Boolean String_method_MORE(obj_String this, obj_String other) {
+  if (strcmp(this->value, other->value) > 0) {
     return lit_true;
   } else {
     return lit_false;
 }
 }
+obj_Nothing String_method_PRINT(obj_String this) {
+  fprintf(stdout, "%s", this->value);
+  return nothing;
+}
+obj_String String_method_STR(obj_String this) {
+  return this;
+}
 struct  class_String_struct  the_class_String_struct = {
   new_String,   
-  String_method_STRING, 
   String_method_PRINT, 
+  String_method_STR, 
   String_method_EQUALS,
   String_method_PLUS,
   String_method_ATMOST,
@@ -108,51 +135,48 @@ struct  class_String_struct  the_class_String_struct = {
   String_method_ATLEAST,
   String_method_MORE
  };
-class_String the_class_String = &the_class_String_struct; 
-obj_String str_literal(char *s) {
+class_String class_String_Instance = &the_class_String_struct; 
+obj_String str_lit(char *s) {
   char *rep;
-  obj_String str = the_class_String->constructor(); 
-  str->text = s;
+  obj_String str = class_String_Instance->constructor(); 
+  str->value = s;
   return str;
 }
-obj_Nothing new_Nothing(  ) {
-  return nothing; 
-}
-obj_String Nothing_method_STRING(obj_Nothing this) {
-    return str_literal("<nothing>");
-}
-struct  class_Nothing_struct  the_class_Nothing_struct = {
-  new_Nothing,     
-  Nothing_method_STRING, 
-  Obj_method_PRINT, 
-  Obj_method_EQUALS
-};
-class_Nothing the_class_Nothing = &the_class_Nothing_struct; 
-struct obj_Nothing_struct nothing_struct =
-  { &the_class_Nothing_struct };
-obj_Nothing nothing = &nothing_struct; 
 obj_Boolean new_Boolean(  ) {
   obj_Boolean new_thing = (obj_Boolean)
     malloc(sizeof(struct obj_Boolean_struct));
-  new_thing->clazz = the_class_Boolean;
+  new_thing->clazz = class_Boolean_Instance;
   return new_thing; 
 }
-obj_String Boolean_method_STRING(obj_Boolean this) {
+obj_Nothing Boolean_method_PRINT(obj_Boolean this) {
+  obj_String str = this->clazz->STR(this);
+  fprintf(stdout, "%s", str->value);
+  return nothing; 
+}
+obj_String Boolean_method_STR(obj_Boolean this) {
   if (this == lit_true) {
-    return str_literal("true");
+    return str_lit("true");
   } else if (this == lit_false) {
-    return str_literal("false");
+    return str_lit("false");
   } else {
-    return str_literal("!!!BOGUS BOOLEAN");
+    return str_lit("!!!BOGUS BOOLEAN");
   }
+}
+obj_Boolean Boolean_method_EQUALS(obj_Boolean this, obj_Obj other) {
+obj_Boolean other_bool = (obj_Boolean) other;
+  if (this->value == other_bool->value) {
+    return lit_true;
+  } else {
+    return lit_false; 
+} 
 }
 struct  class_Boolean_struct  the_class_Boolean_struct = {
   new_Boolean,     
-  Boolean_method_STRING, 
-  Obj_method_PRINT, 
-  Obj_method_EQUALS
+  Boolean_method_PRINT, 
+  Boolean_method_STR, 
+  Boolean_method_EQUALS
 };
-class_Boolean the_class_Boolean = &the_class_Boolean_struct; 
+class_Boolean class_Boolean_Instance = &the_class_Boolean_struct; 
 struct obj_Boolean_struct lit_false_struct =
   { &the_class_Boolean_struct, 0 };
 obj_Boolean lit_false = &lit_false_struct;
@@ -162,34 +186,21 @@ obj_Boolean lit_true = &lit_true_struct;
 obj_Int new_Int(  ) {
   obj_Int new_thing = (obj_Int)
     malloc(sizeof(struct obj_Int_struct));
-  new_thing->clazz = the_class_Int;
+  new_thing->clazz = class_Int_Instance;
   new_thing->value = 0;          
   return new_thing; 
 }
-obj_String Int_method_STRING(obj_Int this) {
-  char *rep;
-  asprintf(&rep, "%d", this->value);
-  return str_literal(rep); 
-}
-obj_Boolean Int_method_EQUALS(obj_Int this, obj_Obj other) {
-  obj_Int other_int = (obj_Int) other; 
-  
-  if (other_int->clazz != this->clazz) {
-    return lit_false;
-  }
-  if (this->value != other_int->value) {
-    return lit_false;
-  }
-  return lit_true;
-}
 obj_Int Int_method_PLUS(obj_Int this, obj_Int other) {
-  return int_literal(this->value + other->value);
-}
-obj_Int Int_method_MINUS(obj_Int this, obj_Int other) {
-  return int_literal(this->value - other->value);
+  return int_lit(this->value + other->value);
 }
 obj_Int Int_method_TIMES(obj_Int this, obj_Int other) {
-  return int_literal(this->value * other->value);
+  return int_lit(this->value * other->value);
+}
+obj_Int Int_method_MINUS(obj_Int this, obj_Int other) {
+  return int_lit(this->value - other->value);
+}
+obj_Int Int_method_DIVIDE(obj_Int this, obj_Int other) {
+  return int_lit(this->value / other->value);
 }
 obj_Boolean Int_method_ATMOST(obj_Int this, obj_Int other) {
   if (this->value <= other->value) {
@@ -215,24 +226,66 @@ obj_Boolean Int_method_MORE(obj_Int this, obj_Int other) {
 }
   return lit_false;
 }
+obj_Nothing Int_method_PRINT(obj_Int this) {
+  obj_String str = this->clazz->STR(this);
+  fprintf(stdout, "%s", str->value);
+  return nothing; 
+}
+obj_String Int_method_STR(obj_Int this) {
+  char *rep;
+  asprintf(&rep, "%d", this->value);
+  return str_lit(rep); 
+}
+obj_Boolean Int_method_EQUALS(obj_Int this, obj_Obj other) {
+  obj_Int other_int = (obj_Int) other; 
+  
+  if (other_int->clazz != this->clazz) {
+    return lit_false;
+  }
+  if (this->value != other_int->value) {
+    return lit_false;
+  }
+  return lit_true;
+}
 struct  class_Int_struct  the_class_Int_struct = {
   new_Int,     /* Constructor */
-  Int_method_STRING, 
-  Obj_method_PRINT, 
+  Int_method_PRINT, 
+  Int_method_STR, 
   Int_method_EQUALS,
   Int_method_PLUS,
-  Int_method_MINUS,
   Int_method_TIMES,
-  Int_method_DIV,
+  Int_method_MINUS,
+  Int_method_DIVIDE,
   Int_method_ATMOST,
   Int_method_LESS,
   Int_method_ATLEAST,
   Int_method_MORE
 };
 
-class_Int the_class_Int = &the_class_Int_struct; 
-obj_Int int_literal(int n) {
+class_Int class_Int_Instance = &the_class_Int_struct; 
+obj_Int int_lit(int n) {
   obj_Int boxed = new_Int();
   boxed->value = n;
   return boxed;
+}
+  obj_Pt new_Pt(  ) {
+  obj_Pt new_thing = (obj_Pt) malloc(sizeof(struct obj_Pt_struct));
+  new_thing->clazz = class_Pt_Instance;
+  return new_thing; 
+}
+struct  class_Pt_struct  the_class_Pt_struct = {
+  new_Pt,   
+};
+class_String class_String_Instance = &the_class_String_struct; 
+  obj_P new_P(  ) {
+  obj_P new_thing = (obj_P) malloc(sizeof(struct obj_P_struct));
+  new_thing->clazz = class_P_Instance;
+  return new_thing; 
+}
+struct  class_P_struct  the_class_P_struct = {
+  new_P,   
+};
+class_String class_String_Instance = &the_class_String_struct; 
+int main(void){
+	obj_P main_f = 	return 0;
 }

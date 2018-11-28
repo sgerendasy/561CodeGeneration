@@ -271,7 +271,7 @@ public class Main {
 			FileWriter outputStream = new FileWriter(outputFileName);
             outputStream.write("#include <stdio.h>\n");
             outputStream.write("#include <stdlib.h>\n");
-            outputStream.write("#include <String.h>\n");
+            outputStream.write("#include <string.h>\n");
             outputStream.write("#include \"" + headerFileName+"\"\n\n\n");
 
             // c file code generation
@@ -481,7 +481,8 @@ public class Main {
                             }
                             i++;
 
-                        } else if (c.className.equals("Int")) {
+                        }
+                        else if (c.className.equals("Int")) {
                             if (i == 0) {
                                 outputStream.write("obj_Int new_Int(  ) {\n");
                                 outputStream.write("  obj_Int new_thing = (obj_Int)\n");
@@ -569,7 +570,34 @@ public class Main {
                             i++;
 
                         }
+ 
                     }
+                    
+                }
+            	//Create struct for class
+            	else if (!c.className.equals("$statementsDummyClass")) {
+            		for (MethodNode m : GetCompleteMethodTable(c.className)) {
+                	if (i == 0) {
+                		outputStream.write("  obj_"+c.className+" new_"+c.className+"(  ) {\n");
+                        outputStream.write("  obj_"+c.className+" new_thing = (obj_"+c.className+") malloc(sizeof(struct obj_"+c.className+"_struct));\n");
+                        outputStream.write("  new_thing->clazz = class_"+c.className+"_Instance;\n");
+                        //??? NEED to add instance variables
+                        outputStream.write("  return new_thing; \n}\n");
+                    }
+                	//create method object for each method
+                	
+                	
+                	if (i == size) {
+                		outputStream.write("struct  class_"+c.className+"_struct  the_class_"+c.className+"_struct = {\n");
+                        outputStream.write("  new_"+c.className+",   \n");
+                        //loop through inherited methods??
+                        //loop through overridden??
+                        outputStream.write("};\n");
+                        outputStream.write("class_String class_String_Instance = &the_class_String_struct; \n");
+                	}
+                	
+                	i++;
+            		}
                 }
                 else if (c.className.equals("$statementsDummyClass"))
                 {
