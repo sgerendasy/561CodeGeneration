@@ -8,6 +8,9 @@ typedef struct class_Obj_struct* class_Obj;
 struct class_Pt_struct;
 typedef struct class_Pt_struct* class_Pt;
 
+struct class_D_struct;
+typedef struct class_D_struct* class_D;
+
 struct class_String_struct;
 typedef struct class_String_struct* class_String;
 
@@ -60,6 +63,10 @@ typedef struct obj_P_struct {
 	obj_Int x;
 	obj_Int y;
 } *obj_P;
+
+typedef struct obj_D_struct {
+	class_D clazz;
+} *obj_D;
 
 typedef struct obj_$statementsDummyClass_struct {
 	class_$statementsDummyClass clazz;
@@ -130,7 +137,14 @@ struct class_P_struct {
 	obj_Boolean (*EQUALS)  ( obj_P, obj_Obj );
 	obj_Int (*foo)  ( obj_P, obj_Pt );
 	obj_Int (*sub)  ( obj_P );
-	obj_Int (*d)  ( obj_P );
+	obj_Int (*d)  ( obj_P, obj_Int, obj_String );
+};
+
+struct class_D_struct {
+	obj_D (*constructor) ( void );
+	obj_Nothing (*PRINT)  ( obj_D );
+	obj_String (*STR)  ( obj_D );
+	obj_Boolean (*EQUALS)  ( obj_D, obj_Obj );
 };
 
 struct class_$statementsDummyClass_struct {
@@ -191,7 +205,10 @@ obj_String P_method_STR(obj_P this );
 obj_Boolean P_method_EQUALS(obj_P this, obj_Obj other );
 obj_Int P_method_foo(obj_P this, obj_Pt pt );
 obj_Int P_method_sub(obj_P this );
-obj_Int P_method_d(obj_P this );
+obj_Int P_method_d(obj_P this, obj_Int z, obj_String q );
+obj_Nothing D_method_PRINT(obj_D this );
+obj_String D_method_STR(obj_D this );
+obj_Boolean D_method_EQUALS(obj_D this, obj_Obj other );
 obj_Nothing $statementsDummyClass_method_PRINT(obj_$statementsDummyClass this );
 obj_String $statementsDummyClass_method_STR(obj_$statementsDummyClass this );
 obj_Boolean $statementsDummyClass_method_EQUALS(obj_$statementsDummyClass this, obj_Obj other );

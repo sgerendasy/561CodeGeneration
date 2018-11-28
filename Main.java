@@ -777,17 +777,35 @@ public class Main {
                 {
                     nodeIndex = 0;
                     // do regular code generation for all other classes here
+                    LinkedList<MethodNode> t = GetCompleteMethodTable(c.className);
                     for (MethodNode m : GetCompleteMethodTable(c.className)) {
                         if (i == 0) {
-                            outputStream.write("  obj_"+c.className+" new_"+c.className+"(  ) {\n");
+                        	
+                        	Class_Block.Clazz_Block theClassBlock = GetClassBlock(c.className);
+                        	String args = "";
+                        	for(Args.Arg a : theClassBlock._argList._args) {
+                        		args+="obj_"+a._type+" "+a._ident+" ,";
+                        	}
+                        	if(!(args==""))
+                        		args = args.substring(0,args.length() - 1);
+                        	
+                            outputStream.write("  obj_"+c.className+" new_"+c.className+"("+args+") {\n");
                             outputStream.write("  obj_"+c.className+" new_thing = (obj_"+c.className+") malloc(sizeof(struct obj_"+c.className+"_struct));\n");
                             outputStream.write("  new_thing->clazz = class_"+c.className+"_Instance;\n");
-                            //??? NEED to add instance variables
+                            //??? NEED to add instance variables example
+                            //new_thing->x = x;
+                            //new_thing->y = y; 
+                            //loop through statements finding this. 
+                            for (Statement s: theClassBlock._stmtList) {
+                            	
+                            }
+//                            for(Var s: VarTableSingleton.getTableByClassName(c.className).constructorTable) {
+//                            	outputStream.write(" new_thing->"+s.ident.replace("this.", "")+" \n");
+//                            }
                             outputStream.write("  return new_thing; \n}\n");
 
-
                             String parent=typeChecker.tree.findNode(typeChecker.tree.getRoot(),c.className).getParent().getId();
-                            HashMap<String, String> t = classHeaderDictionary.get(parent).QuackMethodToCMethod;
+                            
                             for(Entry<String, String> Super : classHeaderDictionary.get(parent).QuackMethodToCMethod.entrySet()) {
                             	if(c.MethodIdentExists(Super.getKey())) {
                             		classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(Super.getKey(), c.className +"_method_"+Super.getKey());
@@ -806,10 +824,32 @@ public class Main {
 
                         }
                         //create method object for each method
-                        //???Need to fix adding arguments
                         if(c.MethodIdentExists(m.ident)) {
-                        outputStream.write("obj_"+m.returnType+" "+classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident)+"(obj_"+c.className +") {\n");
+                        LinkedList<String> args = VarTableSingleton.getTableByClassName(c.className).GetMethodArgs(m.ident);
+                       
+                        if(args.isEmpty()) {
+                        	outputStream.write("obj_"+m.returnType+" "+classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident)+"(obj_"+c.className +") {\n");
+                        }
+                        else 
+                        {
+                        Class_Block.Clazz_Block theClassBlock = GetClassBlock(c.className);
+                        LinkedList<Args.Arg> methArgs = null;
+                        for(Methods.Method x:theClassBlock._methods) {
+                        		if(x._methodIdent.equals(m.ident)){
+                        			methArgs= x._formalArgs._args;
+                        		}
+                        }
+                        String methArg = "obj_"+c.className+", ";
+                    	for(Args.Arg a : methArgs) {
+                    		methArg+="obj_"+a._type+" "+a._ident+" ,";
+                    	}
+                    	if(!(methArg==""))
+                    		methArg = methArg.substring(0,methArg.length() - 1);
+                        
+                        outputStream.write("obj_"+m.returnType+" "+classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident)+"("+methArg+") {\n");
+                        }
                         //????fill in method
+                        //
                         outputStream.write("\n}\n");
                         classHeaderDictionary.get(c.className).CMethodToReturnType.put(classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident), "obj_"+m.returnType);
                         }

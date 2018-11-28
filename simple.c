@@ -274,7 +274,7 @@ obj_Int int_lit(int n) {
   boxed->value = n;
   return boxed;
 }
-  obj_Pt new_Pt(  ) {
+  obj_Pt new_Pt(obj_Int x ,obj_Int y ) {
   obj_Pt new_thing = (obj_Pt) malloc(sizeof(struct obj_Pt_struct));
   new_thing->clazz = class_Pt_Instance;
   return new_thing; 
@@ -297,7 +297,7 @@ Obj_method_STR,
 Obj_method_EQUALS,
 };
 class_String class_String_Instance = &the_class_String_struct; 
-  obj_P new_P(  ) {
+  obj_P new_P(obj_Int x ,obj_Int y ) {
   obj_P new_thing = (obj_P) malloc(sizeof(struct obj_P_struct));
   new_thing->clazz = class_P_Instance;
   return new_thing; 
@@ -305,7 +305,7 @@ class_String class_String_Instance = &the_class_String_struct;
 obj_Int P_method_sub(obj_P) {
 
 }
-obj_Int P_method_d(obj_P) {
+obj_Int P_method_d(obj_P, obj_Int z ,obj_String q ) {
 
 }
 struct  class_P_struct  the_class_P_struct = {
@@ -314,4 +314,22 @@ P_method_sub,
 P_method_d,
 Pt_method_PRINT,
 Pt_method_foo,
-Obj_method_STR
+Obj_method_STR,
+Obj_method_EQUALS,
+};
+class_String class_String_Instance = &the_class_String_struct; 
+  obj_D new_D() {
+  obj_D new_thing = (obj_D) malloc(sizeof(struct obj_D_struct));
+  new_thing->clazz = class_D_Instance;
+  return new_thing; 
+}
+struct  class_D_struct  the_class_D_struct = {
+  new_D, 
+Obj_method_PRINT,
+Obj_method_STR,
+Obj_method_EQUALS,
+};
+class_String class_String_Instance = &the_class_String_struct; 
+int main(void){
+	return 0;
+}

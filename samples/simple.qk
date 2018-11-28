@@ -20,11 +20,15 @@ class P(x: Int, y: Int) extends Pt{
   def sub():Int {
          return x-y-5; 
   }
-  def d():Int {
+  def d(z: Int, q:String):Int {
          return x-y-5; 
   }
 	
 }
 
+class D() {
+  
+  
+}
 f: Obj = P(4,5);
 f.foo();
