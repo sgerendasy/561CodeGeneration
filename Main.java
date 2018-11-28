@@ -785,40 +785,44 @@ public class Main {
                             //??? NEED to add instance variables
                             outputStream.write("  return new_thing; \n}\n");
 
+
+                            String parent=typeChecker.tree.findNode(typeChecker.tree.getRoot(),c.className).getParent().getId();
+                            HashMap<String, String> t = classHeaderDictionary.get(parent).QuackMethodToCMethod;
+                            for(Entry<String, String> Super : classHeaderDictionary.get(parent).QuackMethodToCMethod.entrySet()) {
+                            	if(c.MethodIdentExists(Super.getKey())) {
+                            		classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(Super.getKey(), c.className +"_method_"+Super.getKey());
+
+                            	}else { 
+                            		classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(Super.getKey(), Super.getValue());
+                            		
+                            	}
+                            }
+                            CHeaderNode x = classHeaderDictionary.get(parent);
+                            for (MethodNode meth : GetCompleteMethodTable(c.className)) {
+                            	if(!x.QuackMethodToCMethod.containsKey(meth.ident)) {
+                            	classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(meth.ident, c.className+"_method_"+meth.ident);
+                            	}
+                            }
+
                         }
                         //create method object for each method
-
                         //???Need to fix adding arguments
-                        outputStream.write("obj_"+m.returnType+" "+c.className+"_method_"+m.ident+"(obj_"+c.className +"this) {\n");
+                        if(c.MethodIdentExists(m.ident)) {
+                        outputStream.write("obj_"+m.returnType+" "+classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident)+"(obj_"+c.className +") {\n");
                         //????fill in method
-                        outputStream.write(";\n}\n");
+                        outputStream.write("\n}\n");
+                        classHeaderDictionary.get(c.className).CMethodToReturnType.put(classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident), "obj_"+m.returnType);
+                        }
 
                         if (i == size) {
                             outputStream.write("struct  class_"+c.className+"_struct  the_class_"+c.className+"_struct = {\n");
                             outputStream.write("  new_"+c.className);
                             if(size>1) {
                                 outputStream.write(", \n");
-                                String parent=typeChecker.tree.findNode(typeChecker.tree.getRoot(),c.className).getParent().getId();
-                                HashMap<String, String> t = classHeaderDictionary.get(parent).QuackMethodToCMethod;
-                                for(Entry<String, String> Super : classHeaderDictionary.get(parent).QuackMethodToCMethod.entrySet()) {
-                                	if(c.MethodIdentExists(Super.getKey())) {
-                                		outputStream.write(c.className +"_method_"+Super.getKey()+",\n");  
-                                		classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(Super.getKey(), c.className +"_method_"+Super.getKey());
-                                		
-                                	}else {
-                                		outputStream.write(Super.getValue()+",\n");  
-                                		classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(Super.getKey(), Super.getValue());
-                                		
-                                	}
+                                for(MethodNode s :GetCompleteMethodTable(c.className)) {
+                                	outputStream.write(classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(s.ident)+",\n");
                                 }
-                                CHeaderNode x = classHeaderDictionary.get(parent);
-                                for (MethodNode meth : GetCompleteMethodTable(c.className)) {
-                                	if(!x.QuackMethodToCMethod.containsKey(meth.ident)) {
-                                	outputStream.write(c.className+"_method_"+meth.ident+",\n");
-                                	
-                                	classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(meth.ident, c.className+"_method_"+meth.ident);
-                                	}
-                                }
+                                
                             }
                             outputStream.write("};\n");
                             outputStream.write("class_String class_String_Instance = &the_class_String_struct; \n");
@@ -829,6 +833,7 @@ public class Main {
                 }
 
             }
+            
             outputStream.flush();  
         } 
         catch (IOException e)
