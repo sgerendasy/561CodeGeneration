@@ -73,8 +73,10 @@ obj_String new_String(  ) {
 obj_String String_method_PLUS(obj_String this, obj_String other) {
 char* thisString = this->value;
 char* otherString = other->value;
-strcat(thisString, otherString);
-return str_lit(thisString);
+char* combinedStrings = malloc(strlen(thisString) + strlen(otherString) + 1);
+strcat(combinedStrings, thisString);
+strcat(combinedStrings, otherString);
+return str_lit(combinedStrings);
 }
 
 obj_Boolean String_method_EQUALS(obj_String this, obj_Obj other) {
@@ -226,6 +228,9 @@ obj_Boolean Int_method_MORE(obj_Int this, obj_Int other) {
 }
   return lit_false;
 }
+obj_Int Int_method_NEG(obj_Int this) {
+  return int_lit(- this->value);
+}
 obj_Nothing Int_method_PRINT(obj_Int this) {
   obj_String str = this->clazz->STR(this);
   fprintf(stdout, "%s", str->value);
@@ -259,7 +264,8 @@ struct  class_Int_struct  the_class_Int_struct = {
   Int_method_ATMOST,
   Int_method_LESS,
   Int_method_ATLEAST,
-  Int_method_MORE
+  Int_method_MORE,
+  Int_method_NEG
 };
 
 class_Int class_Int_Instance = &the_class_Int_struct; 

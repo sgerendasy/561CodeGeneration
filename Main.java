@@ -804,18 +804,18 @@ public class Main {
                                 	if(c.MethodIdentExists(Super.getKey())) {
                                 		outputStream.write(c.className +"_method_"+Super.getKey()+",\n");  
                                 		classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(Super.getKey(), c.className +"_method_"+Super.getKey());
-                                		System.out.println("1 "+Super.getKey());
+                                		
                                 	}else {
                                 		outputStream.write(Super.getValue()+",\n");  
                                 		classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(Super.getKey(), Super.getValue());
-                                		System.out.println("2 "+Super.getValue());
+                                		
                                 	}
                                 }
                                 CHeaderNode x = classHeaderDictionary.get(parent);
                                 for (MethodNode meth : GetCompleteMethodTable(c.className)) {
                                 	if(!x.QuackMethodToCMethod.containsKey(meth.ident)) {
                                 	outputStream.write(c.className+"_method_"+meth.ident+",\n");
-                                	System.out.println("3 "+meth.ident);
+                                	
                                 	classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(meth.ident, c.className+"_method_"+meth.ident);
                                 	}
                                 }
