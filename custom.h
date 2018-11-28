@@ -17,8 +17,8 @@ typedef struct class_Nothing_struct* class_Nothing;
 struct class_Int_struct;
 typedef struct class_Int_struct* class_Int;
 
-struct class_C1_struct;
-typedef struct class_C1_struct* class_C1;
+struct class_$statementsDummyClass_struct;
+typedef struct class_$statementsDummyClass_struct* class_$statementsDummyClass;
 
 typedef struct obj_Obj_struct {
 	class_Obj clazz;
@@ -43,10 +43,9 @@ typedef struct obj_Int_struct {
 	int value;
 } *obj_Int;
 
-typedef struct obj_C1_struct {
-	class_C1 clazz;
-	obj_Int x;
-} *obj_C1;
+typedef struct obj_$statementsDummyClass_struct {
+	class_$statementsDummyClass clazz;
+} *obj_$statementsDummyClass;
 
 struct class_Obj_struct {
 	obj_Obj (*constructor) ( void );
@@ -96,12 +95,11 @@ struct class_Int_struct {
 	obj_Boolean (*MORE)  ( obj_Int, obj_Int );
 };
 
-struct class_C1_struct {
-	obj_C1 (*constructor) ( obj_Int, obj_Obj);
-	obj_Nothing (*PRINT)  ( obj_C1 );
-	obj_String (*STR)  ( obj_C1 );
-	obj_Boolean (*EQUALS)  ( obj_C1, obj_Obj );
-	obj_String (*foo)  ( obj_C1, obj_Boolean, obj_Int );
+struct class_$statementsDummyClass_struct {
+	obj_$statementsDummyClass (*constructor) ( void );
+	obj_Nothing (*PRINT)  ( obj_$statementsDummyClass );
+	obj_String (*STR)  ( obj_$statementsDummyClass );
+	obj_Boolean (*EQUALS)  ( obj_$statementsDummyClass, obj_Obj );
 };
 
 extern obj_String str_lit(char *s);
@@ -144,10 +142,9 @@ obj_Boolean Int_method_ATMOST(obj_Int this, obj_Int other );
 obj_Boolean Int_method_LESS(obj_Int this, obj_Int other );
 obj_Boolean Int_method_ATLEAST(obj_Int this, obj_Int other );
 obj_Boolean Int_method_MORE(obj_Int this, obj_Int other );
-obj_Nothing C1_method_PRINT(obj_C1 this );
-obj_String C1_method_STR(obj_C1 this );
-obj_Boolean C1_method_EQUALS(obj_C1 this, obj_Obj other );
-obj_String C1_method_foo(obj_C1 this, obj_Boolean a, obj_Int c );
+obj_Nothing $statementsDummyClass_method_PRINT(obj_$statementsDummyClass this );
+obj_String $statementsDummyClass_method_STR(obj_$statementsDummyClass this );
+obj_Boolean $statementsDummyClass_method_EQUALS(obj_$statementsDummyClass this, obj_Obj other );
 
 
 #endif

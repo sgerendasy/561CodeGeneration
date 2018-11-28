@@ -1,9 +1,3 @@
-class C1(x: Int, y: Obj)
-{
-    y = 5;
-    this.x = x;
-    def foo(a: Boolean, c: Int) : String
-    {
-        return a.STR() + c.STR();
-    }
-}
+a = 1;
+b = 2;
+c = a + b;
