@@ -583,15 +583,36 @@ public class Main {
                         outputStream.write("  new_thing->clazz = class_"+c.className+"_Instance;\n");
                         //??? NEED to add instance variables
                         outputStream.write("  return new_thing; \n}\n");
+                        
                     }
                 	//create method object for each method
                 	
+                	//???Need to fix adding arguments
+                	outputStream.write("obj_"+m.returnType+" "+c.className+"_method_"+m.ident+"(obj_"+c.className +"this) {\n");
+                	//????fill in method
+                    outputStream.write(";\n}\n");
                 	
                 	if (i == size) {
                 		outputStream.write("struct  class_"+c.className+"_struct  the_class_"+c.className+"_struct = {\n");
-                        outputStream.write("  new_"+c.className+",   \n");
+                        outputStream.write("  new_"+c.className);
+                        if(size>1) {
+                        outputStream.write(", \n");
                         //loop through inherited methods??
                         //loop through overridden??
+                        String parent=typeChecker.tree.findNode(typeChecker.tree.getRoot(),c.className).getParent().getId();
+                        LinkedList<MethodNode> t = GetCompleteMethodTable(parent);
+                        
+//                        for(MethodNode Super : GetCompleteMethodTable(parent)) {
+//                        	outputStream.write(c.className+"_method_"+Super.ident+",\n");
+//                        	System.out.println(c.className+"_method_"+Super.ident+",\n");
+//                		}
+                        //??? ordering is off. Seems like when added to the GetCompleteMethodTable, new methods get added
+                        //to the top
+                        for (MethodNode meth : GetCompleteMethodTable(c.className)) {
+                        		
+                        		outputStream.write(c.className+"_method_"+meth.ident+",\n");
+                        }
+                        }
                         outputStream.write("};\n");
                         outputStream.write("class_String class_String_Instance = &the_class_String_struct; \n");
                 	}
