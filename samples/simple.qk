@@ -1,7 +1,9 @@
 class Pt(x: Int, y: Int) {
     this.x = x;
     this.y = y; 
-
+     def PRINT() {
+         
+     }
      def foo():Int {
          pt=Pt(x,y);
          return pt.sub(); 
@@ -18,6 +20,10 @@ class P(x: Int, y: Int) extends Pt{
   def sub():Int {
          return x-y-5; 
   }
+  def d():Int {
+         return x-y-5; 
+  }
+	
 }
 
 f: Obj = P(4,5);

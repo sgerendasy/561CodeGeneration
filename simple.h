@@ -129,6 +129,7 @@ struct class_P_struct {
 	obj_Boolean (*EQUALS)  ( obj_P, obj_Obj );
 	obj_Int (*foo)  ( obj_P, obj_Pt );
 	obj_Int (*sub)  ( obj_P );
+	obj_Int (*d)  ( obj_P );
 };
 
 struct class_$statementsDummyClass_struct {
@@ -188,6 +189,7 @@ obj_String P_method_STR(obj_P this );
 obj_Boolean P_method_EQUALS(obj_P this, obj_Obj other );
 obj_Int P_method_foo(obj_P this, obj_Pt pt );
 obj_Int P_method_sub(obj_P this );
+obj_Int P_method_d(obj_P this );
 obj_Nothing $statementsDummyClass_method_PRINT(obj_$statementsDummyClass this );
 obj_String $statementsDummyClass_method_STR(obj_$statementsDummyClass this );
 obj_Boolean $statementsDummyClass_method_EQUALS(obj_$statementsDummyClass this, obj_Obj other );

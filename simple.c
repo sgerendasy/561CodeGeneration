@@ -44,7 +44,7 @@ obj_Nothing Nothing_method_PRINT(obj_Nothing this) {
   fprintf(stdout, "%s", str->value);
   return nothing; 
 }
-obj_String Nothing_method_STRING(obj_Nothing this) {
+obj_String Nothing_method_STR(obj_Nothing this) {
     return str_lit("<nothing>");
 }
 obj_Boolean Nothing_method_EQUALS(obj_Nothing this, obj_Obj other) {
@@ -58,7 +58,7 @@ obj_Nothing other_nothing = (obj_Nothing) other;
 struct  class_Nothing_struct  the_class_Nothing_struct = {
   new_Nothing,     
   Nothing_method_PRINT, 
-  Nothing_method_STRING, 
+  Nothing_method_STR, 
   Nothing_method_EQUALS
 };
 class_Nothing class_Nothing_Instance = &the_class_Nothing_struct; 
@@ -273,13 +273,13 @@ obj_Int int_lit(int n) {
   new_thing->clazz = class_Pt_Instance;
   return new_thing; 
 }
+obj_Nothing Pt_method_PRINT(obj_Ptthis) {
+;
+}
 obj_Int Pt_method_foo(obj_Ptthis) {
 ;
 }
 obj_Int Pt_method_sub(obj_Ptthis) {
-;
-}
-obj_Nothing Pt_method_PRINT(obj_Ptthis) {
 ;
 }
 obj_String Pt_method_STR(obj_Ptthis) {
@@ -290,11 +290,11 @@ obj_Boolean Pt_method_EQUALS(obj_Ptthis) {
 }
 struct  class_Pt_struct  the_class_Pt_struct = {
   new_Pt, 
+Pt_method_PRINT,
+Obj_method_STR,
+Obj_method_EQUALS,
 Pt_method_foo,
 Pt_method_sub,
-Pt_method_PRINT,
-Pt_method_STR,
-Pt_method_EQUALS,
 };
 class_String class_String_Instance = &the_class_String_struct; 
   obj_P new_P(  ) {
@@ -305,10 +305,13 @@ class_String class_String_Instance = &the_class_String_struct;
 obj_Int P_method_sub(obj_Pthis) {
 ;
 }
-obj_Int P_method_foo(obj_Pthis) {
+obj_Int P_method_d(obj_Pthis) {
 ;
 }
 obj_Nothing P_method_PRINT(obj_Pthis) {
+;
+}
+obj_Int P_method_foo(obj_Pthis) {
 ;
 }
 obj_String P_method_STR(obj_Pthis) {
@@ -319,13 +322,14 @@ obj_Boolean P_method_EQUALS(obj_Pthis) {
 }
 struct  class_P_struct  the_class_P_struct = {
   new_P, 
+Pt_method_PRINT,
+Obj_method_STR,
+Obj_method_EQUALS,
+Pt_method_foo,
 P_method_sub,
-P_method_foo,
-P_method_PRINT,
-P_method_STR,
-P_method_EQUALS,
+P_method_d,
 };
 class_String class_String_Instance = &the_class_String_struct; 
 int main(void){
-	obj_P main_f = 	return 0;
+	return 0;
 }
