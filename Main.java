@@ -575,14 +575,65 @@ public class Main {
                 {
                     String mainDecl = "int main(void){\n";
                     outputStream.write(mainDecl);
+                    Class_Block.Clazz_Block theClassBlock = GetClassBlock(c.className);
+                    for (Statement s : theClassBlock._stmtList)
+                    {
+                        if (s.StatementType().equals("ASSIGNMENT"))
+                        {
+                            try
+                            {
+                                String statementType = s.getRexpr().getType();
+                                String LHident =  classHeaderDictionary.get(statementType).objectInstanceName + " main_" + s.getLexpr().getIdent();
+                                String RHconstructor = "";
+                                if (s.getRexpr().ExpressionType().equals("INTCONST"))
+                                {
+                                    Expression.IntConst RHexpr = (Expression.IntConst) s.getRexpr();
+                                    RHconstructor = "int_lit(" + RHexpr.i + ");\n";
+                                }
 
+                                outputStream.write("\t" + LHident + " = " + RHconstructor);
+                            }
+                            catch (Exception e)
+                            {
+                                System.out.println(e.getMessage());
+                            }
+                        }
+                        else if (s.StatementType().equals("RETURN"))
+                        {
+
+                        }
+                        else if (s.StatementType().equals("WHILE"))
+                        {
+
+                        }
+                        else if (s.StatementType().equals("IF"))
+                        {
+
+                        }
+                        else if (s.StatementType().equals("ELSE"))
+                        {
+
+                        }
+                        else if (s.StatementType().equals("TYPECASE"))
+                        {
+
+                        }
+                        else if (s.StatementType().equals("TYPE_STMT"))
+                        {
+
+                        }
+                        else if (s.StatementType().equals("EXPRESSION"))
+                        {
+
+                        }
+                    }
 
                     String endMain = "\treturn 0;\n}\n";
                     outputStream.write(endMain);
                 }
                 else
                 {
-                    // do regular code generation
+                    // do regular code generation for all other classes here
                 }
 
             }
@@ -596,6 +647,16 @@ public class Main {
             System.out.println(e.getMessage());
         }
         
+    }
+
+    private Class_Block.Clazz_Block GetClassBlock(String className)
+    {
+        for (Class_Block.Clazz_Block cb : ast._cbs)
+        {
+            if (cb._classIdent.equals(className))
+                return cb;
+        }
+        return null;
     }
 
     HashMap<String, LinkedList<Var>> GetCompleteMethodArgs(String className)

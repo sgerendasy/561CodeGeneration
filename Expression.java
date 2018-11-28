@@ -11,6 +11,7 @@ public abstract class Expression
     protected abstract void visit2(String classIdent, String methodIdent);
     abstract void SetClassIdent(String ci);
     abstract void SetMethodIdent(String mi);
+    abstract String ExpressionType() throws Exception;
     
     public static class Priority extends Expression
     {
@@ -32,6 +33,11 @@ public abstract class Expression
         public void SetMethodIdent(String mi)
         {
             this.e.SetMethodIdent(mi);
+        }
+
+        public String ExpressionType()
+        {
+            return "PRIORITY";
         }
 
         public String getType() throws Exception
@@ -103,6 +109,11 @@ public abstract class Expression
         {
             this.e1.SetMethodIdent(mi);
             this.e2.SetMethodIdent(mi);
+        }
+
+        public String ExpressionType()
+        {
+            return "BINEX";
         }
 
         public String getType() throws Exception
@@ -229,6 +240,11 @@ public abstract class Expression
             this.e1.SetMethodIdent(mi);
         }
 
+        public String ExpressionType()
+        {
+            return "UNEX";
+        }
+
         public String getType() throws Exception
         {
             String eType = this.e1.getType();
@@ -303,6 +319,11 @@ public abstract class Expression
             this._s = s;
             this._left = left;
             this._right = right;
+        }
+
+        public String ExpressionType()
+        {
+            return "STRINGLIT";
         }
 
         public String getType()
@@ -387,6 +408,11 @@ public abstract class Expression
         public void visit2(String classIdent)
         {
             // TODO
+        }
+
+        public String ExpressionType()
+        {
+            return "INTCONST";
         }
 
         public void SetClassIdent(String ci)
@@ -483,6 +509,11 @@ public abstract class Expression
                 iType = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetTypeFromMethodVarTable(this.ident, TypeChecker.currentMethod);
             return iType;
 //            return type;
+        }
+
+        public String ExpressionType()
+        {
+            return "IDENTIFIER";
         }
 
         public String getType(String methodIdent) throws Exception
@@ -594,6 +625,11 @@ public abstract class Expression
             this._left = left;
             this._right = right;
             isMethod = false;
+        }
+
+        public String ExpressionType()
+        {
+            return "METHODCALL";
         }
 
         public Method_Call(Expression e, String ident, Args args, int left, int right) throws Exception
@@ -724,7 +760,11 @@ public abstract class Expression
             this._args = args;
             this._left = left;
             this._right = right;
-            
+        }
+
+        public String ExpressionType()
+        {
+            return "CONSTRUCTOR";
         }
 
         public void SetClassIdent(String ci)
