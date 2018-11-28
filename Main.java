@@ -591,6 +591,7 @@ public class Main {
                 }
                 else if (c.className.equals("$statementsDummyClass"))
                 {
+                    nodeIndex = 0;
                     String mainDecl = "int main(void){\n";
                     outputStream.write(mainDecl);
                     Class_Block.Clazz_Block theClassBlock = GetClassBlock(c.className);
@@ -648,6 +649,7 @@ public class Main {
                 //Create struct for class
                 else
                 {
+                    nodeIndex = 0;
                     // do regular code generation for all other classes here
                     for (MethodNode m : GetCompleteMethodTable(c.className)) {
                         if (i == 0) {
