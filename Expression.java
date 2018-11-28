@@ -253,7 +253,15 @@ public abstract class Expression
 
         public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-            return null;
+            String childType = Main.classHeaderDictionary.get(e1.getType()).objectInstanceName;
+            String tempVarName = "temp_" + Main.nodeIndex;
+            Main.nodeIndex++;
+            String rightHandExpression = Main.classHeaderDictionary.get(e1.getType()).QuackMethodToCMethod.get(OperatorToString.getUnaryOperatorDict().get(op)) + "( ";
+            GenTreeNode self = new GenTreeNode(tempVarName, childType);
+            self.children.add(e1.CreateGenTree(registerTable));
+            rightHandExpression += self.children.get(0).registerName + ")";
+            self.rightHandExpression = rightHandExpression;
+            return self;
         }
 
         public void SetClassIdent(String ci)
@@ -352,7 +360,7 @@ public abstract class Expression
             String varName = "temp_" + Main.nodeIndex;
             Main.nodeIndex++;
             String varType = Main.classHeaderDictionary.get("String").objectInstanceName;
-            String rightHandExpression = "str_lit(" + this._s + ")";
+            String rightHandExpression = "str_lit(\"" + this._s + "\")";
             GenTreeNode self = new GenTreeNode(varName, varType, rightHandExpression);
             return self;
         }
@@ -683,7 +691,24 @@ public abstract class Expression
 
         public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-            return null;
+            String eType = this._e.getType();
+            String CMethodName = Main.classHeaderDictionary.get(eType).QuackMethodToCMethod.get(this.methodName);
+            String methodReturnType = Main.classHeaderDictionary.get(eType).CMethodToReturnType.get(CMethodName);
+            String varName = "temp_" + Main.nodeIndex;
+            Main.nodeIndex++;
+            GenTreeNode self = new GenTreeNode(varName, methodReturnType);
+            for (Expression arg : ((Args.Informal_Args)_optionalArgs)._args)
+            {
+                self.children.add(arg.CreateGenTree(registerTable));
+            }
+            String rightHandExpression = CMethodName + "(" + registerTable.get(this._varIdent).ident;
+            for (GenTreeNode child : self.children)
+            {
+                rightHandExpression += ", " + child.registerName;
+            }
+            rightHandExpression += ")";
+            self.rightHandExpression = rightHandExpression;
+            return self;
         }
 
         public String ExpressionType()

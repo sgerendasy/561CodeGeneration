@@ -7,6 +7,7 @@ public class CHeaderNode {
     public String objectInstanceName;
     public String classInstanceSingletonName;
     HashMap<String, String> QuackMethodToCMethod = new HashMap<>();
+    HashMap<String, String> CMethodToReturnType = new HashMap<>();
 
     // a list of <variable name, type> for each struct
     public LinkedList<String> objectInstanceStructVariables = new LinkedList<>();
