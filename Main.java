@@ -768,10 +768,7 @@ public class Main {
                             outputStream.write("obj_"+c.className+" new_"+c.className+"("+args+") {\n");
                             outputStream.write("  obj_"+c.className+" new_thing = (obj_"+c.className+") malloc(sizeof(struct obj_"+c.className+"_struct));\n");
                             outputStream.write("  new_thing->clazz = class_"+c.className+"_Instance;\n");
-                            //??? NEED to add instance variables example
-                            //new_thing->x = x;
-                            //new_thing->y = y; 
-                            //loop through statements finding this. 
+                            
                             for (Statement s: theClassBlock._stmtList) {
                             	if(s.StatementType().equals("ASSIGNMENT"))
                             		if(s.getLexpr().getIdent().contains("this.")) {
@@ -1039,22 +1036,5 @@ public class Main {
         }
         return typeChecker;
 
-    }
-}
-
-class GenTreeAndRegisterTables
-{
-    public GenTreeNode genTreeNode;
-    public HashMap<String, Var> theRegisterTable;
-
-    public GenTreeAndRegisterTables()
-    {
-        this.theRegisterTable = new HashMap<>();
-    }
-
-    public GenTreeAndRegisterTables(GenTreeNode root, HashMap<String, Var> registerTable)
-    {
-        this.genTreeNode = root;
-        this.theRegisterTable = registerTable;
     }
 }
