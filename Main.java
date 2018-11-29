@@ -828,10 +828,24 @@ public class Main {
                         
                         }
                         if(!(statements==null)) {
-                    		
+                        	GenTreeAndRegisterTables genTreeAndRegisterTables = new GenTreeAndRegisterTables();
                         	for(Statement st: statements) {
                         	//????fill in method statements
-                        		System.out.println(st.toString());
+                        		//System.out.println(st.toString());
+                        		
+                        		try
+                                {
+                                    genTreeAndRegisterTables = st.CreateGenTree(genTreeAndRegisterTables.theRegisterTable);
+                                    if(!(genTreeAndRegisterTables==null))
+                                    WriteCFromGenTree(genTreeAndRegisterTables.genTreeNode, outputStream);
+                                    genTreeAndRegisterTables = new GenTreeAndRegisterTables();
+                                }
+                                catch (Exception e)
+                                {
+                                    System.out.println(e.getMessage());
+                                }
+                        		
+                        		
                         	}
                         outputStream.write("\n}\n");
                         classHeaderDictionary.get(c.className).CMethodToReturnType.put(classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident), "obj_"+m.returnType);
