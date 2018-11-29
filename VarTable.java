@@ -12,8 +12,8 @@ public class VarTable
     LinkedList<Var> constructorTable;
     LinkedList<Var> methodTable;
     HashMap<String, LinkedList<Var>> methodVars;
-    HashMap<String, LinkedList<String>> methodArgTypes;
-    LinkedList<String> classArgTypes;
+    HashMap<String, LinkedList<Var>> methodArgs;
+    LinkedList<Var> classArgTypes;
     public String className;
 
 
@@ -24,25 +24,25 @@ public class VarTable
         methodTable = new LinkedList<>();
         methodVars = new HashMap<>();
         classArgTypes = new LinkedList<>();
-        methodArgTypes = new HashMap<>();
+        methodArgs = new HashMap<>();
         this.className = className;
     }
 
-    public void addClassArgs(LinkedList<String> theArgTypes)
+    public void addClassArgs(LinkedList<Var> theArgTypes)
     {
         this.classArgTypes = theArgTypes;
     }
 
-    public void addMethodArgs(String methodIdent, LinkedList<String> theMethodArgTypes)
+    public void addMethodArgs(String methodIdent, LinkedList<Var> theMethodArgTypes)
     {
-        if (!methodArgTypes.containsKey(methodIdent))
+        if (!methodArgs.containsKey(methodIdent))
         {
-            methodArgTypes.put(methodIdent, theMethodArgTypes);
+            methodArgs.put(methodIdent, theMethodArgTypes);
         }
         else
         {
-            methodArgTypes.get(methodIdent).clear();
-            methodArgTypes.put(methodIdent, theMethodArgTypes);
+            methodArgs.get(methodIdent).clear();
+            methodArgs.put(methodIdent, theMethodArgTypes);
         }
     }
 
@@ -52,30 +52,30 @@ public class VarTable
             throw new Exception("Number of args for " + this.className + " don't match");
         for (int i = 0; i < givenArgTypes.size(); i++)
         {
-            if (!TypeChecker.checkSubtype(this.classArgTypes.get(i), givenArgTypes.get(i)))
-                throw new Exception(this.classArgTypes.get(i) + " not a subtype of " + givenArgTypes.get(i));
+            if (!TypeChecker.checkSubtype(this.classArgTypes.get(i).type, givenArgTypes.get(i)))
+                throw new Exception(this.classArgTypes.get(i).type + " not a subtype of " + givenArgTypes.get(i));
         }
     }
 
     public void checkMethodArgs(String methodIdent, ArrayList<String> givenMethodArgTypes) throws Exception
     {
-        if (ExistsInMethodTable(methodIdent) == null)
+        if (ExistsInMethodTable(methodIdent))
             throw new Exception("Method " + methodIdent + " doesn't exist");
-        LinkedList<String> methodArgs = GetMethodArgs(methodIdent);
+        LinkedList<Var> methodArgs = GetMethodArgs(methodIdent);
         if (givenMethodArgTypes.size() != methodArgs.size())
         {
             throw new Exception("Number of args for " + methodIdent + " don't match");
         }
         for (int i = 0; i < givenMethodArgTypes.size(); i++)
         {
-            if (!TypeChecker.checkSubtype(methodArgs.get(i), givenMethodArgTypes.get(i)))
+            if (!TypeChecker.checkSubtype(methodArgs.get(i).type, givenMethodArgTypes.get(i)))
             {
-                throw new Exception(this.methodArgTypes.get(methodIdent).get(i) + " not a subtype of " + givenMethodArgTypes.get(i));
+                throw new Exception(this.methodArgs.get(methodIdent).get(i) + " not a subtype of " + givenMethodArgTypes.get(i));
             }
         }
     }
 
-    public LinkedList<String> GetMethodArgs(String methodIdent)
+    public LinkedList<Var> GetMethodArgs(String methodIdent)
     {
         boolean changed = true;
         String classIdent = this.className;
@@ -84,7 +84,7 @@ public class VarTable
             for (Var v1 : VarTableSingleton.getTableByClassName(classIdent).methodTable)
             {
                 if (methodIdent.equals(v1.ident))
-                    return VarTableSingleton.getTableByClassName(classIdent).methodArgTypes.get(methodIdent);
+                    return VarTableSingleton.getTableByClassName(classIdent).methodArgs.get(methodIdent);
             }
             String newClassIdent = ClassesTable.getInstance().getParentClass(classIdent);
             if (newClassIdent.equals(classIdent))
@@ -136,6 +136,48 @@ public class VarTable
         return null;
     }
 
+    public Var GetVarFromMethodVars(String ident, String methodIdent)
+    {
+        boolean changed = true;
+        String classIdent = this.className;
+        while (changed)
+        {
+            for (Var v1 : VarTableSingleton.getTableByClassName(classIdent).methodVars.get(methodIdent))
+            {
+                if (ident.equals(v1.ident))
+                    return v1;
+            }
+            String newClassIdent = ClassesTable.getInstance().getParentClass(classIdent);
+            if (newClassIdent.equals(classIdent))
+            {
+                changed = false;
+            }
+            classIdent = newClassIdent;
+        }
+        return null;
+    }
+
+    public Var GetVarFromMethodArgs(String ident, String methodIdent)
+    {
+        boolean changed = true;
+        String classIdent = this.className;
+        while (changed)
+        {
+            for (Var v1 : VarTableSingleton.getTableByClassName(classIdent).methodArgs.get(methodIdent))
+            {
+                if (ident.equals(v1.ident))
+                    return v1;
+            }
+            String newClassIdent = ClassesTable.getInstance().getParentClass(classIdent);
+            if (newClassIdent.equals(classIdent))
+            {
+                changed = false;
+            }
+            classIdent = newClassIdent;
+        }
+        return null;
+    }
+
     public Var GetVarFromConstructorTable(String ident)
     {
         for (Var v : constructorTable)
@@ -156,23 +198,23 @@ public class VarTable
         return null;
     }
 
-    public String ExistsInVarTable(Var v)
+    public Boolean ExistsInVarTable(Var v)
     {
         for (Var v1 : varTable)
         {
             if (v.ident.equals(v1.ident))
-                return v1.type;
+                return true;
         }
-        return null;
+        return false;
     }
-    public String ExistsInVarTable(String s)
+    public Boolean ExistsInVarTable(String s)
     {
         for (Var v1 : varTable)
         {
             if (s.equals(v1.ident))
-                return v1.type;
+                return true;
         }
-        return null;
+        return false;
     }
 
     public String ExistsInConstructorTable(Var v)
@@ -194,7 +236,7 @@ public class VarTable
         return null;
     }
 
-    public String ExistsInMethodTable(Var v)
+    public Boolean ExistsInMethodTable(Var v)
     {
         boolean changed = true;
         String classIdent = this.className;
@@ -203,7 +245,7 @@ public class VarTable
             for (Var v1 : VarTableSingleton.getTableByClassName(classIdent).methodTable)
             {
                 if (v.ident.equals(v1.ident))
-                    return v1.type;
+                    return true;
             }
             String newClassIdent = ClassesTable.getInstance().getParentClass(classIdent);
             if (newClassIdent.equals(classIdent))
@@ -212,9 +254,9 @@ public class VarTable
             }
             classIdent = newClassIdent;
         }
-        return null;
+        return false;
     }
-    public String ExistsInMethodTable(String s)
+    public Boolean ExistsInMethodTable(String ident)
     {
         boolean changed = true;
         String classIdent = this.className;
@@ -222,8 +264,8 @@ public class VarTable
         {
             for (Var v1 : VarTableSingleton.getTableByClassName(classIdent).methodTable)
             {
-                if (s.equals(v1.ident))
-                    return v1.type;
+                if (ident.equals(v1.ident))
+                    return true;
             }
             String newClassIdent = ClassesTable.getInstance().getParentClass(classIdent);
             if (newClassIdent.equals(classIdent))
@@ -232,7 +274,51 @@ public class VarTable
             }
             classIdent = newClassIdent;
         }
-        return null;
+        return false;
+    }
+
+    public Boolean ExistsInMethodArgs(String ident, String methodIdent)
+    {
+        boolean changed = true;
+        String classIdent = this.className;
+        while (changed)
+        {
+            if (VarTableSingleton.getTableByClassName(classIdent).methodArgs.containsKey(methodIdent))
+            {
+                for (Var v1 : VarTableSingleton.getTableByClassName(classIdent).methodArgs.get(methodIdent)) {
+                    if (ident.equals(v1.ident))
+                        return true;
+                }
+            }
+            String newClassIdent = ClassesTable.getInstance().getParentClass(classIdent);
+            if (newClassIdent.equals(classIdent))
+            {
+                changed = false;
+            }
+            classIdent = newClassIdent;
+        }
+        return false;
+    }
+
+    public Boolean ExistsInMethodVars(String ident, String methodIdent)
+    {
+        boolean changed = true;
+        String classIdent = this.className;
+        while (changed)
+        {
+            for (Var v1 : VarTableSingleton.getTableByClassName(classIdent).methodVars.get(methodIdent))
+            {
+                if (ident.equals(v1.ident))
+                    return true;
+            }
+            String newClassIdent = ClassesTable.getInstance().getParentClass(classIdent);
+            if (newClassIdent.equals(classIdent))
+            {
+                changed = false;
+            }
+            classIdent = newClassIdent;
+        }
+        return false;
     }
 
 
@@ -441,6 +527,20 @@ public class VarTable
         }
         return null;
     }
+
+    public String GetTypeFromMethodArgs(String ident, String methodIdent)
+    {
+        if (methodArgs.containsKey(methodIdent))
+        {
+            for (Var v : methodArgs.get(methodIdent))
+            {
+                if (v.ident.equals(ident))
+                    return v.type;
+            }
+        }
+        return null;
+    }
+
     public HashMap<String, LinkedList<Var>> getMethodVarTable(){
     	
     	return this.methodVars;

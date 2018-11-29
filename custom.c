@@ -200,7 +200,7 @@ obj_String Boolean_method_STR(obj_Boolean this) {
 
   }
 }
-obj_Boolean Boolean_method_EQUALS(obj_Boolean this, obj_Boolean other) {
+obj_Boolean Boolean_method_EQUALS(obj_Boolean this, obj_Obj other) {
 obj_Boolean other_bool = (obj_Boolean) other;
   if (this->value == other_bool->value) {
     return lit_true;
@@ -331,20 +331,30 @@ obj_Int int_lit(int n) {
   return boxed;
 }
 
+obj_C0 new_C0(obj_Int a ,obj_String b ,obj_Nothing c ,obj_Boolean d ) {
+  obj_C0 new_thing = (obj_C0) malloc(sizeof(struct obj_C0_struct));
+  new_thing->clazz = class_C0_Instance;
+  new_thing->aa=a;
+  new_thing->bb=b;
+  new_thing->cc=c;
+  new_thing->dd=d;
+  return new_thing; 
+}
+
+obj_Obj C0_method_foo(obj_C0 this, obj_Int z) {
+	obj_Int temp_1 = int_lit(4);
+	return Int_method_EQUALS( z, temp_1);
+
+}
+struct  class_C0_struct  the_class_C0_struct = {
+  new_C0, 
+new_C0,
+Obj_method_PRINT,
+Obj_method_STR,
+Obj_method_EQUALS,
+C0_method_foo,
+};
+class_C0 class_C0_Instance = &the_class_C0_struct; 
 void quackmain() {
-	obj_Int temp_0 = int_lit(1);
-	obj_Int temp_2 = int_lit(2);
-	obj_Int temp_4 = int_lit(5);
-	obj_Int temp_3 = Int_method_TIMES( temp_0, temp_4);
-	obj_Int temp_1 = Int_method_PLUS( temp_2, temp_3);
-	obj_String temp_5 = str_lit("left");
-	obj_String temp_7 = str_lit("right");
-	obj_String temp_6 = String_method_PLUS( temp_5, temp_7);
-	obj_Int temp_9 = int_lit(6);
-	obj_Int temp_8 = Int_method_NEG( temp_9);
-	obj_Int temp_10 = Int_method_NEG( temp_1);
-	obj_String temp_11 = Int_method_STR(temp_11);
-	obj_Boolean temp_12 = lit_true;
-	temp_12 = lit_false;
-	obj_Boolean temp_15 = lit_false;
-	obj_Boolean temp_14 = Boolean_m
+	obj_C0 temp_0 = new_C0(int_lit(1), str_lit("test"), nothing, lit_true);
+}

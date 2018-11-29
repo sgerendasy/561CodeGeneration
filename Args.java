@@ -47,10 +47,11 @@ public abstract class Args
         		varTable = VarTableSingleton.getTableByClassName(classIdent);
                 varTable.AddVarToVarTable(var);
             }
-            LinkedList<String> listOfTypes = new LinkedList<>();
+            LinkedList<Var> listOfTypes = new LinkedList<>();
             for (Arg e : this._args)
             {
-                listOfTypes.add(e._type);
+                Var tempVar = new Var(e._ident, e._type);
+                listOfTypes.add(tempVar);
             }
             VarTableSingleton.getTableByClassName(classIdent).addClassArgs(listOfTypes);
         }
@@ -73,10 +74,11 @@ public abstract class Args
                     
                 }
             }
-            LinkedList<String> listOfTypes = new LinkedList<>();
+            LinkedList<Var> listOfTypes = new LinkedList<>();
             for (Arg e : this._args)
             {
-                listOfTypes.add(e._type);
+                Var tempVar = new Var(e._ident, e._type);
+                listOfTypes.add(tempVar);
             }
 
             VarTableSingleton.getTableByClassName(classIdent).addMethodArgs(methodIdent, listOfTypes);

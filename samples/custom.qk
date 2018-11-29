@@ -1,40 +1,15 @@
-a = 1;
-b = 2 + a * 5;
-c = "left";
-d = c + "right";
-e = -6;
-f = -b;
-g = a.STR();
 
-aa = true;
-aa = false;
-bb = aa == false;
-
-while(aa){
-	
+class C0(a: Int, b: String, c: Nothing, d: Boolean)
+{
+    this.aa = a;
+    this.bb = b;
+    this.cc = c;
+    this.dd = d;
+    def foo(z: Int) : Obj
+        {
+            y = 4;
+            return z == y;
+        }
 }
 
-
-if(aa){
-	
-}
-
-//from sample c file
-
-"( ".PRINT(); 
-//it should produce something like this
-//obj_String temp = str_literal("(");
-//temp->clazz->PRINT(temp);
-this.x.PRINT(); 
-//should produce something like this
-//this->x->clazz->PRINT((obj_Obj) this->x);
-
-//More advanced 
-return Pt(this.x+other.x, this.y+other.y)
-//obj_Int this_x = this->x;
-//obj_Int other_x = other->x;
-//obj_Int this_y = this->y;
-//obj_Int other_y = other->y; 
-//obj_Int x_sum = this_x->clazz->PLUS(this_x, other_x);
-//obj_Int y_sum = this_y->clazz->PLUS(this_y, other_y); 
-//return the_class_Pt->constructor(x_sum, y_sum); 
+e = C0(1, "test", none, true);

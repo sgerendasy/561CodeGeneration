@@ -14,6 +14,7 @@ public abstract class Expression
     abstract void SetMethodIdent(String mi);
     abstract String ExpressionType() throws Exception;
     abstract GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception;
+    abstract String GetCodeGenIdent(HashMap<String, Var> registerTable);
     
     public static class Priority extends Expression
     {
@@ -25,6 +26,11 @@ public abstract class Expression
             this.e = e;
             this._left = left;
             this._right = right;
+        }
+
+        public String GetCodeGenIdent(HashMap<String, Var> registerTable)
+        {
+            return this.e.GetCodeGenIdent(registerTable);
         }
 
         public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
@@ -106,11 +112,18 @@ public abstract class Expression
             this.op = op;
         }
 
+        public String GetCodeGenIdent(HashMap<String, Var> registerTable)
+        {
+            // TODO
+            return null;
+        }
+
         public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-            String leftChildType = Main.classHeaderDictionary.get(e1.getType()).objectInstanceName;
             String tempVarName = "temp_" + Main.nodeIndex;
             Main.nodeIndex++;
+            String leftChildType = Main.classHeaderDictionary.get(e1.getType()).objectInstanceName;
+
             String rightHandExpression = Main.classHeaderDictionary.get(e1.getType()).QuackMethodToCMethod.get(OperatorToString.getOperatorDict().get(op)) + "( ";
             GenTreeNode self = new GenTreeNode(tempVarName, leftChildType);
             self.children.add(e1.CreateGenTree(registerTable));
@@ -268,6 +281,12 @@ public abstract class Expression
             return self;
         }
 
+        public String GetCodeGenIdent(HashMap<String, Var> registerTable)
+        {
+            // TODO
+            return null;
+        }
+
         public void SetClassIdent(String ci)
         {
             this.e1.SetClassIdent(ci);
@@ -400,6 +419,11 @@ public abstract class Expression
             // TODO
         }
 
+        public String GetCodeGenIdent(HashMap<String, Var> registerTable)
+        {
+            return "str_lit(\"" + this._s + "\")";
+        }
+
         public String toString()
         {
             return _s;
@@ -458,6 +482,11 @@ public abstract class Expression
         public String getType()
         {
             return ClassesTable.getInstance().getClass("Int");
+        }
+
+        public String GetCodeGenIdent(HashMap<String, Var> registerTable)
+        {
+            return "int_lit(" + this.i + ")";
         }
 
         public String getType(String methodIdent)
@@ -536,6 +565,7 @@ public abstract class Expression
 
         public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
+
             Var varIdent = registerTable.get(this.ident);
             if (varIdent == null)
             {
@@ -551,7 +581,24 @@ public abstract class Expression
                 self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
                 return self;
             }
-            GenTreeNode self = new GenTreeNode(varIdent.ident, varIdent.type, varIdent.ident);
+            String tempVarName = "";
+            if(VarTableSingleton.getTableByClassName(TypeChecker.currentClass).ExistsInMethodArgs(this.ident, TypeChecker.currentMethod))
+            {
+                Var tempVar = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetVarFromMethodArgs(this.ident, TypeChecker.currentMethod);
+                tempVarName = tempVar.ident;
+            }
+            // check method vars
+            else if(VarTableSingleton.getTableByClassName(TypeChecker.currentClass).ExistsInMethodVars(this.ident, TypeChecker.currentMethod))
+            {
+                Var tempVar = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetVarFromMethodVars(this.ident, TypeChecker.currentMethod);
+                tempVarName = varIdent.ident;
+            }
+            // check class vars
+            else if (VarTableSingleton.getTableByClassName(TypeChecker.currentClass).ExistsInVarTable(this.ident))
+            {
+                tempVarName = varIdent.ident;
+            }
+            GenTreeNode self = new GenTreeNode(tempVarName, varIdent.type, varIdent.ident);
 //            self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
             return self;
         }
@@ -586,9 +633,19 @@ public abstract class Expression
             if (classIdent != null && methodIdent != null)
                 iType = VarTableSingleton.getTableByClassName(classIdent).GetTypeFromMethodVarTable(this.ident, methodIdent);
             else
-                iType = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetTypeFromVarTable(this.ident);
+            {
+                // check method arg scope first, then if it's not there check method var scope
+                iType = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetTypeFromMethodArgs(this.ident, TypeChecker.currentMethod);
+                if (iType == null)
+                    iType = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetTypeFromMethodVarTable(this.ident, TypeChecker.currentMethod);
+            }
+            // if still not found, check class var scope
             if (iType == null)
-                iType = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetTypeFromMethodVarTable(this.ident, TypeChecker.currentMethod);
+            {
+                iType = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetTypeFromVarTable(this.ident);
+            }
+
+
             return iType;
 //            return type;
         }
@@ -636,7 +693,7 @@ public abstract class Expression
 
 			VarTable varTable = VarTableSingleton.getTableByClassName(classIdent);
 			
-			String type = varTable.ExistsInVarTable(ident);
+			String type = varTable.GetTypeFromVarTable(ident);
 			if(type != null)
 			{
                 Var var = new Var(ident, type);
@@ -658,6 +715,23 @@ public abstract class Expression
 			
 			return ident;
 		}
+
+		public String GetCodeGenIdent(HashMap<String, Var> registerTable)
+        {
+            switch (this.ident)
+            {
+                case "true":
+                    return "lit_true";
+                case "false":
+                    return "lit_false";
+                case "none":
+                    return "nothing";
+                case "this":
+                    return TypeChecker.currentClass;
+                default:
+                    return registerTable.get(this.ident).ident;
+            }
+        }
 
 		@Override
 		protected void setsetType(String type) {
@@ -707,6 +781,12 @@ public abstract class Expression
             this._left = left;
             this._right = right;
             isMethod = false;
+        }
+
+        public String GetCodeGenIdent(HashMap<String, Var> registerTable)
+        {
+            // TODO
+            return null;
         }
 
         public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
@@ -778,7 +858,7 @@ public abstract class Expression
             }
             else
             {
-                type = VarTableSingleton.getTableByClassName(identifierType).ExistsInMethodTable(this._ident);
+                type = VarTableSingleton.getTableByClassName(identifierType).GetTypeFromMethodTable(this._ident);
                 VarTableSingleton.getTableByClassName(identifierType).checkMethodArgs(this._ident, this._optionalArgs.getArgTypes());
             }
             return type;
@@ -796,7 +876,7 @@ public abstract class Expression
         }
         else
         {
-            type = VarTableSingleton.getTableByClassName(identifierType).ExistsInMethodTable(this._ident);
+            type = VarTableSingleton.getTableByClassName(identifierType).GetTypeFromMethodTable(this._ident);
             VarTableSingleton.getTableByClassName(identifierType).checkMethodArgs(this._ident, this._optionalArgs.getArgTypes());
 
         }
@@ -875,7 +955,21 @@ public abstract class Expression
 
         public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-            return null;
+            String classType = Main.classHeaderDictionary.get(this._ident).objectInstanceName;
+            String tempVarName = "temp_" + Main.nodeIndex;
+            Main.nodeIndex++;
+
+            String callConstructor = Main.classHeaderDictionary.get(this._ident).QuackMethodToCMethod.get("CONSTRUCTOR") + "(";
+            for (Expression args : ((Args.Informal_Args) this._args)._args)
+            {
+                callConstructor += args.GetCodeGenIdent(registerTable) + ", ";
+            }
+            callConstructor = callConstructor.substring(0, callConstructor.length() - 2);
+            callConstructor += ")";
+
+            GenTreeNode self = new GenTreeNode(tempVarName, classType, callConstructor);
+            self.completeCOutput = self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
+            return self;
         }
 
         public String ExpressionType()
@@ -930,6 +1024,12 @@ public abstract class Expression
 			
 			return _ident;
 		}
+
+        public String GetCodeGenIdent(HashMap<String, Var> registerTable)
+        {
+            // TODO
+            return null;
+        }
 
 		@Override
 		protected void setsetType(String type) {
