@@ -343,9 +343,8 @@ void quackmain() {
 	obj_Int temp_9 = int_lit(6);
 	obj_Int temp_8 = Int_method_NEG( temp_9);
 	obj_Int temp_10 = Int_method_NEG( temp_1);
-	obj_String temp_11 = Int_method_STR(temp_0);
+	obj_String temp_11 = Int_method_STR(temp_11);
 	obj_Boolean temp_12 = lit_true;
 	temp_12 = lit_false;
 	obj_Boolean temp_15 = lit_false;
-	obj_Boolean temp_14 = Boolean_method_EQUALS( temp_12, temp_15);
-}
+	obj_Boolean temp_14 = Boolean_m

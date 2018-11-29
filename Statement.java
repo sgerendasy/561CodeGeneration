@@ -269,7 +269,22 @@ public abstract class Statement
 
         public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-            return null;
+        	try
+            {
+                GenTreeNode self = this._expression.CreateGenTree(registerTable);
+                self.completeCOutput = self.rightHandExpression;
+                //for each statement ???
+                for(Statement s : this._statements) {
+                	
+                }
+                
+                return new GenTreeAndRegisterTables(self, registerTable);
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+            }
+			return null;
         }
 
 		public void visit2(String classIdent) throws Exception
@@ -391,6 +406,22 @@ public abstract class Statement
 
         public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
+        	try
+            {
+                GenTreeNode self = this._expression.CreateGenTree(registerTable);
+                self.completeCOutput = self.rightHandExpression;
+                //for each statement ???
+                for(Statement s : this._statements) {
+                	
+                }
+                if (this._elseStatement != null)
+                	//call else GenTreeAndRegisterTables
+                return new GenTreeAndRegisterTables(self, registerTable);
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+            }
             return null;
         }
 
@@ -657,8 +688,19 @@ public abstract class Statement
 
         public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-        	//TODO
+        	try
+            {
+                GenTreeNode self = this._expression.CreateGenTree(registerTable);
+                //???Needs fixing
+                self.completeCOutput = "\t"+self.rightHandExpression + ";\n";
+                return new GenTreeAndRegisterTables(self, registerTable);
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+            }
             return null;
+            
         }
 
         public void visit2(String classIdent) throws Exception

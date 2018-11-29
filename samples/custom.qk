@@ -9,3 +9,32 @@ g = a.STR();
 aa = true;
 aa = false;
 bb = aa == false;
+
+while(aa){
+	
+}
+
+
+if(aa){
+	
+}
+
+//from sample c file
+
+"( ".PRINT(); 
+//it should produce something like this
+//obj_String temp = str_literal("(");
+//temp->clazz->PRINT(temp);
+this.x.PRINT(); 
+//should produce something like this
+//this->x->clazz->PRINT((obj_Obj) this->x);
+
+//More advanced 
+return Pt(this.x+other.x, this.y+other.y)
+//obj_Int this_x = this->x;
+//obj_Int other_x = other->x;
+//obj_Int this_y = this->y;
+//obj_Int other_y = other->y; 
+//obj_Int x_sum = this_x->clazz->PLUS(this_x, other_x);
+//obj_Int y_sum = this_y->clazz->PLUS(this_y, other_y); 
+//return the_class_Pt->constructor(x_sum, y_sum); 

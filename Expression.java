@@ -541,6 +541,8 @@ public abstract class Expression
             {
                 String tempName = "temp_" + Main.nodeIndex;
                 Main.nodeIndex++;
+                if (this.ident.equals("none"))
+                	varIdent = new Var("nothing", "obj_Nothing");
                 if (this.ident.equals("true"))
                     varIdent = new Var("lit_true", "obj_Boolean");
                 else if (this.ident.equals("false"))
@@ -719,10 +721,17 @@ public abstract class Expression
             {
                 self.children.add(arg.CreateGenTree(registerTable));
             }
-            String rightHandExpression = CMethodName + "(" + registerTable.get(this._varIdent).ident;
-            for (GenTreeNode child : self.children)
-            {
-                rightHandExpression += ", " + child.registerName;
+            String rightHandExpression="";
+            if(!((Args.Informal_Args)_optionalArgs)._args.isEmpty()) {
+	            rightHandExpression = CMethodName + "(" + registerTable.get(this._varIdent).ident;
+	            
+	            for (GenTreeNode child : self.children)
+	            {
+	                rightHandExpression += ", " + child.registerName;
+	            }
+            }
+            else {
+            	rightHandExpression = CMethodName + "("+varName;
             }
             rightHandExpression += ")";
             self.rightHandExpression = rightHandExpression;

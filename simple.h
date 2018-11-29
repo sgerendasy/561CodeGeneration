@@ -103,7 +103,7 @@ struct class_Pt_struct {
 	obj_Nothing (*PRINT)  ( obj_Pt );
 	obj_String (*STR)  ( obj_Pt );
 	obj_Boolean (*EQUALS)  ( obj_Pt, obj_Obj );
-	obj_Pt (*PLUS)  ( obj_Pt, obj_Pt );
+	obj_Int (*PLUS)  ( obj_Pt, obj_Pt );
 };
 
 extern obj_String str_lit(char *s);
@@ -150,7 +150,7 @@ obj_Int Int_method_NEG(obj_Int this );
 obj_Nothing Pt_method_PRINT(obj_Pt this );
 obj_String Pt_method_STR(obj_Pt this );
 obj_Boolean Pt_method_EQUALS(obj_Pt this, obj_Obj other );
-obj_Pt Pt_method_PLUS(obj_Pt this, obj_Pt other );
+obj_Int Pt_method_PLUS(obj_Pt this, obj_Pt other );
 
 
 #endif
