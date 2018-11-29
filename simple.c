@@ -223,10 +223,9 @@ obj_Int new_Int(  ) {
   obj_Int new_thing = (obj_Int)
     malloc(sizeof(struct obj_Int_struct));
   new_thing->clazz = class_Int_Instance;
-  new_thing->value = 0;          
+  new_thing->value = 0;
   return new_thing; 
 }
-
 obj_Int Int_method_PLUS(obj_Int this, obj_Int other) {
   return int_lit(this->value + other->value);
 }
@@ -358,30 +357,4 @@ obj_Int P_method_sub(obj_P this) {
 }
 obj_Int P_method_d(obj_P this, obj_Int z ,obj_String q ) {
 
-}
-struct  class_P_struct  the_class_P_struct = {
-  new_P, 
-Pt_method_PRINT,
-Obj_method_STR,
-Obj_method_EQUALS,
-Pt_method_foo,
-P_method_sub,
-P_method_d,
-};
-class_String class_String_Instance = &the_class_String_struct; 
-  obj_D new_D() {
-  obj_D new_thing = (obj_D) malloc(sizeof(struct obj_D_struct));
-  new_thing->clazz = class_D_Instance;
-  return new_thing; 
-}
-
-struct  class_D_struct  the_class_D_struct = {
-  new_D, 
-Obj_method_PRINT,
-Obj_method_STR,
-Obj_method_EQUALS,
-};
-class_String class_String_Instance = &the_class_String_struct; 
-int main(void){
-	return 0;
 }

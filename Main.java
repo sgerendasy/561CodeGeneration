@@ -276,6 +276,14 @@ public class Main {
             outputStream.write("#include <stdlib.h>\n");
             outputStream.write("#include <string.h>\n");
             outputStream.write("#include \"" + headerFileName+"\"\n\n\n");
+            
+            outputStream.write("void quackmain(); \n\n");
+
+            outputStream.write("int main(int argc, char** argv) {\n");
+            outputStream.write("  quackmain();\n");
+            outputStream.write("  printf(\"--- Terminated successfully (woot!) ---\");\n");
+            outputStream.write("  exit(0);\n");
+            outputStream.write("}\n\n\n");
 
             // c file code generation
             for(VarTable c : VarTableSingleton.TheTable)
@@ -718,7 +726,7 @@ public class Main {
                 else if (c.className.equals("$statementsDummyClass"))
                 {
                     nodeIndex = 0;
-                    String mainDecl = "int main(void){\n";
+                    String mainDecl = "void quackmain() {\n";
                     outputStream.write(mainDecl);
                     Class_Block.Clazz_Block theClassBlock = GetClassBlock(c.className);
                     HashMap<String, Var> theRegisterTable = new HashMap<>();

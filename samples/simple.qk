@@ -1,34 +1,15 @@
 class Pt(x: Int, y: Int) {
     this.x = x;
     this.y = y; 
-     def PRINT() {
-         
+
+    def PRINT( ):Pt {
+       "( ".PRINT(); 
+       this.x.PRINT(); 
+       ", ".PRINT();
+       ")".PRINT(); 
      }
-     def foo():Int {
-         pt=Pt(x,y);
-         return pt.sub(); 
-     }
-     def sub():Int {
-         return x-y; 
+
+     def PLUS(other: Pt) {
+         return Pt(this.x+other.x, this.y+other.y); 
      }
 }
-
-class P(x: Int, y: Int) extends Pt{
-  this.x = x;
-  this.y = y;
-
-  def sub():Int {
-         return x-y-5; 
-  }
-  def d(z: Int, q:String):Int {
-         return x-y-5; 
-  }
-	
-}
-
-class D() {
-  
-  
-}
-f: Obj = P(4,5);
-f.foo();
