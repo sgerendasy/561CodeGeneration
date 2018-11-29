@@ -260,7 +260,9 @@ public abstract class Expression
             Main.nodeIndex++;
             String rightHandExpression = Main.classHeaderDictionary.get(e1.getType()).QuackMethodToCMethod.get(OperatorToString.getUnaryOperatorDict().get(op)) + "( ";
             GenTreeNode self = new GenTreeNode(tempVarName, childType);
-            self.children.add(e1.CreateGenTree(registerTable));
+            GenTreeNode child = e1.CreateGenTree(registerTable);
+//            child.completeCOutput = "\t" + child.registerType + " " + child.registerName + " = " + child.rightHandExpression + ";\n";
+            self.children.add(child);
             rightHandExpression += self.children.get(0).registerName + ")";
             self.rightHandExpression = rightHandExpression;
             return self;
@@ -534,10 +536,21 @@ public abstract class Expression
 
         public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-            String varName = "temp_" + Main.nodeIndex;
-            Main.nodeIndex++;
-            GenTreeNode self = new GenTreeNode(varName, registerTable.get(this.ident).type, registerTable.get(this.ident).ident);
-            self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
+            Var varIdent = registerTable.get(this.ident);
+            if (varIdent == null)
+            {
+                String tempName = "temp_" + Main.nodeIndex;
+                Main.nodeIndex++;
+                if (this.ident.equals("true"))
+                    varIdent = new Var("lit_true", "obj_Boolean");
+                else if (this.ident.equals("false"))
+                    varIdent = new Var("lit_false", "obj_Boolean");
+                GenTreeNode self = new GenTreeNode(tempName, varIdent.type, varIdent.ident);
+                self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
+                return self;
+            }
+            GenTreeNode self = new GenTreeNode(varIdent.ident, varIdent.type, varIdent.ident);
+//            self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
             return self;
         }
 

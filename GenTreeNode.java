@@ -15,6 +15,7 @@ public class GenTreeNode
         this.registerName = registerName;
         this.registerType = registerType;
         children = new LinkedList<>();
+        completeCOutput = "";
     }
 
     public GenTreeNode(String registerName, String registerType, String rightHandExpression)
@@ -23,5 +24,6 @@ public class GenTreeNode
         this.registerType = registerType;
         this.rightHandExpression = rightHandExpression;
         children = new LinkedList<>();
+        completeCOutput = "";
     }
 }

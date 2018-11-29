@@ -500,7 +500,7 @@ public class Main {
                             }
                             else if (m.ident.equals("EQUALS"))
                             {
-                                outputStream.write("obj_Boolean Boolean_method_EQUALS(obj_Boolean this, obj_Obj other) {\n");
+                                outputStream.write("obj_Boolean Boolean_method_EQUALS(obj_Boolean this, obj_Boolean other) {\n");
                                 outputStream.write("obj_Boolean other_bool = (obj_Boolean) other;\n");
                                 outputStream.write("  if (this->value == other_bool->value) {\n");
                                 outputStream.write("    return lit_true;\n");
@@ -745,7 +745,7 @@ public class Main {
                         }
 
                     }
-                    String endMain = "\treturn 0;\n}\n";
+                    String endMain = "}\n";
                     outputStream.write(endMain);
                 }
                 //Create struct for class

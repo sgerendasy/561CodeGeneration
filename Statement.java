@@ -51,10 +51,28 @@ public abstract class Statement
             try
             {
                 String statementType = this.getRexpr().getType();
-                Var tempVar = new Var("temp_" + Main.nodeIndex, Main.classHeaderDictionary.get(statementType).objectInstanceName);
-                registerTable.put(this.getLexpr().getIdent(), tempVar);
+                Var tempVar;
+                String varName;
+                int currentIndex = Main.nodeIndex;
                 GenTreeNode GenTreeRoot = this.getRexpr().CreateGenTree(registerTable);
-                GenTreeRoot.completeCOutput = "\t" + GenTreeRoot.registerType + " " + GenTreeRoot.registerName + " = " + GenTreeRoot.rightHandExpression + ";\n";
+                if (!registerTable.containsKey(this._lexpr.getIdent()))
+                {
+                    tempVar = new Var("temp_" + currentIndex, Main.classHeaderDictionary.get(statementType).objectInstanceName);
+                    registerTable.put(this.getLexpr().getIdent(), tempVar);
+                    GenTreeRoot.registerType += " ";
+//                    varName = "temp_" + Main.nodeIndex;
+//                    Main.nodeIndex++;
+                }
+                else
+                {
+                    tempVar = registerTable.get(this._lexpr.getIdent());
+                    varName = tempVar.ident;
+                    GenTreeRoot.registerType = "";
+                    GenTreeRoot.registerName = varName;
+
+                }
+
+                GenTreeRoot.completeCOutput = "\t" + GenTreeRoot.registerType + GenTreeRoot.registerName + " = " + GenTreeRoot.rightHandExpression + ";\n";
                 return new GenTreeAndRegisterTables(GenTreeRoot, registerTable);
             }
             catch (Exception e)
