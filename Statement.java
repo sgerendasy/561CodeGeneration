@@ -1,5 +1,6 @@
 import java_cup.runtime.ComplexSymbolFactory.Location;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ public abstract class Statement
     abstract void visit2(String classIdent) throws Exception;
     abstract void visit2(String classIdent, String methodIdent) throws Exception;
 	public abstract String StatementType();
+	public abstract GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception;
 
     public static class Assignment_Statement extends Statement
     {
@@ -28,6 +30,7 @@ public abstract class Statement
             this._rexpr = e2;
             this._declaredType = declaredType;
         }
+
         public Expression getLexpr() {
         	return _lexpr;
         }
@@ -41,6 +44,24 @@ public abstract class Statement
         public String StatementType()
         {
             return "ASSIGNMENT";
+        }
+
+        public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
+        {
+            try
+            {
+                String statementType = this.getRexpr().getType();
+                Var tempVar = new Var("temp_" + Main.nodeIndex, Main.classHeaderDictionary.get(statementType).objectInstanceName);
+                registerTable.put(this.getLexpr().getIdent(), tempVar);
+                GenTreeNode GenTreeRoot = this.getRexpr().CreateGenTree(registerTable);
+                GenTreeRoot.completeCOutput = "\t" + GenTreeRoot.registerType + " " + GenTreeRoot.registerName + " = " + GenTreeRoot.rightHandExpression + ";\n";
+                return new GenTreeAndRegisterTables(GenTreeRoot, registerTable);
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+            }
+            return null;
         }
 
         public void visit2(String classIdent) throws Exception
@@ -156,6 +177,21 @@ public abstract class Statement
             _e.getType();
         }
 
+        public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
+        {
+            try
+            {
+                GenTreeNode self = this._e.CreateGenTree(registerTable);
+                self.completeCOutput = "\treturn " + self.rightHandExpression + ";\n";
+                return new GenTreeAndRegisterTables(self, registerTable);
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+            }
+            return null;
+        }
+
         public void visit2(String classIdent, String methodIdent) throws Exception
         {
         	_e.visit2(classIdent,methodIdent);
@@ -213,7 +249,11 @@ public abstract class Statement
             return "WHILE";
         }
 
-        @SuppressWarnings("unchecked")
+        public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
+        {
+            return null;
+        }
+
 		public void visit2(String classIdent) throws Exception
         {
         	//typecheck condition
@@ -331,6 +371,11 @@ public abstract class Statement
             return "IF";
         }
 
+        public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
+        {
+            return null;
+        }
+
         public void visit2(String classIdent) throws Exception
         {
         	_expression.visit2(classIdent);
@@ -418,6 +463,11 @@ public abstract class Statement
             this._elseStatements = elseStatements;
         }
 
+        public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
+        {
+            return null;
+        }
+
         public void visit2(String classIdent) throws Exception
         {
             for (Statement s : this._elseStatements)
@@ -470,6 +520,11 @@ public abstract class Statement
         public String StatementType()
         {
             return "TYPECASE";
+        }
+
+        public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
+        {
+            return null;
         }
 
         public void visit2(String classIdent)
@@ -528,6 +583,11 @@ public abstract class Statement
             return "TYPE_STMT";
         }
 
+        public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
+        {
+            return null;
+        }
+
         public void visit2(String classIdent)
         {
             // TODO
@@ -573,6 +633,11 @@ public abstract class Statement
         public String StatementType()
         {
             return "EXPRESSION";
+        }
+
+        public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
+        {
+            return null;
         }
 
         public void visit2(String classIdent) throws Exception

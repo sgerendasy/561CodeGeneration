@@ -721,53 +721,21 @@ public class Main {
                     String mainDecl = "int main(void){\n";
                     outputStream.write(mainDecl);
                     Class_Block.Clazz_Block theClassBlock = GetClassBlock(c.className);
-                    HashMap<String, Var> theRegisterTable = new HashMap<>();
-                    GenTreeNode GenTreeRoot;
+//                    HashMap<String, Var> theRegisterTable = new HashMap<>();
+//                    GenTreeNode GenTreeRoot;
+                    GenTreeAndRegisterTables genTreeAndRegisterTables = new GenTreeAndRegisterTables();
                     for (Statement s : theClassBlock._stmtList)
                     {
-                        if (s.StatementType().equals("ASSIGNMENT"))
+                        try
                         {
-                            try
-                            {
-                                String statementType = s.getRexpr().getType();
-                                Var tempVar = new Var("temp_" + nodeIndex, classHeaderDictionary.get(statementType).objectInstanceName);
-                                theRegisterTable.put(s.getLexpr().getIdent(), tempVar);
-                                GenTreeRoot = s.getRexpr().CreateGenTree(theRegisterTable);
-                                WriteCFromGenTree(GenTreeRoot, outputStream);
-                            }
-                            catch (Exception e)
-                            {
-                                System.out.println(e.getMessage());
-                            }
+                            genTreeAndRegisterTables = s.CreateGenTree(genTreeAndRegisterTables.theRegisterTable);
+                            WriteCFromGenTree(genTreeAndRegisterTables.genTreeNode, outputStream);
                         }
-                        else if (s.StatementType().equals("RETURN"))
+                        catch (Exception e)
                         {
+                            System.out.println(e.getMessage());
+                        }
 
-                        }
-                        else if (s.StatementType().equals("WHILE"))
-                        {
-
-                        }
-                        else if (s.StatementType().equals("IF"))
-                        {
-
-                        }
-                        else if (s.StatementType().equals("ELSE"))
-                        {
-
-                        }
-                        else if (s.StatementType().equals("TYPECASE"))
-                        {
-
-                        }
-                        else if (s.StatementType().equals("TYPE_STMT"))
-                        {
-
-                        }
-                        else if (s.StatementType().equals("EXPRESSION"))
-                        {
-
-                        }
                     }
                     String endMain = "\treturn 0;\n}\n";
                     outputStream.write(endMain);
@@ -897,7 +865,8 @@ public class Main {
         }
         try
         {
-            outputStream.write("\t" + root.registerType + " " + root.registerName + " = " + root.rightHandExpression + ";\n");
+//            outputStream.write("\t" + root.registerType + " " + root.registerName + " = " + root.rightHandExpression + ";\n");
+            outputStream.write(root.completeCOutput);
         }
         catch (IOException e)
         {
@@ -1058,3 +1027,19 @@ public class Main {
     }
 }
 
+class GenTreeAndRegisterTables
+{
+    public GenTreeNode genTreeNode;
+    public HashMap<String, Var> theRegisterTable;
+
+    public GenTreeAndRegisterTables()
+    {
+        this.theRegisterTable = new HashMap<>();
+    }
+
+    public GenTreeAndRegisterTables(GenTreeNode root, HashMap<String, Var> registerTable)
+    {
+        this.genTreeNode = root;
+        this.theRegisterTable = registerTable;
+    }
+}
