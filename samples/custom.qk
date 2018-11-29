@@ -1,2 +1,7 @@
 a = 1;
-b = a.STR();
+b = 2 + a * 5;
+c = "left";
+d = c + "right";
+e = -6;
+f = -b;
+g = a.STR();

@@ -189,7 +189,7 @@ obj_Int new_Int(  ) {
   obj_Int new_thing = (obj_Int)
     malloc(sizeof(struct obj_Int_struct));
   new_thing->clazz = class_Int_Instance;
-  new_thing->value = 0;          
+  new_thing->value = 0;
   return new_thing; 
 }
 obj_Int Int_method_PLUS(obj_Int this, obj_Int other) {
@@ -276,6 +276,19 @@ obj_Int int_lit(int n) {
 }
 int main(void){
 	obj_Int temp_0 = int_lit(1);
-	obj_String temp_1 = Int_method_STR(Var@73035e27);
+	obj_Int temp_2 = int_lit(2);
+	obj_Int temp_4 = temp_0;
+	obj_Int temp_5 = int_lit(5);
+	obj_Int temp_3 = Int_method_TIMES( temp_4, temp_5);
+	obj_Int temp_1 = Int_method_PLUS( temp_2, temp_3);
+	obj_String temp_6 = str_lit("left");
+	obj_String temp_8 = temp_6;
+	obj_String temp_9 = str_lit("right");
+	obj_String temp_7 = String_method_PLUS( temp_8, temp_9);
+	obj_Int temp_11 = int_lit(6);
+	obj_Int temp_10 = Int_method_NEG( temp_11);
+	obj_Int temp_13 = temp_1;
+	obj_Int temp_12 = Int_method_NEG( temp_13);
+	obj_String temp_14 = Int_method_STR(temp_0);
 	return 0;
 }

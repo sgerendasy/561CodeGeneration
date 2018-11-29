@@ -578,8 +578,8 @@ public class Main {
                                 outputStream.write("  obj_Int new_thing = (obj_Int)\n");
                                 outputStream.write("    malloc(sizeof(struct obj_Int_struct));\n");
                                 outputStream.write("  new_thing->clazz = class_Int_Instance;\n");
-                                outputStream.write("  new_thing->value = 0;          \n");
-                                outputStream.write("  return new_thing; \n}\n\n");
+                                outputStream.write("  new_thing->value = 0;\n");
+                                outputStream.write("  return new_thing; \n}\n");
                             }
                             if (m.ident.equals("PRINT"))
                             {
@@ -722,7 +722,7 @@ public class Main {
                     outputStream.write(mainDecl);
                     Class_Block.Clazz_Block theClassBlock = GetClassBlock(c.className);
                     HashMap<String, Var> theRegisterTable = new HashMap<>();
-                    GenTreeNode GenTreeRoot = new GenTreeNode();
+                    GenTreeNode GenTreeRoot;
                     for (Statement s : theClassBlock._stmtList)
                     {
                         if (s.StatementType().equals("ASSIGNMENT"))
