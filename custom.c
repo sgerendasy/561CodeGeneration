@@ -332,7 +332,6 @@ obj_Int int_lit(int n) {
 }
 
 void quackmain() {
-
 	obj_Int temp_0 = int_lit(1);
 	obj_Int temp_2 = int_lit(2);
 	obj_Int temp_4 = temp_0;

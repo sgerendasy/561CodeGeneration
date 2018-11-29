@@ -4,6 +4,15 @@
 #include "simple.h"
 
 
+void quackmain(); 
+
+int main(int argc, char** argv) {
+  quackmain();
+  printf("--- Terminated successfully (woot!) ---");
+  exit(0);
+}
+
+
 class_Obj class_Obj_Instance; 
 obj_Obj new_Obj(  ) { 
 obj_Obj new_thing = (obj_Obj) malloc(sizeof(struct obj_Obj_struct));
@@ -322,19 +331,18 @@ obj_Int int_lit(int n) {
   return boxed;
 }
 
-  obj_Pt new_Pt(obj_Int x ,obj_Int y ) {
+obj_Pt new_Pt(obj_Int x ,obj_Int y ) {
   obj_Pt new_thing = (obj_Pt) malloc(sizeof(struct obj_Pt_struct));
   new_thing->clazz = class_Pt_Instance;
+  new_thing->x=x;
+  new_thing->y=y;
   return new_thing; 
 }
 
 obj_Nothing Pt_method_PRINT(obj_Pt this) {
 
 }
-obj_Int Pt_method_foo(obj_Pt this) {
-
-}
-obj_Int Pt_method_sub(obj_Pt this) {
+obj_Pt Pt_method_PLUS(obj_Pt this, obj_Pt other ) {
 
 }
 struct  class_Pt_struct  the_class_Pt_struct = {
@@ -342,19 +350,6 @@ struct  class_Pt_struct  the_class_Pt_struct = {
 Pt_method_PRINT,
 Obj_method_STR,
 Obj_method_EQUALS,
-Pt_method_foo,
-Pt_method_sub,
+Pt_method_PLUS,
 };
-class_String class_String_Instance = &the_class_String_struct; 
-  obj_P new_P(obj_Int x ,obj_Int y ) {
-  obj_P new_thing = (obj_P) malloc(sizeof(struct obj_P_struct));
-  new_thing->clazz = class_P_Instance;
-  return new_thing; 
-}
-
-obj_Int P_method_sub(obj_P this) {
-
-}
-obj_Int P_method_d(obj_P this, obj_Int z ,obj_String q ) {
-
-}
+class_Pt class_Pt_Instance = &the_class_Pt_struct; 
