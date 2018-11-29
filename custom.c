@@ -332,6 +332,7 @@ obj_Int int_lit(int n) {
 }
 
 void quackmain() {
+
 	obj_Int temp_0 = int_lit(1);
 	obj_Int temp_2 = int_lit(2);
 	obj_Int temp_4 = temp_0;
@@ -347,5 +348,10 @@ void quackmain() {
 	obj_Int temp_13 = temp_1;
 	obj_Int temp_12 = Int_method_NEG( temp_13);
 	obj_String temp_14 = Int_method_STR(temp_0);
+	obj_Int temp_17 = temp_1;
+	obj_Int temp_18 = temp_12;
+	obj_Int temp_16 = Int_method_PLUS( temp_17, temp_18);
+	obj_Int temp_19 = int_lit(4);
+	return Int_method_MINUS( temp_16, temp_19);
 	return 0;
 }

@@ -5,3 +5,4 @@ d = c + "right";
 e = -6;
 f = -b;
 g = a.STR();
+return b + f - 4;

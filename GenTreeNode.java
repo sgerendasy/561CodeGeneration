@@ -6,6 +6,7 @@ public class GenTreeNode
     public String registerType;
     public String rightHandExpression;
     LinkedList<GenTreeNode> children;
+    public String completeCOutput;
 
     public GenTreeNode() {}
 

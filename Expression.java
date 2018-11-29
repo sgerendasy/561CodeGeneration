@@ -117,6 +117,8 @@ public abstract class Expression
             self.children.add(e2.CreateGenTree(registerTable));
             rightHandExpression += self.children.get(0).registerName + ", " + self.children.get(1).registerName + ")";
             self.rightHandExpression = rightHandExpression;
+            self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
+
             return self;
         }
 
@@ -362,6 +364,7 @@ public abstract class Expression
             String varType = Main.classHeaderDictionary.get("String").objectInstanceName;
             String rightHandExpression = "str_lit(\"" + this._s + "\")";
             GenTreeNode self = new GenTreeNode(varName, varType, rightHandExpression);
+            self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
             return self;
         }
 
@@ -446,6 +449,7 @@ public abstract class Expression
             String varType = Main.classHeaderDictionary.get("Int").objectInstanceName;
             String rightHandExpression = "int_lit(" + this.i + ")";
             GenTreeNode self = new GenTreeNode(varName, varType, rightHandExpression);
+            self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
             return self;
         }
 
@@ -533,6 +537,7 @@ public abstract class Expression
             String varName = "temp_" + Main.nodeIndex;
             Main.nodeIndex++;
             GenTreeNode self = new GenTreeNode(varName, registerTable.get(this.ident).type, registerTable.get(this.ident).ident);
+            self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
             return self;
         }
 
