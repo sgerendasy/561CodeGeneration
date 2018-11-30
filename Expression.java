@@ -834,7 +834,7 @@ public abstract class Expression
 	            }
             else {
             	String varType = this._e.getType();	
-            	GenTreeNode self = new GenTreeNode(this._ident, varType);
+            	GenTreeNode self = new GenTreeNode(this._e.getIdent()+"->"+this._ident, varType);
             	return self;
             }
         }
@@ -987,6 +987,7 @@ public abstract class Expression
             {
                 callConstructor += args.GetCodeGenIdent(registerTable) + ", ";
             }
+            if(!(((Args.Informal_Args) this._args)._args.isEmpty()))
             callConstructor = callConstructor.substring(0, callConstructor.length() - 2);
             callConstructor += ")";
 
