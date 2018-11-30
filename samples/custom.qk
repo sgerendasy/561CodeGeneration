@@ -1,5 +1,19 @@
-class Pt() {
 
+class C()
+{
+    def foo() : Int
+    {
+        return 4;
+    }
 }
 
-a = Pt();
+
+a = 1;
+if (true)
+{
+    b = 2;
+}
+else
+{
+    c = 3;
+}

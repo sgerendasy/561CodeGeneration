@@ -62,7 +62,7 @@ public abstract class Statement
                 GenTreeNode GenTreeRoot = this.getRexpr().CreateGenTree(registerTable);
                 if (!registerTable.containsKey(this._lexpr.getIdent()))
                 {
-                    tempVar = new Var("temp_" + currentIndex, Main.classHeaderDictionary.get(statementType).objectInstanceName);
+                    tempVar = new Var("temp_" + (Main.nodeIndex-1), Main.classHeaderDictionary.get(statementType).objectInstanceName);
                     registerTable.put(this.getLexpr().getIdent(), tempVar);
                     GenTreeRoot.registerType += " ";
                 }
@@ -542,8 +542,8 @@ public abstract class Statement
         {
         	try
             {
-        		
-        		GenTreeAndRegisterTables genTreeAndRegisterTables = new GenTreeAndRegisterTables();
+        		GenTreeNode blankSelf = null;
+        		GenTreeAndRegisterTables genTreeAndRegisterTables = new GenTreeAndRegisterTables(blankSelf, registerTable);
                 int i=0;
                 
                 for(Statement s : this._elseStatements) {

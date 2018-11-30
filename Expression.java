@@ -468,9 +468,20 @@ public abstract class Expression
 
         public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-            String varName = "temp_" + Main.nodeIndex;
-            Main.nodeIndex++;
-            String varType = Main.classHeaderDictionary.get("Int").objectInstanceName;
+            String varName = "";
+            String varType = "";
+            if (registerTable.containsKey(this.i))
+            {
+                varName = registerTable.get(this.i).ident;
+            }
+            else
+            {
+                varName = "temp_" + Main.nodeIndex;
+                Main.nodeIndex++;
+                varType = Main.classHeaderDictionary.get("Int").objectInstanceName;
+            }
+
+
             String rightHandExpression = "int_lit(" + this.i + ")";
             GenTreeNode self = new GenTreeNode(varName, varType, rightHandExpression);
             self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
