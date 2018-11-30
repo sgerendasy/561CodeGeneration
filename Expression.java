@@ -796,39 +796,46 @@ public abstract class Expression
             {
                 constructorChild = this._e.CreateGenTree(registerTable);
             }
-            String varName = this._e.GetCodeGenIdent(registerTable);
-            String varType = this._e.getType();
-            String CMethodName = Main.classHeaderDictionary.get(varType).QuackMethodToCMethod.get(this.methodName);
-            String methodReturnType = Main.classHeaderDictionary.get(varType).CMethodToReturnType.get(CMethodName);
-
-            String selfName = "temp_" + Main.nodeIndex;
-            Main.nodeIndex++;
-
-            GenTreeNode self = new GenTreeNode(selfName, methodReturnType);
-            for (Expression arg : ((Args.Informal_Args)_optionalArgs)._args)
-            {
-                self.children.add(arg.CreateGenTree(registerTable));
-            }
-            if (constructorChild != null)
-            {
-                self.children.add(constructorChild);
-            }
-
-            String rightHandExpression="";
-            if(!((Args.Informal_Args)_optionalArgs)._args.isEmpty()) {
-	            rightHandExpression = CMethodName + "(" + registerTable.get(this._varIdent).ident;
-	            
-	            for (GenTreeNode child : self.children)
+            if(isMethod) {
+            	String varName = this._e.GetCodeGenIdent(registerTable);
+            	String varType = this._e.getType();	
+            	String CMethodName = Main.classHeaderDictionary.get(varType).QuackMethodToCMethod.get(this.methodName);
+            	//not a method but trying to access this.var
+            	String methodReturnType = Main.classHeaderDictionary.get(varType).CMethodToReturnType.get(CMethodName);
+	        
+	            String selfName = "temp_" + Main.nodeIndex;
+	            Main.nodeIndex++;
+	
+	            GenTreeNode self = new GenTreeNode(selfName, methodReturnType);
+	            for (Expression arg : ((Args.Informal_Args)_optionalArgs)._args)
 	            {
-	                rightHandExpression += ", " + child.registerName;
+	                self.children.add(arg.CreateGenTree(registerTable));
 	            }
-            }
+	            if (constructorChild != null)
+	            {
+	                self.children.add(constructorChild);
+	            }
+	
+	            String rightHandExpression="";
+	            if(!((Args.Informal_Args)_optionalArgs)._args.isEmpty()) {
+		            rightHandExpression = CMethodName + "(" + registerTable.get(this._varIdent).ident;
+		            
+		            for (GenTreeNode child : self.children)
+		            {
+		                rightHandExpression += ", " + child.registerName;
+		            }
+	            }
+	            else {
+	            	rightHandExpression = CMethodName + "(" + varName;
+	            }
+	            rightHandExpression += ")";
+	            self.rightHandExpression = rightHandExpression;
+	            return self;
+	            }
             else {
-            	rightHandExpression = CMethodName + "(" + varName;
+            	GenTreeNode self = new GenTreeNode(varName, varType);
+            	return self;
             }
-            rightHandExpression += ")";
-            self.rightHandExpression = rightHandExpression;
-            return self;
         }
 
         public String ExpressionType()

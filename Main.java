@@ -268,13 +268,17 @@ public class Main {
             outputStream.write("#include <string.h>\n");
             outputStream.write("#include \"" + headerFileName+"\"\n\n\n");
             
+            VarTable t = VarTableSingleton.getTableByClassName("$statementsDummyClass");
+            if(!(t==null)) 
             outputStream.write("void quackmain(); \n\n");
 
             outputStream.write("int main(int argc, char** argv) {\n");
+            if(!(t==null)) 
             outputStream.write("  quackmain();\n");
-            outputStream.write("  printf(\"--- Terminated successfully (woot!) ---\");\n");
+            outputStream.write("  printf(\"--- Terminated successfully ---\");\n\n");
             outputStream.write("  exit(0);\n");
             outputStream.write("}\n\n\n");
+            
 
             // c file code generation
             for(VarTable c : VarTableSingleton.TheTable)

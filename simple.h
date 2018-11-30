@@ -108,6 +108,7 @@ struct class_Pt_struct {
 
 extern obj_String str_lit(char *s);
 extern obj_Int int_lit(int n);
+extern class_Pt class_Pt_Instance;
 extern class_Obj class_Obj_Instance;
 extern class_String class_String_Instance;
 extern class_Boolean class_Boolean_Instance;
