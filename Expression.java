@@ -833,7 +833,8 @@ public abstract class Expression
 	            return self;
 	            }
             else {
-            	GenTreeNode self = new GenTreeNode(varName, varType);
+            	String varType = this._e.getType();	
+            	GenTreeNode self = new GenTreeNode(this._ident, varType);
             	return self;
             }
         }
