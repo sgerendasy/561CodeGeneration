@@ -63,12 +63,7 @@ public abstract class Class_Block
 
         public VarTable checkConstructor()
         {
-//            VarTable varTable = new VarTable();
-            for (Statement s : this._stmtList)
-            {
-                // TODO: populate VarTable with idents and their types for assignment statements of the form "this.__"
-            }
-
+            // Should never get called
             return null;
         }
 

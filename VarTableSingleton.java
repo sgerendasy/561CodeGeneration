@@ -3,7 +3,6 @@ import java.util.LinkedList;
 public class VarTableSingleton
 {
     static LinkedList<VarTable> TheTable = new LinkedList<>();
-//    static LinkedList<VarTable> constructorVarTables = new LinkedList<>();
     private static VarTableSingleton varTableInstance;
 
     public static VarTableSingleton getCurrentInstance()

@@ -31,13 +31,18 @@ public abstract class Statement
             this._declaredType = declaredType;
         }
 
-        public Expression getLexpr() {
+        public Expression getLexpr()
+        {
         	return _lexpr;
         }
-        public Expression getRexpr() {
+
+        public Expression getRexpr()
+        {
         	return _rexpr;
         }
-        public String getDeclaredType() {
+
+        public String getDeclaredType()
+        {
         	return _declaredType;
         }
 
@@ -60,8 +65,6 @@ public abstract class Statement
                     tempVar = new Var("temp_" + currentIndex, Main.classHeaderDictionary.get(statementType).objectInstanceName);
                     registerTable.put(this.getLexpr().getIdent(), tempVar);
                     GenTreeRoot.registerType += " ";
-//                    varName = "temp_" + Main.nodeIndex;
-//                    Main.nodeIndex++;
                 }
                 else
                 {
@@ -69,7 +72,6 @@ public abstract class Statement
                     varName = tempVar.ident;
                     GenTreeRoot.registerType = "";
                     GenTreeRoot.registerName = varName;
-
                 }
 
                 GenTreeRoot.completeCOutput = "\t" + GenTreeRoot.registerType + GenTreeRoot.registerName + " = " + GenTreeRoot.rightHandExpression + ";\n";
@@ -77,7 +79,7 @@ public abstract class Statement
             }
             catch (Exception e)
             {
-                System.out.println(e.getMessage());
+                System.out.println("Failed in STATEMENT ASSIGNMENT for class:" + TypeChecker.currentClass + " on statement: " + this.toString() + ". with error: " + e.getMessage());
             }
             return null;
         }
@@ -117,15 +119,13 @@ public abstract class Statement
 
         public void visit2(String classIdent, String methodIdent) throws Exception
         {
-            //first time visit
-            //add to var table
-            //???? should visit go here
             _rexpr.visit2(classIdent);
             String type = _rexpr.getType(methodIdent);
 
             // if the type of _rexpr isn't in the class table,
             if (type == null)
                 throw new Exception("\"" + this._rexpr.getIdent() + "\" is not declared");
+
             // if the declared type of _lexpr doesn't match the type of _rexpr
             if ((!this._declaredType.equals("") && !this._declaredType.equals(type)))
             {
@@ -171,14 +171,13 @@ public abstract class Statement
 
     public static class Return_Statement extends Statement
     {
-        Location _left;
         public Expression _e;
-        Location _right;
 
         public Return_Statement(Expression e)
         {
             _e = e;
         }
+
         public Return_Statement()
         {
             Expression e = new Expression.Identifier("none", -1, -1);
@@ -205,7 +204,7 @@ public abstract class Statement
             }
             catch (Exception e)
             {
-                System.out.println(e.getMessage());
+                System.out.println("Failed in STATEMENT RETURN for class:" + TypeChecker.currentClass + " on statement: " + this.toString() + ". with error: " + e.getMessage());
             }
             return null;
         }
@@ -219,7 +218,6 @@ public abstract class Statement
             //find type by looking in method_args
             if(type == null)
             {
-            	//System.out.println(r.GetTypeFromMethodVarTable(s.getExpr().getIdent(), this._methodIdent));
             	type = t.GetTypeFromMethodVarTable(_e.getIdent(), methodIdent);
             	_e.setsetType(type);
             }
@@ -288,7 +286,7 @@ public abstract class Statement
             }
             catch (Exception e)
             {
-                System.out.println(e.getMessage());
+                System.out.println("Failed in STATEMENT WHILE for class:" + TypeChecker.currentClass + " on statement: " + this.toString() + ". with error: " + e.getMessage());
             }
             return null;
         }
@@ -303,31 +301,34 @@ public abstract class Statement
             // adds statements to table
             // type checks statements
             // removes statements from table
-        	while(true) {
+        	while(true)
+        	{
         		LinkedList<Var> t = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).getVarTable();
-        		LinkedList<Var> o = new LinkedList<Var>();
-        		for (Var v: t) {
+        		LinkedList<Var> o = new LinkedList<>();
+
+        		for (Var v: t)
+        		{
         			 Var a = new Var(v.ident,v.type);
         			  o.add(a);
-        
         		}
+
 	        	for (Statement s : this._statements)
 	            {
 	                s.visit2(classIdent);
 	            }
+
 	        	int count =0;
 	        	int i=0;
-	        	for (Var v: t) {
-       			  if(v.ident.equals(o.get(i).ident)&&v.type.equals(o.get(i).type))
-       			   count++;
-       			  i++;
+	        	for (Var v: t)
+	        	{
+	        	    if(v.ident.equals(o.get(i).ident)&&v.type.equals(o.get(i).type))
+	        	        count++;
+	        	    i++;
 	        	}
+
 	        	if(count == t.size())
 	        		break;
-    		
         	}
-        	
-        	
         }
 
         public void visit2(String classIdent, String methodIdent) throws Exception
@@ -344,27 +345,29 @@ public abstract class Statement
         	while(true) {
         		LinkedList<Var> t = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).getMethodVarTable().get(methodIdent);
         		LinkedList<Var> o = new LinkedList<Var>();
-        		for (Var v: t) {
+        		for (Var v: t)
+        		{
         			 Var a = new Var(v.ident,v.type);
         			  o.add(a);
-        
         		}
+
 	        	for (Statement s : this._statements)
 	            {
 	                s.visit2(classIdent, methodIdent);
 	            }
+
 	        	int count =0;
 	        	int i=0;
-	        	for (Var v: t) {
-       			  if(v.ident.equals(o.get(i).ident)&&v.type.equals(o.get(i).type))
-       			   count++;
-       			  i++;
+	        	for (Var v: t)
+	        	{
+	        	    if(v.ident.equals(o.get(i).ident)&&v.type.equals(o.get(i).type))
+       			      count++;
+	        	    i++;
 	        	}
+
 	        	if(count == t.size())
 	        		break;
-    		
         	}
-            
         }
 
         public String toString()
@@ -461,18 +464,23 @@ public abstract class Statement
             }
             if (this._elseStatement != null)
                 this._elseStatement.visit2(classIdent);
-            if (this._elseStatement != null) {
-                for (Statement s : ((Else_Statement) this._elseStatement)._elseStatements) {
-                    if (s.StatementType().toLowerCase().equals("assignment") && s.getLexpr().getIdent().toLowerCase().contains("this.")) {
+            if (this._elseStatement != null)
+            {
+                for (Statement s : ((Else_Statement) this._elseStatement)._elseStatements)
+                {
+                    if (s.StatementType().toLowerCase().equals("assignment") && s.getLexpr().getIdent().toLowerCase().contains("this."))
+                    {
                         elseIdents.add(s.getLexpr().getIdent());
                     }
                 }
             }
+
             for (String ifId : ifIdents)
             {
                 if (!elseIdents.contains(ifId))
                     throw new Exception(ifId + " not declared in all branches");
             }
+
             for (String elseId : elseIdents)
             {
                 if (!ifIdents.contains(elseId))
@@ -612,13 +620,13 @@ public abstract class Statement
 
         public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-        	//
+        	// Not necessary
             return null;
         }
 
         public void visit2(String classIdent)
         {
-            // TODO
+            // Not necessary
         }
 
         public void visit2(String classIdent, String methodIdent) throws Exception
@@ -630,16 +638,13 @@ public abstract class Statement
             for(Statement s: _typeAlts ) {
             	//typecheck 
             	if(!TypeChecker.checkSubtype(s.getDeclaredType(),superType ))
-                  {
-                      throw new Exception("Problem with Typecase return type: " + s.getDeclaredType() + " is not a subtype of "+ t.GetTypeFromMethodTable(superType));
-                  }
+            	{
+            	    throw new Exception("Problem with Typecase return type: " + s.getDeclaredType() + " is not a subtype of "+ t.GetTypeFromMethodTable(superType));
+            	}
             	Var var = new Var(s.getIdent(), s.getDeclaredType());
             	t.AddVarToMethodVarTable(methodIdent, var);
-            	//System.out.println(s.getDeclaredType());
-            	s.visit2(classIdent, methodIdent); 	
-            	
+            	s.visit2(classIdent, methodIdent);
             }
-            
         }
 
         public String toString()
@@ -674,21 +679,22 @@ public abstract class Statement
 
         public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-        	//
+        	// Not necessary
             return null;
         }
 
         public void visit2(String classIdent)
         {
-            // TODO
+            // Not necessary
         }
 
         public void visit2(String classIdent, String methodIdent) throws Exception
         {
-        	 VarTable t = VarTableSingleton.getTableByClassName(TypeChecker.currentClass);
-        	 String methodType =t.GetTypeFromMethodTable(methodIdent);
-            for(Statement s: _stmtList) {
-            	s.visit2(classIdent, methodIdent);
+            VarTable t = VarTableSingleton.getTableByClassName(TypeChecker.currentClass);
+            String methodType = t.GetTypeFromMethodTable(methodIdent);
+            for(Statement s: _stmtList)
+            {
+                s.visit2(classIdent, methodIdent);
             }
         }
 
@@ -696,15 +702,17 @@ public abstract class Statement
         {
             return "Typecase: " + this._ident;
         }
-        public String getDeclaredType() {
+
+        public String getDeclaredType()
+        {
     		return this._type;
     		
     	}
-        public String getIdent() {
-    		return this._ident;
-    		
-    	}
 
+        public String getIdent()
+        {
+    		return this._ident;
+    	}
 
     }
     public static Statement.Type_Statement typeStatement(String ident, String type, List<Statement> stmts)
@@ -736,7 +744,7 @@ public abstract class Statement
             }
             catch (Exception e)
             {
-                System.out.println(e.getMessage());
+                System.out.println("Failed in STATEMENT EXPRESSION for class:" + TypeChecker.currentClass + " on statement: " + this.toString() + ". with error: " + e.getMessage());
             }
             return null;
             
@@ -764,22 +772,22 @@ public abstract class Statement
     }
 	public Expression getLexpr() {
 		return null;
-		// TODO Auto-generated method stub
+		// Not necessary
 		
 	}
 	public Expression getRexpr() {
 		return null;
-		// TODO Auto-generated method stub
+        // Not necessary
 		
 	}
 	public String getDeclaredType() {
 		return null;
-		// TODO Auto-generated method stub
+        // Not necessary
 		
 	}
 	public Expression getExpr() {
 		return null;
-		// TODO Auto-generated method stub
+        // Not necessary
 		
 	}
 	public String getIdent() {

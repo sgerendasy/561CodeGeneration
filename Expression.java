@@ -80,14 +80,12 @@ public abstract class Expression
 
 		@Override
 		protected void setsetType(String type) {
-			// TODO Auto-generated method stub
-			
+            // Not necessary
 		}
 
 		@Override
 		protected void visit2(String classIdent, String methodIdent) {
-			// TODO Auto-generated method stub
-			
+            // Not necessary
 		}
 
     }
@@ -95,7 +93,6 @@ public abstract class Expression
     {
         return new Expression.Priority(e, left, right);
     }
-
 
 
     public static class Binex extends Expression
@@ -114,7 +111,7 @@ public abstract class Expression
 
         public String GetCodeGenIdent(HashMap<String, Var> registerTable)
         {
-            // TODO
+            // Not necessary
             return null;
         }
 
@@ -159,22 +156,25 @@ public abstract class Expression
             String operatorString = OperatorToString.getOperatorDict().get(this.op);
             
             String rtype = null;
-            if(operatorString.equals("$AND")||operatorString.equals("$OR")) {
-            	
+            if(operatorString.equals("$AND")||operatorString.equals("$OR"))
+            {
             	if(e1Type.equals("Boolean")&&e2Type.equals("Boolean"))
             		rtype="Boolean";
             }
-            else {
+            else
+            {
             rtype = TypeChecker.typeCheckOperator(e1Type, operatorString, e2Type);
             
-            while(rtype ==null) {
+            while(rtype == null)
+            {
             	e1Type= TypeChecker.getParent(e1Type);
             	e2Type= TypeChecker.getParent(e2Type);
-            	if(e2Type==null||e2Type==null)
-            		throw new Exception(operatorString + "(" + e1Type + ", " + e2Type + ") ");
-            	if(rtype ==null)
-            			rtype= TypeChecker.typeCheckOperator(e1Type, operatorString, e2Type);
-            	if(rtype==null&& e1Type=="Obj"&& e1Type=="Obj")
+            	if(e1Type == null || e2Type == null)
+                {
+                    throw new Exception(operatorString + "(" + e1Type + ", " + e2Type + ") ");
+                }
+                rtype = TypeChecker.typeCheckOperator(e1Type, operatorString, e2Type);
+            	if(rtype == null && e1Type.equals("Obj") && e1Type.equals("Obj"))
             		break;
             }
             if (rtype == null)
@@ -185,27 +185,27 @@ public abstract class Expression
 
         public String getType(String methodIdent) throws Exception
         {
-        	//if(e1.getType().equals("Identifier"))
             String e1Type = e1.getType(methodIdent);
             String e2Type = e2.getType(methodIdent);
             String operatorString = OperatorToString.getOperatorDict().get(this.op);
             String rtype = null;
-            if(operatorString.equals("$AND")||operatorString.equals("$OR")) {
-            	
+            if(operatorString.equals("$AND")||operatorString.equals("$OR"))
+            {
             	if(e1Type.equals("Boolean")&&e2Type.equals("Boolean"))
             		rtype="Boolean";
             }
-            else {
+            else
+            {
             rtype = TypeChecker.typeCheckOperator(e1Type, operatorString, e2Type);
             
-            while(rtype ==null) {
-            	e1Type= TypeChecker.getParent(e1Type);
-            	e2Type= TypeChecker.getParent(e2Type);
-            	if(e2Type==null||e2Type==null)
+            while(rtype == null)
+            {
+            	e1Type = TypeChecker.getParent(e1Type);
+            	e2Type = TypeChecker.getParent(e2Type);
+            	if(e1Type == null || e2Type == null)
             		throw new Exception(operatorString + "(" + e1Type + ", " + e2Type + ") ");
-            	if(rtype ==null)
-            			rtype= TypeChecker.typeCheckOperator(e1Type, operatorString, e2Type);
-            	if(rtype==null&& e1Type=="Obj"&& e1Type=="Obj")
+                rtype= TypeChecker.typeCheckOperator(e1Type, operatorString, e2Type);
+            	if(rtype == null && e1Type.equals("Obj") && e1Type.equals("Obj"))
             		break;
             }
             if (rtype == null)
@@ -232,15 +232,14 @@ public abstract class Expression
 
 		@Override
 		protected void setsetType(String type) {
-			// TODO Auto-generated method stub
+            // Not necessary
 			
 		}
 
 		@Override
 		protected void visit2(String classIdent, String methodIdent) {
-			this.classIdent=classIdent;
-			this.methodIdent=methodIdent;
-			
+			this.classIdent = classIdent;
+			this.methodIdent = methodIdent;
 		}
 
     }
@@ -271,10 +270,11 @@ public abstract class Expression
             String childType = Main.classHeaderDictionary.get(e1.getType()).objectInstanceName;
             String tempVarName = "temp_" + Main.nodeIndex;
             Main.nodeIndex++;
+
             String rightHandExpression = Main.classHeaderDictionary.get(e1.getType()).QuackMethodToCMethod.get(OperatorToString.getUnaryOperatorDict().get(op)) + "( ";
+
             GenTreeNode self = new GenTreeNode(tempVarName, childType);
             GenTreeNode child = e1.CreateGenTree(registerTable);
-//            child.completeCOutput = "\t" + child.registerType + " " + child.registerName + " = " + child.rightHandExpression + ";\n";
             self.children.add(child);
             rightHandExpression += self.children.get(0).registerName + ")";
             self.rightHandExpression = rightHandExpression;
@@ -344,17 +344,15 @@ public abstract class Expression
 		}
 
 		@Override
-		protected void setsetType(String type) {
-			// TODO Auto-generated method stub
-			
+		protected void setsetType(String type)
+        {
+            // Not necessary
 		}
 
 		@Override
 		protected void visit2(String classIdent, String methodIdent) {
-			this.classIdent=classIdent;
-			this.methodIdent=methodIdent;
-			
-			
+			this.classIdent = classIdent;
+			this.methodIdent = methodIdent;
 		}
 
     }
@@ -416,7 +414,7 @@ public abstract class Expression
 
         public void visit2(String classIdent)
         {
-            // TODO
+            // Not necessary
         }
 
         public String GetCodeGenIdent(HashMap<String, Var> registerTable)
@@ -429,23 +427,23 @@ public abstract class Expression
             return _s;
         }
 
-		protected String getIdent() {
+		protected String getIdent()
+        {
             // there is no identifier for a string lit
 			return null;
 		}
 
 		@Override
-		protected void setsetType(String type) {
-			// TODO Auto-generated method stub
-			
+		protected void setsetType(String type)
+        {
+            // Not necessary
 		}
 
 		@Override
-		protected void visit2(String classIdent, String methodIdent) {
-			this.classIdent=classIdent;
-			this.methodIdent=methodIdent;
-			
-			
+		protected void visit2(String classIdent, String methodIdent)
+        {
+			this.classIdent = classIdent;
+			this.methodIdent = methodIdent;
 		}
 
     }
@@ -496,7 +494,7 @@ public abstract class Expression
 
         public void visit2(String classIdent)
         {
-            // TODO
+            // Not necessary
         }
 
         public String ExpressionType()
@@ -525,17 +523,15 @@ public abstract class Expression
 		}
 
 		@Override
-		protected void setsetType(String type) {
-			// TODO Auto-generated method stub
-			
+		protected void setsetType(String type)
+        {
+            // Not necessary
 		}
 
 		@Override
 		protected void visit2(String classIdent, String methodIdent) {
-			this.classIdent=classIdent;
-			this.methodIdent=methodIdent;
-			
-			
+			this.classIdent = classIdent;
+			this.methodIdent = methodIdent;
 		}
 
     }
@@ -545,11 +541,8 @@ public abstract class Expression
     }
 
 
-
-
     public static class Identifier extends Expression
     {
-        //        public Location left, right;
         public int _left, _right;
         public String ident;
         public String type;
@@ -605,7 +598,6 @@ public abstract class Expression
             	tempVarName = varIdent.ident;
             }
             GenTreeNode self = new GenTreeNode(tempVarName, varIdent.type, varIdent.ident);
-//            self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
             return self;
         }
 
@@ -634,10 +626,11 @@ public abstract class Expression
                 this.type = TypeChecker.currentClass;
                 return type;
             }
-            // TODO: fix so it looks for the type in the correct table
-            String  iType = "";
+            String iType;
             if (classIdent != null && methodIdent != null)
+            {
                 iType = VarTableSingleton.getTableByClassName(classIdent).GetTypeFromMethodVarTable(this.ident, methodIdent);
+            }
             else
             {
                 // check method arg scope first, then if it's not there check method var scope
@@ -651,9 +644,7 @@ public abstract class Expression
                 iType = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetTypeFromVarTable(this.ident);
             }
 
-
             return iType;
-//            return type;
         }
 
         public String ExpressionType()
@@ -676,23 +667,19 @@ public abstract class Expression
                 this.type = TypeChecker.currentClass;
                 return type;
             }
-            // TODO: fix so it looks for the type in the correct table
-            VarTable t = VarTableSingleton.getTableByClassName(TypeChecker.currentClass);
+
             String iType = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetTypeFromMethodVarTable(this.ident, methodIdent);
-            
             
             if (iType == null)
             	iType = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetTypeFromVarTable(this.ident);
-            if(iType ==null)
+            if(iType == null)
             	throw new Exception(this.ident + " not defined");
             return iType;
-//            return type;
         }
 
 
         public void visit2(String classIdent) throws Exception
         {
-        	 
         	 ClassesTable ct = ClassesTable.getInstance();
              if(ct.classTable.containsKey(ident))
              	throw new Exception("Var "+ ident + " (" + _left + ", " + _right + ") has same name as class ");
@@ -705,7 +692,6 @@ public abstract class Expression
                 Var var = new Var(ident, type);
                 varTable.AddVarToVarTable(var);
 			}
-
         }
 
         public String toString()
@@ -802,10 +788,12 @@ public abstract class Expression
             {
                 constructorChild = this._e.CreateGenTree(registerTable);
             }
-            if(isMethod) {
+            if(isMethod)
+            {
             	String varName = this._e.GetCodeGenIdent(registerTable);
             	String varType = this._e.getType();	
             	String CMethodName = Main.classHeaderDictionary.get(varType).QuackMethodToCMethod.get(this.methodName);
+
             	//not a method but trying to access this.var
             	String methodReturnType = Main.classHeaderDictionary.get(varType).CMethodToReturnType.get(CMethodName);
 	        
@@ -823,22 +811,24 @@ public abstract class Expression
 	            }
 	
 	            String rightHandExpression="";
-	            if(!((Args.Informal_Args)_optionalArgs)._args.isEmpty()) {
+	            if(!((Args.Informal_Args)_optionalArgs)._args.isEmpty())
+	            {
 		            rightHandExpression = CMethodName + "(" + registerTable.get(this._varIdent).ident;
-		            
 		            for (GenTreeNode child : self.children)
 		            {
 		                rightHandExpression += ", " + child.registerName;
 		            }
 	            }
-	            else {
+	            else
+                {
 	            	rightHandExpression = CMethodName + "(" + varName;
 	            }
 	            rightHandExpression += ")";
 	            self.rightHandExpression = rightHandExpression;
 	            return self;
-	            }
-            else {
+            }
+            else
+            {
             	String varType = this._e.getType();	
             	GenTreeNode self = new GenTreeNode(this._e.getIdent()+"->"+this._ident, varType);
             	return self;
@@ -892,30 +882,27 @@ public abstract class Expression
         }
 
         public String getType(String methodIdent) throws Exception
-    {
-
-        String identifierType = this._e.getType();
-        String type = "";
-        if (_optionalArgs == null)
         {
-            // if optional args are null, I'm accessing a variable
-            type = VarTableSingleton.getTableByClassName(identifierType).GetTypeFromConstructorTable("this." + _ident);
-        }
-        else
-        {
-            type = VarTableSingleton.getTableByClassName(identifierType).GetTypeFromMethodTable(this._ident);
-            VarTableSingleton.getTableByClassName(identifierType).checkMethodArgs(this._ident, this._optionalArgs.getArgTypes());
 
+            String identifierType = this._e.getType();
+            String type;
+            if (_optionalArgs == null)
+            {
+                // if optional args are null, I'm accessing a variable
+                type = VarTableSingleton.getTableByClassName(identifierType).GetTypeFromConstructorTable("this." + _ident);
+            }
+            else
+            {
+                type = VarTableSingleton.getTableByClassName(identifierType).GetTypeFromMethodTable(this._ident);
+                VarTableSingleton.getTableByClassName(identifierType).checkMethodArgs(this._ident, this._optionalArgs.getArgTypes());
+            }
+            return type;
         }
-        return type;
-    }
 
         public String getIdent() throws Exception
         {
             if (this._e != null)
             {
-//                if (!this.toString().contains("this."))
-//                    throw new Exception("Cannot access private variables in class " + this.toString());
                 return _e.getIdent() + "." + _ident;
             }
         	return _ident;
@@ -923,7 +910,6 @@ public abstract class Expression
 
         public void visit2(String classIdent) throws Exception
         {
-
         	_e.visit2(classIdent);
         	ClassesTable ct = ClassesTable.getInstance();
             if(ct.classTable.containsKey(_ident))
@@ -942,16 +928,14 @@ public abstract class Expression
 
 		@Override
 		protected void setsetType(String type) {
-			// TODO Auto-generated method stub
-			
+            // Not necessary
 		}
 
 		@Override
-		protected void visit2(String classIdent, String methodIdent) {
-			this.classIdent=classIdent;
-			this.methodIdent=methodIdent;
-			
-			
+		protected void visit2(String classIdent, String methodIdent)
+        {
+			this.classIdent = classIdent;
+			this.methodIdent = methodIdent;
 		}
 
     }
@@ -989,7 +973,7 @@ public abstract class Expression
             this.codeGenIdent = tempVarName;
 
             String callConstructor = Main.classHeaderDictionary.get(this._ident).QuackMethodToCMethod.get("CONSTRUCTOR") + "(";
-            for (Expression args : ((Args.Informal_Args) this._args)._args)
+            for (Expression args : (this._args)._args)
             {
                 callConstructor += args.GetCodeGenIdent(registerTable) + ", ";
             }
@@ -1037,12 +1021,11 @@ public abstract class Expression
         	List<Class_Block.Clazz_Block> class_blocks = TypeChecker.ast.get_cbs();
             for (Class_Block.Clazz_Block class_block : class_blocks)
             {
-                if(class_block._classIdent.equals(_ident)) {
-                	
+                if(class_block._classIdent.equals(_ident))
+                {
                 	if(!(class_block._argList._args.size()==_args.getArgs().size()))
                 		throw new Exception("Class " + class_block._classIdent + "is getting instantiated with the wrong number of arguments");
                 }
-                	
             }
         }
 
@@ -1050,8 +1033,9 @@ public abstract class Expression
         {
             return _ident + _args;
         }
-		protected String getIdent() {
-			
+
+		protected String getIdent()
+        {
 			return _ident;
 		}
 
@@ -1061,16 +1045,16 @@ public abstract class Expression
         }
 
 		@Override
-		protected void setsetType(String type) {
-			// TODO Auto-generated method stub
-			
+		protected void setsetType(String type)
+        {
+            // Not necessary
 		}
 
 		@Override
-		protected void visit2(String classIdent, String methodIdent) {
-			this.classIdent=classIdent;
-			this.methodIdent=methodIdent;
-			
+		protected void visit2(String classIdent, String methodIdent)
+        {
+			this.classIdent = classIdent;
+			this.methodIdent = methodIdent;
 		}
 
     }
@@ -1079,6 +1063,4 @@ public abstract class Expression
         return new Expression.Constructor(ident, args, left, right);
     }
 	protected abstract void setsetType(String type);
-	
-
 }

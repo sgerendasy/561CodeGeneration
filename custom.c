@@ -347,15 +347,34 @@ obj_Nothing Pt_method_PRINT(obj_Pt this) {
 obj_Int Pt_method_PLUS(obj_Pt this, obj_Pt other) {
 
 }
+obj_C1 Pt_method_foo(obj_Pt this) {
+	return nul);
+
+}
 struct  class_Pt_struct  the_class_Pt_struct = {
 new_Pt,
 Pt_method_PRINT,
 Obj_method_STR,
 Obj_method_EQUALS,
 Pt_method_PLUS,
+Pt_method_foo,
 };
 class_Pt class_Pt_Instance = &the_class_Pt_struct; 
+obj_C1 new_C1() {
+  obj_C1 new_thing = (obj_C1) malloc(sizeof(struct obj_C1_struct));
+  new_thing->clazz = class_C1_Instance;
+  new_thing->x=4;
+  return new_thing; 
+}
+
+struct  class_C1_struct  the_class_C1_struct = {
+new_C1,
+Obj_method_PRINT,
+Obj_method_STR,
+Obj_method_EQUALS,
+};
+class_C1 class_C1_Instance = &the_class_C1_struct; 
 void quackmain() {
 	obj_Pt temp_0 = new_Pt(int_lit(2), int_lit(3));
-	obj_Nothing temp_1 = Pt_method_PRINT(temp_0);
+	obj_C1 temp_1 = Pt_method_foo(temp_0);
 }
