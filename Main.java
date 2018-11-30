@@ -861,11 +861,10 @@ public class Main {
                         if (i == size)
                         {
                             outputStream.write("struct  class_" + c.className + "_struct  the_class_" + c.className + "_struct = {\n");
-                            outputStream.write("  new_" + c.className);
                             classHeaderDictionary.get(c.className).QuackMethodToCMethod.put("CONSTRUCTOR", "new_" + c.className);
                             if(size>1)
                             {
-                                outputStream.write(", \n");
+
 								for(Entry<String, String> e : classHeaderDictionary.get(c.className).QuackMethodToCMethod.entrySet())
 								{
                                 	outputStream.write(e.getValue()+",\n");

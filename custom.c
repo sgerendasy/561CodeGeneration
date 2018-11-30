@@ -331,30 +331,31 @@ obj_Int int_lit(int n) {
   return boxed;
 }
 
-obj_C0 new_C0(obj_Int a ,obj_String b ,obj_Nothing c ,obj_Boolean d ) {
-  obj_C0 new_thing = (obj_C0) malloc(sizeof(struct obj_C0_struct));
-  new_thing->clazz = class_C0_Instance;
-  new_thing->aa=a;
-  new_thing->bb=b;
-  new_thing->cc=c;
-  new_thing->dd=d;
+obj_Pt new_Pt(obj_Int x ,obj_Int y ) {
+  obj_Pt new_thing = (obj_Pt) malloc(sizeof(struct obj_Pt_struct));
+  new_thing->clazz = class_Pt_Instance;
+  new_thing->x=x;
+  new_thing->y=y;
   return new_thing; 
 }
 
-obj_Obj C0_method_foo(obj_C0 this, obj_Int z) {
-	obj_Int temp_1 = int_lit(4);
-	return Int_method_EQUALS( z, temp_1);
+obj_Nothing Pt_method_PRINT(obj_Pt this) {
+	String_method_PRINT(str_lit("( "));
+	return nothing;
 
 }
-struct  class_C0_struct  the_class_C0_struct = {
-  new_C0, 
-new_C0,
-Obj_method_PRINT,
+obj_Int Pt_method_PLUS(obj_Pt this, obj_Pt other) {
+
+}
+struct  class_Pt_struct  the_class_Pt_struct = {
+new_Pt,
+Pt_method_PRINT,
 Obj_method_STR,
 Obj_method_EQUALS,
-C0_method_foo,
+Pt_method_PLUS,
 };
-class_C0 class_C0_Instance = &the_class_C0_struct; 
+class_Pt class_Pt_Instance = &the_class_Pt_struct; 
 void quackmain() {
-	obj_C0 temp_0 = new_C0(int_lit(1), str_lit("test"), nothing, lit_true);
+	obj_Pt temp_0 = new_Pt(int_lit(2), int_lit(3));
+	obj_Nothing temp_1 = Pt_method_PRINT(temp_0);
 }

@@ -791,16 +791,29 @@ public abstract class Expression
 
         public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-            String eType = this._e.getType();
-            String CMethodName = Main.classHeaderDictionary.get(eType).QuackMethodToCMethod.get(this.methodName);
-            String methodReturnType = Main.classHeaderDictionary.get(eType).CMethodToReturnType.get(CMethodName);
-            String varName = "temp_" + Main.nodeIndex;
+            GenTreeNode constructorChild = null;
+            if (this._e.ExpressionType().equals("CONSTRUCTOR"))
+            {
+                constructorChild = this._e.CreateGenTree(registerTable);
+            }
+            String varName = this._e.GetCodeGenIdent(registerTable);
+            String varType = this._e.getType();
+            String CMethodName = Main.classHeaderDictionary.get(varType).QuackMethodToCMethod.get(this.methodName);
+            String methodReturnType = Main.classHeaderDictionary.get(varType).CMethodToReturnType.get(CMethodName);
+
+            String selfName = "temp_" + Main.nodeIndex;
             Main.nodeIndex++;
-            GenTreeNode self = new GenTreeNode(varName, methodReturnType);
+
+            GenTreeNode self = new GenTreeNode(selfName, methodReturnType);
             for (Expression arg : ((Args.Informal_Args)_optionalArgs)._args)
             {
                 self.children.add(arg.CreateGenTree(registerTable));
             }
+            if (constructorChild != null)
+            {
+                self.children.add(constructorChild);
+            }
+
             String rightHandExpression="";
             if(!((Args.Informal_Args)_optionalArgs)._args.isEmpty()) {
 	            rightHandExpression = CMethodName + "(" + registerTable.get(this._varIdent).ident;
@@ -811,7 +824,7 @@ public abstract class Expression
 	            }
             }
             else {
-            	rightHandExpression = CMethodName + "("+varName;
+            	rightHandExpression = CMethodName + "(" + varName;
             }
             rightHandExpression += ")";
             self.rightHandExpression = rightHandExpression;
@@ -945,6 +958,7 @@ public abstract class Expression
         public int _left, _right;
         public String classIdent;
 		public String methodIdent;
+		public String codeGenIdent;
         public Constructor(String ident, Args.Informal_Args args, int left, int right)
         {
             this._ident = ident;
@@ -958,6 +972,7 @@ public abstract class Expression
             String classType = Main.classHeaderDictionary.get(this._ident).objectInstanceName;
             String tempVarName = "temp_" + Main.nodeIndex;
             Main.nodeIndex++;
+            this.codeGenIdent = tempVarName;
 
             String callConstructor = Main.classHeaderDictionary.get(this._ident).QuackMethodToCMethod.get("CONSTRUCTOR") + "(";
             for (Expression args : ((Args.Informal_Args) this._args)._args)
@@ -968,7 +983,7 @@ public abstract class Expression
             callConstructor += ")";
 
             GenTreeNode self = new GenTreeNode(tempVarName, classType, callConstructor);
-            self.completeCOutput = self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
+            self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
             return self;
         }
 
@@ -1027,8 +1042,7 @@ public abstract class Expression
 
         public String GetCodeGenIdent(HashMap<String, Var> registerTable)
         {
-            // TODO
-            return null;
+            return this.codeGenIdent;
         }
 
 		@Override

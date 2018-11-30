@@ -1,15 +1,15 @@
+class Pt(x: Int, y: Int) {
+    this.x = x;
+    this.y = y;
 
-class C0(a: Int, b: String, c: Nothing, d: Boolean)
-{
-    this.aa = a;
-    this.bb = b;
-    this.cc = c;
-    this.dd = d;
-    def foo(z: Int) : Obj
-        {
-            y = 4;
-            return z == y;
-        }
+    def PRINT( )
+    {
+      "( ".PRINT();
+    }
+
+     def PLUS(other: Pt):Int {
+         return other.x + other.y;
+     }
 }
 
-e = C0(1, "test", none, true);
+a = Pt(2,3).PRINT();

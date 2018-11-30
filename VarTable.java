@@ -59,7 +59,7 @@ public class VarTable
 
     public void checkMethodArgs(String methodIdent, ArrayList<String> givenMethodArgTypes) throws Exception
     {
-        if (ExistsInMethodTable(methodIdent))
+        if (!ExistsInMethodTable(methodIdent))
             throw new Exception("Method " + methodIdent + " doesn't exist");
         LinkedList<Var> methodArgs = GetMethodArgs(methodIdent);
         if (givenMethodArgTypes.size() != methodArgs.size())
@@ -501,14 +501,23 @@ public class VarTable
         return null;
     }
 
-    public String GetTypeFromMethodTable(String identifier)
+    public String GetTypeFromMethodTable(String ident)
     {
-        for (Var v : methodTable)
+        boolean changed = true;
+        String classIdent = this.className;
+        while (changed)
         {
-            if (v.ident.equals(identifier))
+            for (Var v1 : VarTableSingleton.getTableByClassName(classIdent).methodTable)
             {
-                return v.type;
+                if (ident.equals(v1.ident))
+                    return v1.type;
             }
+            String newClassIdent = ClassesTable.getInstance().getParentClass(classIdent);
+            if (newClassIdent.equals(classIdent))
+            {
+                changed = false;
+            }
+            classIdent = newClassIdent;
         }
         return null;
     }
