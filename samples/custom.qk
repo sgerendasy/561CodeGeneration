@@ -2,11 +2,10 @@ class Pt(x: Int, y: Int) {
     this.x = x;
     this.y = y;
 
-     def PLUS(other: Pt) : Pt {
+     def PLUS(other: Pt):Pt {
          return Pt(this.x+other.x, this.y+other.y);
      }
 }
 
-f = Pt(4,5);
-g = Pt(1,2);
-f.PLUS(g);
+f: Obj = Pt(4,5);
+f.PLUS();
