@@ -5,8 +5,8 @@
 struct class_Obj_struct;
 typedef struct class_Obj_struct* class_Obj;
 
-struct class_C_struct;
-typedef struct class_C_struct* class_C;
+struct class_Pt_struct;
+typedef struct class_Pt_struct* class_Pt;
 
 struct class_String_struct;
 typedef struct class_String_struct* class_String;
@@ -46,9 +46,11 @@ typedef struct obj_Int_struct {
 	int value;
 } *obj_Int;
 
-typedef struct obj_C_struct {
-	class_C clazz;
-} *obj_C;
+typedef struct obj_Pt_struct {
+	class_Pt clazz;
+	obj_Int x;
+	obj_Int y;
+} *obj_Pt;
 
 typedef struct obj_$statementsDummyClass_struct {
 	class_$statementsDummyClass clazz;
@@ -103,12 +105,12 @@ struct class_Int_struct {
 	obj_Int (*NEG)  ( obj_Int );
 };
 
-struct class_C_struct {
-	obj_C (*constructor) ( void );
-	obj_Nothing (*PRINT)  ( obj_C );
-	obj_String (*STR)  ( obj_C );
-	obj_Boolean (*EQUALS)  ( obj_C, obj_Obj );
-	obj_Int (*foo)  ( obj_C );
+struct class_Pt_struct {
+	obj_Pt (*constructor) ( obj_Int, obj_Int);
+	obj_Nothing (*PRINT)  ( obj_Pt );
+	obj_String (*STR)  ( obj_Pt );
+	obj_Boolean (*EQUALS)  ( obj_Pt, obj_Obj );
+	obj_Pt (*PLUS)  ( obj_Pt, obj_Pt );
 };
 
 struct class_$statementsDummyClass_struct {
@@ -120,8 +122,8 @@ struct class_$statementsDummyClass_struct {
 
 extern obj_String str_lit(char *s);
 extern obj_Int int_lit(int n);
-extern obj_C new_C();
-extern class_C class_C_Instance;
+extern obj_Pt new_Pt(obj_Int x, obj_Int y);
+extern class_Pt class_Pt_Instance;
 extern class_Obj class_Obj_Instance;
 extern class_String class_String_Instance;
 extern class_Boolean class_Boolean_Instance;
@@ -161,10 +163,10 @@ obj_Boolean Int_method_LESS(obj_Int this, obj_Int other );
 obj_Boolean Int_method_ATLEAST(obj_Int this, obj_Int other );
 obj_Boolean Int_method_MORE(obj_Int this, obj_Int other );
 obj_Int Int_method_NEG(obj_Int this );
-obj_Nothing C_method_PRINT(obj_C this );
-obj_String C_method_STR(obj_C this );
-obj_Boolean C_method_EQUALS(obj_C this, obj_Obj other );
-obj_Int C_method_foo(obj_C this );
+obj_Nothing Pt_method_PRINT(obj_Pt this );
+obj_String Pt_method_STR(obj_Pt this );
+obj_Boolean Pt_method_EQUALS(obj_Pt this, obj_Obj other );
+obj_Pt Pt_method_PLUS(obj_Pt this, obj_Pt other );
 obj_Nothing $statementsDummyClass_method_PRINT(obj_$statementsDummyClass this );
 obj_String $statementsDummyClass_method_STR(obj_$statementsDummyClass this );
 obj_Boolean $statementsDummyClass_method_EQUALS(obj_$statementsDummyClass this, obj_Obj other );

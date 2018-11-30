@@ -10,7 +10,7 @@ class Pt(x: Int, y: Int) {
      }
 }
 
-class P() extends Pt{
+class P(x: Int, y: Int) extends Pt{
   this.x = x;
   this.y = y;
 

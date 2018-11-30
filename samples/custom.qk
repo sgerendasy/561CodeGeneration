@@ -1,19 +1,12 @@
+class Pt(x: Int, y: Int) {
+    this.x = x;
+    this.y = y;
 
-class C()
-{
-    def foo() : Int
-    {
-        return 4;
-    }
+     def PLUS(other: Pt) : Pt {
+         return Pt(this.x+other.x, this.y+other.y);
+     }
 }
 
-
-a = 1;
-if (true)
-{
-    b = 2;
-}
-else
-{
-    c = 3;
-}
+f = Pt(4,5);
+g = Pt(1,2);
+f.PLUS(g);

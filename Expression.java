@@ -14,7 +14,7 @@ public abstract class Expression
     abstract void SetMethodIdent(String mi);
     abstract String ExpressionType() throws Exception;
     abstract GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception;
-    abstract String GetCodeGenIdent(HashMap<String, Var> registerTable);
+    abstract String GetCodeGenIdent(HashMap<String, Var> registerTable) throws Exception;
     
     public static class Priority extends Expression
     {
@@ -28,7 +28,7 @@ public abstract class Expression
             this._right = right;
         }
 
-        public String GetCodeGenIdent(HashMap<String, Var> registerTable)
+        public String GetCodeGenIdent(HashMap<String, Var> registerTable) throws Exception
         {
             return this.e.GetCodeGenIdent(registerTable);
         }
@@ -109,10 +109,19 @@ public abstract class Expression
             this.op = op;
         }
 
-        public String GetCodeGenIdent(HashMap<String, Var> registerTable)
+        public String GetCodeGenIdent(HashMap<String, Var> registerTable) throws Exception
         {
-            // Not necessary
-            return null;
+            // returns temp_X varName that will equal the result of the given binary expression
+            // example: this.x + 5 becomes:
+            // obj_Int temp_N = temp_I.x; // <- find the "this" instance
+            // obj_Int temp_N+1 = int_lit(5);
+            // obj_Int temp_N+2 = Int_method_PLUS(temp_N, temp_N+1);
+            // return "temp_N+2";
+
+            String opType = this.e1.getType();
+            String opMethodName = Main.classHeaderDictionary.get(opType).QuackMethodToCMethod.get(OperatorToString.getOperatorDict().get(this.op));
+
+            return opMethodName + "( " + this.e1.getIdent().replace(".", "->") + " , " + this.e2.getIdent().replace(".", "->") + ")";
         }
 
         public GenTreeNode CreateGenTree(HashMap<String, Var> registerTable) throws Exception
