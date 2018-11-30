@@ -65,7 +65,8 @@ public class Main {
         String outputFileName = tempSource[tempSource.length - 1].replace("qk", "h");
         try
         {
-            FileWriter outputStream = new FileWriter("/Users/fringeclass/ClionProjects/untitled/" + outputFileName);
+//            FileWriter outputStream = new FileWriter("/Users/fringeclass/ClionProjects/untitled/" + outputFileName);
+            FileWriter outputStream = new FileWriter(outputFileName);
             outputStream.write("#ifndef " + outputFileName.replace(".", "_") + '\n');
             outputStream.write("#define " + outputFileName.replace(".", "_") + "\n\n\n");
             // fill in .h stuff here
@@ -275,7 +276,8 @@ public class Main {
     {
       
         String[] tempSource = this.sourceFile.split("/");
-        String outputFileName = "/Users/fringeclass/ClionProjects/untitled/" + tempSource[tempSource.length - 1].replace("qk", "c");
+//        String outputFileName = "/Users/fringeclass/ClionProjects/untitled/" + tempSource[tempSource.length - 1].replace("qk", "c");
+        String outputFileName = tempSource[tempSource.length - 1].replace("qk", "c");
         String headerFileName = tempSource[tempSource.length - 1].replace("qk", "h");
         try {
 			outputStream= new FileWriter(outputFileName);

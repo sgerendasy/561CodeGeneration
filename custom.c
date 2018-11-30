@@ -334,20 +334,27 @@ obj_Int int_lit(int n) {
   return boxed;
 }
 
-obj_A new_A() {
-  obj_A new_thing = (obj_A) malloc(sizeof(struct obj_A_struct));
-  new_thing->clazz = class_A_Instance;
+obj_Pt new_Pt(obj_Int x ,obj_Int y ) {
+  obj_Pt new_thing = (obj_Pt) malloc(sizeof(struct obj_Pt_struct));
+  new_thing->clazz = class_Pt_Instance;
+  new_thing->x = x;
+  new_thing->y = y;
   return new_thing; 
 }
 
-struct  class_A_struct  the_class_A_struct = {
-new_A,
+obj_Pt Pt_method_PLUS(obj_Pt self, obj_Pt other) {
+	return new_Obj(Int_method_PLUS( self->x , other->x), Int_method_PLUS( self->y , other->y));
+
+}
+struct  class_Pt_struct  the_class_Pt_struct = {
+new_Pt,
 Obj_method_PRINT,
 Obj_method_STR,
 Obj_method_EQUALS,
+Pt_method_PLUS,
 };
-class_A class_A_Instance = &the_class_A_struct; 
+class_Pt class_Pt_Instance = &the_class_Pt_struct; 
 void quackmain() {
-	obj_A temp_0 = new_A();
-	Obj_method_PRINT(temp_0);
+	obj_Pt temp_0 = new_Pt(int_lit(4), int_lit(5));
+	Pt_method_PLUS(temp_0);
 }
