@@ -15,7 +15,6 @@
 # configurables:
 
 # path to the java interpreter
-# TODO: Use JAVA_HOME
 JAVA=java
 
 # Version of JFlex to execute

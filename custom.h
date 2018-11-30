@@ -20,6 +20,9 @@ typedef struct class_Nothing_struct* class_Nothing;
 struct class_Int_struct;
 typedef struct class_Int_struct* class_Int;
 
+struct class_C1_struct;
+typedef struct class_C1_struct* class_C1;
+
 struct class_$statementsDummyClass_struct;
 typedef struct class_$statementsDummyClass_struct* class_$statementsDummyClass;
 
@@ -51,6 +54,11 @@ typedef struct obj_Pt_struct {
 	obj_Int x;
 	obj_Int y;
 } *obj_Pt;
+
+typedef struct obj_C1_struct {
+	class_C1 clazz;
+	obj_Int x;
+} *obj_C1;
 
 typedef struct obj_$statementsDummyClass_struct {
 	class_$statementsDummyClass clazz;
@@ -111,6 +119,14 @@ struct class_Pt_struct {
 	obj_String (*STR)  ( obj_Pt );
 	obj_Boolean (*EQUALS)  ( obj_Pt, obj_Obj );
 	obj_Int (*PLUS)  ( obj_Pt, obj_Pt );
+	obj_C1 (*foo)  ( obj_Pt );
+};
+
+struct class_C1_struct {
+	obj_C1 (*constructor) ( void );
+	obj_Nothing (*PRINT)  ( obj_C1 );
+	obj_String (*STR)  ( obj_C1 );
+	obj_Boolean (*EQUALS)  ( obj_C1, obj_Obj );
 };
 
 struct class_$statementsDummyClass_struct {
@@ -128,6 +144,7 @@ extern class_String class_String_Instance;
 extern class_Boolean class_Boolean_Instance;
 extern class_Nothing class_Nothing_Instance;
 extern class_Int class_Int_Instance;
+extern class_C1 class_C1_Instance;
 extern obj_Boolean lit_true;
 extern obj_Boolean lit_false;
 extern obj_Nothing nothing;
@@ -166,6 +183,10 @@ obj_Nothing Pt_method_PRINT(obj_Pt this );
 obj_String Pt_method_STR(obj_Pt this );
 obj_Boolean Pt_method_EQUALS(obj_Pt this, obj_Obj other );
 obj_Int Pt_method_PLUS(obj_Pt this, obj_Pt other );
+obj_C1 Pt_method_foo(obj_Pt this );
+obj_Nothing C1_method_PRINT(obj_C1 this );
+obj_String C1_method_STR(obj_C1 this );
+obj_Boolean C1_method_EQUALS(obj_C1 this, obj_Obj other );
 obj_Nothing $statementsDummyClass_method_PRINT(obj_$statementsDummyClass this );
 obj_String $statementsDummyClass_method_STR(obj_$statementsDummyClass this );
 obj_Boolean $statementsDummyClass_method_EQUALS(obj_$statementsDummyClass this, obj_Obj other );

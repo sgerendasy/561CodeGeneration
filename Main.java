@@ -45,6 +45,7 @@ public class Main {
         BuildCFile(typeChecker);
     }
 
+    // returns -1 if method doesn't exist. Otherwise returns the index of the method
     private int methodTableContains(LinkedList<Var> methodTable, Var var)
     {
         for (int i = 0; i < methodTable.size(); i++)
@@ -269,12 +270,18 @@ public class Main {
             outputStream.write("#include \"" + headerFileName+"\"\n\n\n");
             
             VarTable t = VarTableSingleton.getTableByClassName("$statementsDummyClass");
-            if(!(t==null)) 
-            outputStream.write("void quackmain(); \n\n");
+            if(!(t==null))
+            {
+                outputStream.write("void quackmain(); \n\n");
+            }
 
             outputStream.write("int main(int argc, char** argv) {\n");
-            if(!(t==null)) 
-            outputStream.write("  quackmain();\n");
+
+            if(!(t==null))
+            {
+                outputStream.write("  quackmain();\n");
+            }
+
             outputStream.write("  printf(\"--- Terminated successfully ---\");\n\n");
             outputStream.write("  exit(0);\n");
             outputStream.write("}\n\n\n");
@@ -431,7 +438,6 @@ public class Main {
                                 classHeaderDictionary.get("String").CMethodToReturnType.put("String_method_MORE", "obj_Boolean");
                             }
 
-
                             if (i == size) {
                                 outputStream.write("struct  class_String_struct  the_class_String_struct = {\n");
                                 outputStream.write("  new_String,   \n");
@@ -453,7 +459,6 @@ public class Main {
                                 outputStream.write("  String_method_MORE\n };\n\n");
                                 classHeaderDictionary.get("String").QuackMethodToCMethod.put("MORE", "String_method_MORE");
 
-
                                 outputStream.write("class_String class_String_Instance = &the_class_String_struct; \n\n");
                                 outputStream.write("obj_String str_lit(char *s) {\n");
                                 outputStream.write("  char *rep;\n");
@@ -461,8 +466,8 @@ public class Main {
                                 outputStream.write("  str->value = s;\n");
                                 outputStream.write("  return str;\n}\n\n");
                             }
+                            // increment method count
                             i++;
-
                         }
 
                         else if (c.className.equals("Boolean"))
@@ -524,6 +529,7 @@ public class Main {
                                 outputStream.write("  { &the_class_Boolean_struct, 1 };\n\n");
                                 outputStream.write("obj_Boolean lit_true = &lit_true_struct;\n\n");
                             }
+                            // increment method count
                             i++;
                         }
 
@@ -574,8 +580,8 @@ public class Main {
                                 outputStream.write("  { &the_class_Nothing_struct };\n\n");
                                 outputStream.write("obj_Nothing nothing = &nothing_struct; \n\n");
                             }
+                            // increment method count
                             i++;
-
                         }
                         else if (c.className.equals("Int"))
                         {
@@ -714,15 +720,13 @@ public class Main {
                                 outputStream.write("  obj_Int boxed = new_Int();\n");
                                 outputStream.write("  boxed->value = n;\n");
                                 outputStream.write("  return boxed;\n}\n\n");
-
                             }
+                            // increment method count
                             i++;
-
                         }
- 
                     }
-                    
                 }
+                // START STATEMENTS "CLASS"
                 else if (c.className.equals("$statementsDummyClass"))
                 {
                     TypeChecker.currentClass = "$statementsDummyClass";
@@ -730,8 +734,7 @@ public class Main {
                     String mainDecl = "void quackmain() {\n";
                     outputStream.write(mainDecl);
                     Class_Block.Clazz_Block theClassBlock = GetClassBlock(c.className);
-//                    HashMap<String, Var> theRegisterTable = new HashMap<>();
-//                    GenTreeNode GenTreeRoot;
+
                     GenTreeAndRegisterTables genTreeAndRegisterTables = new GenTreeAndRegisterTables();
                     for (Statement s : theClassBlock._stmtList)
                     {
@@ -751,7 +754,6 @@ public class Main {
                 }
 
                 // START CUSTOM CLASS
-                //Create struct for class
                 else
                 {
                     TypeChecker.currentClass = c.className;
@@ -760,14 +762,14 @@ public class Main {
                     for (MethodNode m : GetCompleteMethodTable(c.className)) {
                         TypeChecker.currentMethod = m.ident;
                         if (i == 0) {
-                        	
+                            //Create struct for class
                         	Class_Block.Clazz_Block theClassBlock = GetClassBlock(c.className);
                         	String args = "";
                         	for(Args.Arg a : theClassBlock._argList._args)
                         	{
                         		args += "obj_"+a._type+" "+a._ident+" ,";
                         	}
-                        	if(!(args == ""))
+                        	if(!(args.equals("")))
                             {
                                 args = args.substring(0,args.length() - 1);
                             }
@@ -790,24 +792,26 @@ public class Main {
                             String parent=typeChecker.tree.findNode(typeChecker.tree.getRoot(),c.className).getParent().getId();
                             
                             for(Entry<String, String> Super : classHeaderDictionary.get(parent).QuackMethodToCMethod.entrySet()) {
-                            	if(c.MethodIdentExists(Super.getKey())) {
+                            	if(c.MethodIdentExists(Super.getKey()))
+                            	{
                             		classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(Super.getKey(), c.className +"_method_"+Super.getKey());
-
-                            	}else { 
+                            	}
+                            	else
+                                {
                             		classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(Super.getKey(), Super.getValue());
-                            		
                             	}
                             }
                             CHeaderNode x = classHeaderDictionary.get(parent);
-                            for (MethodNode meth : GetCompleteMethodTable(c.className)) {
-                            	if(!x.QuackMethodToCMethod.containsKey(meth.ident)) {
-                            	classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(meth.ident, c.className+"_method_"+meth.ident);
+                            for (MethodNode meth : GetCompleteMethodTable(c.className))
+                            {
+                            	if(!x.QuackMethodToCMethod.containsKey(meth.ident))
+                            	{
+                            	    classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(meth.ident, c.className+"_method_"+meth.ident);
                             	}
                             }
-
                         }
                         //create method object for each method
-                        List<Statement> statements=null;
+                        List<Statement> statements = null;
                         GenTreeAndRegisterTables genTreeAndRegisterTables = new GenTreeAndRegisterTables();
                         if(c.MethodIdentExists(m.ident))
                         {
@@ -816,7 +820,8 @@ public class Main {
                             Class_Block.Clazz_Block theClassBlock = GetClassBlock(c.className);
                             for(Methods.Method x:theClassBlock._methods)
                             {
-                                if(x._methodIdent.equals(m.ident)){
+                                if(x._methodIdent.equals(m.ident))
+                                {
                                     methArgs= x._formalArgs._args;
                                     statements = x._statements;
                                 }
@@ -827,18 +832,15 @@ public class Main {
                             }
                             else
                             {
-                                String methArg = "obj_"+c.className+" this";
-
+                                String methArg = "obj_" + c.className+" this";
                                 for(Args.Arg a : methArgs)
                                 {
                                     Var tempVar = new Var("temp_" + nodeIndex, Main.classHeaderDictionary.get(a._type).objectInstanceName);
                                     nodeIndex++;
                                     genTreeAndRegisterTables.theRegisterTable.put(a._ident, tempVar);
-                                    methArg += ", obj_"+a._type+" "+a._ident;
+                                    methArg += ", obj_" + a._type + " " + a._ident;
                                 }
-        //                    	methArg = methArg.substring(0,methArg.length() - 1);
-
-                                outputStream.write("obj_"+m.returnType+" "+classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident)+"("+methArg+") {\n");
+                                outputStream.write("obj_" + m.returnType + " " + classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident) + "(" + methArg + ") {\n");
                             }
                         }
 
@@ -846,7 +848,6 @@ public class Main {
                         {
                         	for(Statement st: statements)
                         	{
-                        	//????fill in method statements
                         		try
                                 {
                                     genTreeAndRegisterTables = st.CreateGenTree(genTreeAndRegisterTables.theRegisterTable);
@@ -855,7 +856,7 @@ public class Main {
                                 }
                                 catch (Exception e)
                                 {
-                                    System.out.println(e.getMessage());
+                                    System.out.println("Failed in class:" + TypeChecker.currentClass + " on statement: " + st.toString() + ". with error: " + e.getMessage());
                                 }
                         	}
                             outputStream.write("\n}\n");
@@ -883,12 +884,7 @@ public class Main {
                 }
             }
             outputStream.flush();  
-        } 
-        catch (IOException ioe)
-        {
-            System.out.println(ioe.getMessage());
-        }
-        catch(Exception e)
+        } catch(Exception e)
         {
             System.out.println(e.getMessage());
         }
@@ -903,7 +899,6 @@ public class Main {
         }
         try
         {
-//            outputStream.write("\t" + root.registerType + " " + root.registerName + " = " + root.rightHandExpression + ";\n");
             outputStream.write(root.completeCOutput);
         }
         catch (IOException e)
@@ -922,26 +917,6 @@ public class Main {
         return null;
     }
 
-    HashMap<String, LinkedList<Var>> GetCompleteMethodArgs(String className)
-    {
-        HashMap<String, LinkedList<Var>> classMethodArgs = VarTableSingleton.getTableByClassName(className).methodVars;
-        String currentClassName = className;
-        while (!currentClassName.equals("Obj"))
-        {
-            currentClassName = ClassesTable.getInstance().getParentClass(currentClassName);
-            HashMap<String, LinkedList<Var>> parentMethodArgs = VarTableSingleton.getTableByClassName(currentClassName).methodVars;
-            for (Map.Entry<String, LinkedList<Var>> entry : parentMethodArgs.entrySet())
-            {
-                if (!classMethodArgs.containsKey(entry.getKey()))
-                {
-                    classMethodArgs.put(entry.getKey(), entry.getValue());
-                }
-            }
-        }
-
-        return classMethodArgs;
-    }
-
     // this method returns methods of provided class, including ones inherited from its parents
     LinkedList<MethodNode> GetCompleteMethodTable(String className)
     {
@@ -953,7 +928,6 @@ public class Main {
             LinkedList<Var> classMethods = VarTableSingleton.getTableByClassName(currentClassName).methodTable;
             for (Var v : classMethods)
             {
-
                 boolean exists = false;
                 for (MethodNode m : completeMethods)
                 {
@@ -966,7 +940,6 @@ public class Main {
                     methodNode.classIdent = currentClassName;
                     completeMethods.add(methodNode);
                 }
-
             }
             if (currentClassName.equals("Obj"))
                 break;
@@ -1015,8 +988,6 @@ public class Main {
         System.out.println("Beginning parse ...");
         try
         {
-
-
             Symbol result;
             ComplexSymbolFactory symbolFactory = new ComplexSymbolFactory();
             Lexer scanner = new Lexer (new FileReader( "built-ins.qk" ), symbolFactory);
@@ -1061,6 +1032,5 @@ public class Main {
             System.exit(1);
         }
         return typeChecker;
-
     }
 }
