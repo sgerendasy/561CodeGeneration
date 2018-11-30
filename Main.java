@@ -44,6 +44,7 @@ public class Main {
         TypeChecker typeChecker = parseProgram();
         BuildHFile(typeChecker);
         BuildCFile(typeChecker);
+        System.out.println("\nC CodeGenerated");
     }
 
     // returns -1 if method doesn't exist. Otherwise returns the index of the method
@@ -791,6 +792,7 @@ public class Main {
                                 args = args.substring(0,args.length() - 1);
                             }
                             outputStream.write("obj_" + c.className + " new_" + c.className + "(" + args + ") {\n");
+                            classHeaderDictionary.get(c.className).QuackMethodToCMethod.put("CONSTRUCTOR", "new_"+c.className);
                             outputStream.write("  obj_" + c.className + " new_thing = (obj_" + c.className + ") malloc(sizeof(struct obj_" + c.className + "_struct));\n");
                             outputStream.write("  new_thing->clazz = class_" + c.className + "_Instance;\n");
                             
@@ -815,6 +817,7 @@ public class Main {
                             	}
                             	else
                                 {
+                            		if(!(Super.getKey().equals("CONSTRUCTOR")))
                             		classHeaderDictionary.get(c.className).QuackMethodToCMethod.put(Super.getKey(), Super.getValue());
                             	}
                             }

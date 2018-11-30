@@ -7,6 +7,8 @@
 void quackmain(); 
 
 int main(int argc, char** argv) {
+  printf("--- Begin: %s ---", argv[0]);
+
   quackmain();
   printf("--- Terminated successfully ---");
 
@@ -21,22 +23,22 @@ new_thing->clazz = class_Obj_Instance;
 return new_thing; 
 }
 
-obj_Nothing Obj_method_PRINT(obj_Obj this) {
-  obj_String str = this->clazz->STR(this);
+obj_Nothing Obj_method_PRINT(obj_Obj self) {
+  obj_String str = self->clazz->STR(self);
   fprintf(stdout, "%s", str->value);
   return nothing; 
 }
 
-obj_String Obj_method_STR(obj_Obj this) {
-long addr = (long) this;
+obj_String Obj_method_STR(obj_Obj self) {
+long addr = (long) self;
 char *rep;
 asprintf(&rep, "<Object at %ld>", addr);
 obj_String str = str_lit(rep); 
 return str; 
 }
 
-obj_Boolean Obj_method_EQUALS(obj_Obj this, obj_Obj other) {
-  if (this == other) {
+obj_Boolean Obj_method_EQUALS(obj_Obj self, obj_Obj other) {
+  if (self == other) {
     return lit_true;
   } else {
     return lit_false; 
@@ -55,19 +57,19 @@ obj_Nothing new_Nothing(  ) {
   return nothing; 
 }
 
-obj_Nothing Nothing_method_PRINT(obj_Nothing this) {
-  obj_String str = this->clazz->STR(this);
+obj_Nothing Nothing_method_PRINT(obj_Nothing self) {
+  obj_String str = self->clazz->STR(self);
   fprintf(stdout, "%s", str->value);
   return nothing; 
 }
 
-obj_String Nothing_method_STR(obj_Nothing this) {
+obj_String Nothing_method_STR(obj_Nothing self) {
     return str_lit("<nothing>");
 }
 
-obj_Boolean Nothing_method_EQUALS(obj_Nothing this, obj_Obj other) {
+obj_Boolean Nothing_method_EQUALS(obj_Nothing self, obj_Obj other) {
 obj_Nothing other_nothing = (obj_Nothing) other;
-  if (this == other_nothing) {
+  if (self == other_nothing) {
     return lit_true;
   } else {
     return lit_false; 
@@ -94,29 +96,29 @@ obj_String new_String(  ) {
   return new_thing; 
 }
 
-obj_String String_method_PLUS(obj_String this, obj_String other) {
-char* thisString = this->value;
+obj_String String_method_PLUS(obj_String self, obj_String other) {
+char* selfString = self->value;
 char* otherString = other->value;
-char* combinedStrings = malloc(strlen(thisString) + strlen(otherString) + 1);
-strcat(combinedStrings, thisString);
+char* combinedStrings = malloc(strlen(selfString) + strlen(otherString) + 1);
+strcat(combinedStrings, selfString);
 strcat(combinedStrings, otherString);
 return str_lit(combinedStrings);
 }
 
-obj_Boolean String_method_EQUALS(obj_String this, obj_Obj other) {
+obj_Boolean String_method_EQUALS(obj_String self, obj_Obj other) {
   obj_String other_str = (obj_String) other;
   if (other_str->clazz != class_String_Instance) {
     return lit_false;
   }
-  if (strcmp(this->value, other_str->value) == 0) {
+  if (strcmp(self->value, other_str->value) == 0) {
     return lit_true;
   } else {
     return lit_false;
   }
 }
 
-obj_Boolean String_method_ATMOST(obj_String this, obj_String other) {
-  if (strcmp(this->value, other->value) <= 0) {
+obj_Boolean String_method_ATMOST(obj_String self, obj_String other) {
+  if (strcmp(self->value, other->value) <= 0) {
     return lit_true;
   } 
   else {
@@ -124,37 +126,37 @@ obj_Boolean String_method_ATMOST(obj_String this, obj_String other) {
 }
 }
 
-obj_Boolean String_method_LESS(obj_String this, obj_String other) {
-  if (strcmp(this->value, other->value) < 0) {
+obj_Boolean String_method_LESS(obj_String self, obj_String other) {
+  if (strcmp(self->value, other->value) < 0) {
     return lit_true;
   } else {
     return lit_false;
 }
 }
 
-obj_Boolean String_method_ATLEAST(obj_String this, obj_String other) {
-   if (strcmp(this->value, other->value) >= 0) {
+obj_Boolean String_method_ATLEAST(obj_String self, obj_String other) {
+   if (strcmp(self->value, other->value) >= 0) {
       return lit_true;
     } else {
       return lit_false;
 }
 }
 
-obj_Boolean String_method_MORE(obj_String this, obj_String other) {
-  if (strcmp(this->value, other->value) > 0) {
+obj_Boolean String_method_MORE(obj_String self, obj_String other) {
+  if (strcmp(self->value, other->value) > 0) {
     return lit_true;
   } else {
     return lit_false;
 }
 }
 
-obj_Nothing String_method_PRINT(obj_String this) {
-  fprintf(stdout, "%s", this->value);
+obj_Nothing String_method_PRINT(obj_String self) {
+  fprintf(stdout, "%s", self->value);
   return nothing;
 }
 
-obj_String String_method_STR(obj_String this) {
-  return this;
+obj_String String_method_STR(obj_String self) {
+  return self;
 }
 
 struct  class_String_struct  the_class_String_struct = {
@@ -185,25 +187,25 @@ obj_Boolean new_Boolean(  ) {
   return new_thing; 
 }
 
-obj_Nothing Boolean_method_PRINT(obj_Boolean this) {
-  obj_String str = this->clazz->STR(this);
+obj_Nothing Boolean_method_PRINT(obj_Boolean self) {
+  obj_String str = self->clazz->STR(self);
   fprintf(stdout, "%s", str->value);
   return nothing; 
 }
 
-obj_String Boolean_method_STR(obj_Boolean this) {
-  if (this == lit_true) {
+obj_String Boolean_method_STR(obj_Boolean self) {
+  if (self == lit_true) {
     return str_lit("true");
-  } else if (this == lit_false) {
+  } else if (self == lit_false) {
     return str_lit("false");
   } else {
     return str_lit("!!!BOGUS BOOLEAN");
 
   }
 }
-obj_Boolean Boolean_method_EQUALS(obj_Boolean this, obj_Obj other) {
+obj_Boolean Boolean_method_EQUALS(obj_Boolean self, obj_Obj other) {
 obj_Boolean other_bool = (obj_Boolean) other;
-  if (this->value == other_bool->value) {
+  if (self->value == other_bool->value) {
     return lit_true;
   } else {
     return lit_false; 
@@ -236,73 +238,73 @@ obj_Int new_Int(  ) {
   new_thing->value = 0;
   return new_thing; 
 }
-obj_Int Int_method_PLUS(obj_Int this, obj_Int other) {
-  return int_lit(this->value + other->value);
+obj_Int Int_method_PLUS(obj_Int self, obj_Int other) {
+  return int_lit(self->value + other->value);
 }
 
-obj_Int Int_method_TIMES(obj_Int this, obj_Int other) {
-  return int_lit(this->value * other->value);
+obj_Int Int_method_TIMES(obj_Int self, obj_Int other) {
+  return int_lit(self->value * other->value);
 }
 
-obj_Int Int_method_MINUS(obj_Int this, obj_Int other) {
-  return int_lit(this->value - other->value);
+obj_Int Int_method_MINUS(obj_Int self, obj_Int other) {
+  return int_lit(self->value - other->value);
 }
 
-obj_Int Int_method_DIVIDE(obj_Int this, obj_Int other) {
-  return int_lit(this->value / other->value);
+obj_Int Int_method_DIVIDE(obj_Int self, obj_Int other) {
+  return int_lit(self->value / other->value);
 }
 
-obj_Boolean Int_method_ATMOST(obj_Int this, obj_Int other) {
-  if (this->value <= other->value) {
+obj_Boolean Int_method_ATMOST(obj_Int self, obj_Int other) {
+  if (self->value <= other->value) {
     return lit_true;
 }
   return lit_false;
 }
 
-obj_Boolean Int_method_LESS(obj_Int this, obj_Int other) {
-  if (this->value < other->value) {
+obj_Boolean Int_method_LESS(obj_Int self, obj_Int other) {
+  if (self->value < other->value) {
     return lit_true;
 }
   return lit_false;
 }
 
-obj_Boolean Int_method_ATLEAST(obj_Int this, obj_Int other) {
-  if (this->value >= other->value) {
+obj_Boolean Int_method_ATLEAST(obj_Int self, obj_Int other) {
+  if (self->value >= other->value) {
     return lit_true;
 }
   return lit_false;
 }
 
-obj_Boolean Int_method_MORE(obj_Int this, obj_Int other) {
-  if (this->value > other->value) {
+obj_Boolean Int_method_MORE(obj_Int self, obj_Int other) {
+  if (self->value > other->value) {
     return lit_true;
 }
   return lit_false;
 }
 
-obj_Int Int_method_NEG(obj_Int this) {
-  return int_lit(- this->value);
+obj_Int Int_method_NEG(obj_Int self) {
+  return int_lit(- self->value);
 }
 
-obj_Nothing Int_method_PRINT(obj_Int this) {
-  obj_String str = this->clazz->STR(this);
+obj_Nothing Int_method_PRINT(obj_Int self) {
+  obj_String str = self->clazz->STR(self);
   fprintf(stdout, "%s", str->value);
   return nothing; 
 }
 
-obj_String Int_method_STR(obj_Int this) {
+obj_String Int_method_STR(obj_Int self) {
   char *rep;
-  asprintf(&rep, "%d", this->value);
+  asprintf(&rep, "%d", self->value);
   return str_lit(rep); 
 }
 
-obj_Boolean Int_method_EQUALS(obj_Int this, obj_Obj other) {
+obj_Boolean Int_method_EQUALS(obj_Int self, obj_Obj other) {
   obj_Int other_int = (obj_Int) other; 
   
-  if (other_int->clazz != this->clazz) {
+  if (other_int->clazz != self->clazz) {
     return lit_false;
   }
-  if (this->value != other_int->value) {
+  if (self->value != other_int->value) {
     return lit_false;
   }
   return lit_true;
@@ -332,23 +334,27 @@ obj_Int int_lit(int n) {
   return boxed;
 }
 
-obj_A new_A() {
-  obj_A new_thing = (obj_A) malloc(sizeof(struct obj_A_struct));
-  new_thing->clazz = class_A_Instance;
+obj_Pt new_Pt(obj_Int x ,obj_Int y ) {
+  obj_Pt new_thing = (obj_Pt) malloc(sizeof(struct obj_Pt_struct));
+  new_thing->clazz = class_Pt_Instance;
+  new_thing->x = x;
+  new_thing->y = y;
   return new_thing; 
 }
 
-struct  class_A_struct  the_class_A_struct = {
-new_A,
+obj_Pt Pt_method_PLUS(obj_Pt self, obj_Pt other) {
+	return new_Pt(Int_method_PLUS( self->x , other->x), Int_method_PLUS( self->y , other->y));
+
+}
+struct  class_Pt_struct  the_class_Pt_struct = {
+new_Pt,
 Obj_method_PRINT,
 Obj_method_STR,
 Obj_method_EQUALS,
+Pt_method_PLUS,
 };
-class_A class_A_Instance = &the_class_A_struct; 
+class_Pt class_Pt_Instance = &the_class_Pt_struct; 
 void quackmain() {
-	obj_Int temp_0 = int_lit(5);
-	obj_Int temp_2 = int_lit(5);
-	while(Int_method_EQUALS( temp_0, temp_2)){
-	temp_0 = int_lit(1);
-	}
+	obj_Pt temp_0 = new_Pt(int_lit(4), int_lit(5));
+	Pt_method_PLUS(temp_0);
 }

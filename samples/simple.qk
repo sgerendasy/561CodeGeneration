@@ -1,8 +1,23 @@
-class A(){
+class Pt(x: Int, y: Int) {
+    this.x = x;
+    this.y = y; 
 
+     def foo():Int {
+         return sub(); 
+     }
+     def sub():Int {
+         return x-y; 
+     }
 }
 
-x=5;
-while(x==5){
-	x=1;
+class P(x: Int, y: Int) extends Pt{
+  this.x = x;
+  this.y = y;
+
+  def sub():Int {
+         return x-y-5; 
+  }
 }
+
+f: P = P(4,5);
+f.foo();

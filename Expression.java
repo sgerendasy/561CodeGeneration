@@ -1,5 +1,6 @@
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public abstract class Expression
@@ -991,7 +992,6 @@ public abstract class Expression
             String tempVarName = "temp_" + Main.nodeIndex;
             Main.nodeIndex++;
             this.codeGenIdent = tempVarName;
-
             String callConstructor = Main.classHeaderDictionary.get(this._ident).QuackMethodToCMethod.get("CONSTRUCTOR");
             if (callConstructor == null)
             {
