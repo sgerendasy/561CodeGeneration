@@ -19,6 +19,7 @@ public class Main {
 
     // Command line options
     String sourceFile = "";
+    static FileWriter outputStream;
 
     // Internal state
     ErrorReport report;
@@ -262,7 +263,7 @@ public class Main {
         String outputFileName = tempSource[tempSource.length - 1].replace("qk", "c");
         String headerFileName = tempSource[tempSource.length - 1].replace("qk", "h");
         try {
-			FileWriter outputStream = new FileWriter(outputFileName);
+			outputStream= new FileWriter(outputFileName);
             outputStream.write("#include <stdio.h>\n");
             outputStream.write("#include <stdlib.h>\n");
             outputStream.write("#include <string.h>\n");
@@ -846,7 +847,6 @@ public class Main {
                         {
                         	for(Statement st: statements)
                         	{
-                        	//????fill in method statements
                         		try
                                 {
                                     genTreeAndRegisterTables = st.CreateGenTree(genTreeAndRegisterTables.theRegisterTable);
@@ -895,7 +895,7 @@ public class Main {
         
     }
 
-    void WriteCFromGenTree(GenTreeNode root, FileWriter outputStream)
+    static void WriteCFromGenTree(GenTreeNode root, FileWriter outputStream)
     {
         for (GenTreeNode node : root.children)
         {

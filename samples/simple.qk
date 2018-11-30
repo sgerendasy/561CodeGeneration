@@ -2,7 +2,7 @@ class A(){
 
 }
 
-a= true;
-if(a){
-	x= 4+5;
+x=5;
+while(x==5){
+	x=1;
 }

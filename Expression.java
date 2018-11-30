@@ -582,21 +582,27 @@ public abstract class Expression
                 return self;
             }
             String tempVarName = "";
-            if(VarTableSingleton.getTableByClassName(TypeChecker.currentClass).ExistsInMethodArgs(this.ident, TypeChecker.currentMethod))
-            {
-                Var tempVar = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetVarFromMethodArgs(this.ident, TypeChecker.currentMethod);
-                tempVarName = tempVar.ident;
+            if(!(TypeChecker.currentClass.equals("$statementsDummyClass"))) {
+	            if(VarTableSingleton.getTableByClassName(TypeChecker.currentClass).ExistsInMethodArgs(this.ident, TypeChecker.currentMethod))
+	            {
+	                Var tempVar = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetVarFromMethodArgs(this.ident, TypeChecker.currentMethod);
+	                tempVarName = tempVar.ident;
+	            }
+	            // check method vars
+	            else if(VarTableSingleton.getTableByClassName(TypeChecker.currentClass).ExistsInMethodVars(this.ident, TypeChecker.currentMethod))
+	            {
+	                Var tempVar = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetVarFromMethodVars(this.ident, TypeChecker.currentMethod);
+	                tempVarName = varIdent.ident;
+	            }
+	            // check class vars
+	            else if (VarTableSingleton.getTableByClassName(TypeChecker.currentClass).ExistsInVarTable(this.ident))
+	            {
+	                tempVarName = varIdent.ident;
+	            }
             }
-            // check method vars
-            else if(VarTableSingleton.getTableByClassName(TypeChecker.currentClass).ExistsInMethodVars(this.ident, TypeChecker.currentMethod))
+            else
             {
-                Var tempVar = VarTableSingleton.getTableByClassName(TypeChecker.currentClass).GetVarFromMethodVars(this.ident, TypeChecker.currentMethod);
-                tempVarName = varIdent.ident;
-            }
-            // check class vars
-            else if (VarTableSingleton.getTableByClassName(TypeChecker.currentClass).ExistsInVarTable(this.ident))
-            {
-                tempVarName = varIdent.ident;
+            	tempVarName = varIdent.ident;
             }
             GenTreeNode self = new GenTreeNode(tempVarName, varIdent.type, varIdent.ident);
 //            self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";

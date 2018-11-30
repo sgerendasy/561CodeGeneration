@@ -271,20 +271,26 @@ public abstract class Statement
         {
         	try
             {
+        		
                 GenTreeNode self = this._expression.CreateGenTree(registerTable);
-                self.completeCOutput = self.rightHandExpression;
-                //for each statement ???
+                self.completeCOutput = "\twhile("+self.rightHandExpression+"){\n";
+                GenTreeAndRegisterTables g = new GenTreeAndRegisterTables(self, registerTable);
+                Main.WriteCFromGenTree(g.genTreeNode, Main.outputStream);
+                int i=0;
                 for(Statement s : this._statements) {
-                	
+                	g = s.CreateGenTree(g.theRegisterTable);
+                	if(!((this._statements.size()-1)==i))
+                		Main.WriteCFromGenTree(g.genTreeNode, Main.outputStream);
+                	i++;
                 }
-                
-                return new GenTreeAndRegisterTables(self, registerTable);
+                g.genTreeNode.completeCOutput+="\t}\n";
+                return g;
             }
             catch (Exception e)
             {
                 System.out.println(e.getMessage());
             }
-			return null;
+            return null;
         }
 
 		public void visit2(String classIdent) throws Exception
@@ -408,15 +414,27 @@ public abstract class Statement
         {
         	try
             {
+        		
                 GenTreeNode self = this._expression.CreateGenTree(registerTable);
-                self.completeCOutput = self.rightHandExpression;
-                //for each statement ???
+                self.completeCOutput = "\tif("+self.rightHandExpression+"){\n";
+                GenTreeAndRegisterTables g = new GenTreeAndRegisterTables(self, registerTable);
+                Main.WriteCFromGenTree(g.genTreeNode, Main.outputStream);
+                int i=0;
                 for(Statement s : this._statements) {
-                	
+                	g = s.CreateGenTree(g.theRegisterTable);
+                	if(!((this._statements.size()-1)==i))
+                		Main.WriteCFromGenTree(g.genTreeNode, Main.outputStream);
+                	i++;
                 }
-                if (this._elseStatement != null)
-                	//call else GenTreeAndRegisterTables
-                return new GenTreeAndRegisterTables(self, registerTable);
+                g.genTreeNode.completeCOutput+="\t}\n";
+                if (this._elseStatement != null) {
+                	g.genTreeNode.completeCOutput+="\telse{\n";
+                	Main.WriteCFromGenTree(g.genTreeNode, Main.outputStream);
+                	g=this._elseStatement.CreateGenTree(g.theRegisterTable);
+                	return g;
+                }
+                
+                return g;
             }
             catch (Exception e)
             {
@@ -514,7 +532,28 @@ public abstract class Statement
 
         public GenTreeAndRegisterTables CreateGenTree(HashMap<String, Var> registerTable) throws Exception
         {
-            return null;
+        	try
+            {
+        		
+        		GenTreeAndRegisterTables genTreeAndRegisterTables = new GenTreeAndRegisterTables();
+                int i=0;
+                
+                for(Statement s : this._elseStatements) {
+                	genTreeAndRegisterTables = s.CreateGenTree(genTreeAndRegisterTables.theRegisterTable);
+                	if(!((this._elseStatements.size()-1)==i))
+                		Main.WriteCFromGenTree(genTreeAndRegisterTables.genTreeNode, Main.outputStream);
+                	i++;
+                }
+                genTreeAndRegisterTables.genTreeNode.completeCOutput+="\t}\n";
+                
+                //Main.outputStream.write("}");
+                return genTreeAndRegisterTables;
+             }
+             catch (Exception e)
+             {
+                    System.out.println(e.getMessage());
+             }
+             return null;
         }
 
         public void visit2(String classIdent) throws Exception
