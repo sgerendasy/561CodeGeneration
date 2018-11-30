@@ -972,7 +972,12 @@ public abstract class Expression
             Main.nodeIndex++;
             this.codeGenIdent = tempVarName;
 
-            String callConstructor = Main.classHeaderDictionary.get(this._ident).QuackMethodToCMethod.get("CONSTRUCTOR") + "(";
+            String callConstructor = Main.classHeaderDictionary.get(this._ident).QuackMethodToCMethod.get("CONSTRUCTOR");
+            if (callConstructor == null)
+            {
+                callConstructor = "new_" + this._ident;
+            }
+            callConstructor += "(";
             for (Expression args : (this._args)._args)
             {
                 callConstructor += args.GetCodeGenIdent(registerTable) + ", ";

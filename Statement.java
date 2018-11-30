@@ -764,36 +764,39 @@ public abstract class Statement
         {
             return this._expression.toString();
         }
-
     }
+
     public static Statement.Expression_Statement expressionStatement(Expression e)
     {
         return new Statement.Expression_Statement(e);
     }
-	public Expression getLexpr() {
+
+	public Expression getLexpr()
+    {
 		return null;
 		// Not necessary
-		
 	}
-	public Expression getRexpr() {
+
+	public Expression getRexpr()
+    {
 		return null;
         // Not necessary
-		
 	}
-	public String getDeclaredType() {
+
+	public String getDeclaredType()
+    {
 		return null;
         // Not necessary
-		
 	}
-	public Expression getExpr() {
+
+	public Expression getExpr()
+    {
 		return null;
         // Not necessary
-		
 	}
-	public String getIdent() {
+
+	public String getIdent()
+    {
 		return null;
-		
 	}
-	
-	
 }

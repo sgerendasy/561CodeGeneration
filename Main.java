@@ -213,6 +213,20 @@ public class Main {
             {
                 if(!clazzes.getKey().equals("$statementsDummyClass"))
                 {
+                    if (!ClassIsBuiltIn(clazzes.getKey()))
+                    {
+                        String classConstructor = "extern obj_" + clazzes.getKey() + " new_" + clazzes.getKey() + "(";
+                        for (Var v : VarTableSingleton.getTableByClassName(clazzes.getKey()).classArgTypes)
+                        {
+                            classConstructor += classHeaderDictionary.get(v.type).objectInstanceName + " " + v.ident + ", ";
+                        }
+                        if (VarTableSingleton.getTableByClassName(clazzes.getKey()).classArgTypes.size() > 0)
+                        {
+                            classConstructor = classConstructor.substring(0, classConstructor.length() - 2);
+                        }
+                        classConstructor += ");\n";
+                        outputStream.write(classConstructor);
+                    }
                     String objExtern = "extern " + classHeaderDictionary.get(clazzes.getKey()).classInstanceName + " class_" + clazzes.getKey() + "_Instance;\n";
                     classHeaderDictionary.get(clazzes.getKey()).classInstanceSingletonName = "class_" + clazzes.getKey() + "_Instance";
                     outputStream.write(objExtern);
@@ -277,7 +291,7 @@ public class Main {
             }
 
             outputStream.write("int main(int argc, char** argv) {\n");
-
+            outputStream.write("  printf(\"--- Begin: %s ---\", argv[0]);\n\n");
             if(!(t==null))
             {
                 outputStream.write("  quackmain();\n");
@@ -774,9 +788,9 @@ public class Main {
                             {
                                 args = args.substring(0,args.length() - 1);
                             }
-                            outputStream.write("obj_"+c.className+" new_"+c.className+"("+args+") {\n");
-                            outputStream.write("  obj_"+c.className+" new_thing = (obj_"+c.className+") malloc(sizeof(struct obj_"+c.className+"_struct));\n");
-                            outputStream.write("  new_thing->clazz = class_"+c.className+"_Instance;\n");
+                            outputStream.write("obj_" + c.className + " new_" + c.className + "(" + args + ") {\n");
+                            outputStream.write("  obj_" + c.className + " new_thing = (obj_" + c.className + ") malloc(sizeof(struct obj_" + c.className + "_struct));\n");
+                            outputStream.write("  new_thing->clazz = class_" + c.className + "_Instance;\n");
                             
                             for (Statement s: theClassBlock._stmtList)
                             {
@@ -784,7 +798,7 @@ public class Main {
                             		if(s.getLexpr().getIdent().contains("this."))
                             		{
                             			String str= s.getLexpr().getIdent().replace("this.","new_thing->");
-                            			outputStream.write("  "+str+"="+s.getRexpr() +";\n");
+                            			outputStream.write("  " + str + "=" + s.getRexpr() + ";\n");
                             		}
                             		
                             }
@@ -829,7 +843,7 @@ public class Main {
                             }
                             if(args.isEmpty())
                             {
-                                outputStream.write("obj_"+m.returnType+" "+classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident)+"(obj_"+c.className +" this) {\n");
+                                outputStream.write("obj_" + m.returnType + " " + classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident) + "(obj_" + c.className + " this) {\n");
                             }
                             else
                             {
@@ -861,7 +875,7 @@ public class Main {
                                 }
                         	}
                             outputStream.write("\n}\n");
-                            classHeaderDictionary.get(c.className).CMethodToReturnType.put(classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident), "obj_"+m.returnType);
+                            classHeaderDictionary.get(c.className).CMethodToReturnType.put(classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident), "obj_" + m.returnType);
                         }
 
                         if (i == size)

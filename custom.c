@@ -7,8 +7,11 @@
 void quackmain(); 
 
 int main(int argc, char** argv) {
+  printf("--- Begin: %s ---", argv[0]);
+
   quackmain();
-  printf("--- Terminated successfully (woot!) ---");
+  printf("--- Terminated successfully ---");
+
   exit(0);
 }
 
@@ -331,50 +334,19 @@ obj_Int int_lit(int n) {
   return boxed;
 }
 
-obj_Pt new_Pt(obj_Int x ,obj_Int y ) {
+obj_Pt new_Pt() {
   obj_Pt new_thing = (obj_Pt) malloc(sizeof(struct obj_Pt_struct));
   new_thing->clazz = class_Pt_Instance;
-  new_thing->x=x;
-  new_thing->y=y;
   return new_thing; 
 }
 
-obj_Nothing Pt_method_PRINT(obj_Pt this) {
-	String_method_PRINT(str_lit("( "));
-	return nothing;
-
-}
-obj_Int Pt_method_PLUS(obj_Pt this, obj_Pt other) {
-
-}
-obj_C1 Pt_method_foo(obj_Pt this) {
-	return nul);
-
-}
 struct  class_Pt_struct  the_class_Pt_struct = {
 new_Pt,
-Pt_method_PRINT,
-Obj_method_STR,
-Obj_method_EQUALS,
-Pt_method_PLUS,
-Pt_method_foo,
-};
-class_Pt class_Pt_Instance = &the_class_Pt_struct; 
-obj_C1 new_C1() {
-  obj_C1 new_thing = (obj_C1) malloc(sizeof(struct obj_C1_struct));
-  new_thing->clazz = class_C1_Instance;
-  new_thing->x=4;
-  return new_thing; 
-}
-
-struct  class_C1_struct  the_class_C1_struct = {
-new_C1,
 Obj_method_PRINT,
 Obj_method_STR,
 Obj_method_EQUALS,
 };
-class_C1 class_C1_Instance = &the_class_C1_struct; 
+class_Pt class_Pt_Instance = &the_class_Pt_struct; 
 void quackmain() {
-	obj_Pt temp_0 = new_Pt(int_lit(2), int_lit(3));
-	obj_C1 temp_1 = Pt_method_foo(temp_0);
+	obj_Pt temp_0 = new_Pt();
 }

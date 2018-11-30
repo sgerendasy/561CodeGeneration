@@ -1,25 +1,5 @@
-class Pt(x: Int, y: Int) {
-    this.x = x;
-    this.y = y;
+class Pt() {
 
-    def PRINT( )
-    {
-      "( ".PRINT();
-    }
-
-     def PLUS(other: Pt):Int {
-         return other.x + other.y;
-     }
-
-     def foo(): C1
-     {
-        return C1();
-     }
 }
 
-class C1()
-{
-    this.x = 4;
-}
-
-a = Pt(2,3).foo();
+a = Pt();
