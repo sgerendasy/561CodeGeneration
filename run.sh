@@ -8,3 +8,4 @@ CLI=${HERE}/lib/commons-cli-1.4.jar
 CLASSPATH=.:${CUP}:${CLI}:${HERE}:${JFLEX}
 
 java -cp $CLASSPATH Main $*
+

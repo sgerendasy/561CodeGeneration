@@ -1,4 +1,6 @@
 #! /bin/sh 
 #
-var=`gcc simple.c -o simple`
+var=`gcc -Wno-incompatible-pointer-types $*.c -o $*`
 echo $var
+
+./$*

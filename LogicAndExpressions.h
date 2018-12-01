@@ -1,5 +1,5 @@
-#ifndef custom_h
-#define custom_h
+#ifndef LogicAndExpressions_h
+#define LogicAndExpressions_h
 
 
 struct class_Obj_struct;

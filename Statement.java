@@ -297,7 +297,7 @@ public abstract class Statement
         	_expression.visit2(classIdent);
         	String type = _expression.getType();
         	if(!type.equals("Boolean"))
-        		throw new Exception("Condition in IF statment did not evalutate to boolean");
+        		throw new Exception("Condition in While statment did not evalutate to boolean");
             // adds statements to table
             // type checks statements
             // removes statements from table

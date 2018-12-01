@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "custom.h"
+#include "LogicAndExpressions.h"
 
 
 void quackmain(); 
@@ -335,5 +335,27 @@ obj_Int int_lit(int n) {
 }
 
 void quackmain() {
-	obj_Int temp_0 = int_lit(1);
+	obj_Boolean temp_0 = lit_true;
+	obj_Boolean temp_1 = lit_false;
+	if(temp_0){
+	Boolean_method_PRINT(temp_0);
+	}
+	else{
+	Boolean_method_PRINT(temp_1);
+	}
+	if((!temp_1)){
+	Boolean_method_PRINT(temp_0);
+	}
+	else{
+	Boolean_method_PRINT(temp_1);
+	}
+	obj_Int temp_7 = int_lit(5);
+	obj_Int temp_8 = int_lit(2);
+	if(Int_method_MORE( temp_7, temp_8)){
+	String_method_PRINT(str_lit(": c is greater than d "));
+	}
+	temp_8 = int_lit(5);
+	if(Int_method_EQUALS( temp_7, temp_8)){
+	String_method_PRINT(str_lit(": c is equal to d "));
+	}
 }
