@@ -20,7 +20,7 @@ public class Main {
     // Command line options
     String sourceFile = "";
     static FileWriter outputStream;
-    public static boolean amSam = true;
+    public static boolean amSam = false;
 
     // Internal state
     ErrorReport report;

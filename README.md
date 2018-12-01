@@ -24,3 +24,6 @@ We did not codegenerate typecase.
 
 We did not implement goto for if and while.
 
+#To compile & execute C code
+Each Quack input file will create one header and one .c file with the same file name.
+For example, running './run SampleTest.qk' will create 'SampleTest.c' & 'SampleTest.h'.

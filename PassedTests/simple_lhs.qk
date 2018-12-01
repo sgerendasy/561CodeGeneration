@@ -1,2 +1,0 @@
-5 + 5.x = 7;
-// should handle this error gracefully

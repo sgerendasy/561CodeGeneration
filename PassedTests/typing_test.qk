@@ -1,5 +1,0 @@
-//should check that NotExist is a type
-
-class C1() {
-    this.x : NotExist = 4;
-}

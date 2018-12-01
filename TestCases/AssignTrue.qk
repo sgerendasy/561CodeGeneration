@@ -1,6 +1,0 @@
-class C()
-{
-	// true is a built-in identifier of type Boolean. Does your type checker allow this to be over-written?
-	this.true = true;
-	true = false;
-}
