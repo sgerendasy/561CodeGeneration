@@ -58,7 +58,7 @@ public abstract class Statement
                 String statementType = this.getRexpr().getType();
                 Var tempVar;
                 String varName;
-                int currentIndex = Main.nodeIndex;
+
                 GenTreeNode GenTreeRoot = this.getRexpr().CreateGenTree(registerTable);
                 if (!registerTable.containsKey(this._lexpr.getIdent()))
                 {

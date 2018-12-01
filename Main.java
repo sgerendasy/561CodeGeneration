@@ -20,6 +20,7 @@ public class Main {
     // Command line options
     String sourceFile = "";
     static FileWriter outputStream;
+    public static boolean amSam = true;
 
     // Internal state
     ErrorReport report;
@@ -66,8 +67,13 @@ public class Main {
         String outputFileName = tempSource[tempSource.length - 1].replace("qk", "h");
         try
         {
-//            FileWriter outputStream = new FileWriter("/Users/fringeclass/ClionProjects/untitled/" + outputFileName);
-            FileWriter outputStream = new FileWriter(outputFileName);
+            FileWriter outputStream;
+            if (amSam)
+                outputStream = new FileWriter("/Users/fringeclass/ClionProjects/untitled/" + outputFileName);
+            else
+                outputStream = new FileWriter(outputFileName);
+
+
             outputStream.write("#ifndef " + outputFileName.replace(".", "_") + '\n');
             outputStream.write("#define " + outputFileName.replace(".", "_") + "\n\n\n");
             // fill in .h stuff here
@@ -273,12 +279,47 @@ public class Main {
         return false;
     }
 
+    LinkedList<VarTable> GetAllClassesInBFSOrder()
+    {
+        LinkedList<VarTable> theClasses = new LinkedList<>();
+        Node currentNode = null;
+        LinkedList<Node> nodeBuffer = new LinkedList<>();
+        nodeBuffer.add(Tree.getInstance().getRoot());
+        int builtInCount = 0;
+        while(!nodeBuffer.isEmpty())
+        {
+            currentNode = nodeBuffer.pop();
+            if (ClassIsBuiltIn(currentNode.getId()) || builtInCount >= 5)
+            {
+                builtInCount++;
+                for (Node child : currentNode.getChildren())
+                {
+                    nodeBuffer.add(child);
+                }
+                theClasses.add(VarTableSingleton.getTableByClassName(currentNode.getId()));
+            }
+            else
+            {
+                nodeBuffer.add(currentNode);
+            }
+
+        }
+        theClasses.remove(VarTableSingleton.getTableByClassName("$statementsDummyClass"));
+        theClasses.add(VarTableSingleton.getTableByClassName("$statementsDummyClass"));
+
+        return theClasses;
+    }
+
     void BuildCFile(TypeChecker typeChecker) 
     {
       
         String[] tempSource = this.sourceFile.split("/");
-//        String outputFileName = "/Users/fringeclass/ClionProjects/untitled/" + tempSource[tempSource.length - 1].replace("qk", "c");
-        String outputFileName = tempSource[tempSource.length - 1].replace("qk", "c");
+        String outputFileName;
+        if (amSam)
+            outputFileName = "/Users/fringeclass/ClionProjects/untitled/" + tempSource[tempSource.length - 1].replace("qk", "c");
+        else
+            outputFileName = tempSource[tempSource.length - 1].replace("qk", "c");
+
         String headerFileName = tempSource[tempSource.length - 1].replace("qk", "h");
         try {
 			outputStream= new FileWriter(outputFileName);
@@ -294,25 +335,27 @@ public class Main {
             }
 
             outputStream.write("int main(int argc, char** argv) {\n");
-            outputStream.write("  printf(\"--- Begin: %s ---\", argv[0]);\n\n");
+            outputStream.write("  printf(\"--- Begin: %s ---" + "\\" + "n\", argv[0]);\n\n");
             if(!(t==null))
             {
                 outputStream.write("  quackmain();\n");
             }
 
-            outputStream.write("  printf(\"--- Terminated successfully ---\");\n\n");
+            outputStream.write("  printf(\"" + "\\" + "n--- Terminated successfully ---\\" + "n\");\n\n");
             outputStream.write("  exit(0);\n");
             outputStream.write("}\n\n\n");
-            
+
+            LinkedList<VarTable> allClassesInBFSOrder = GetAllClassesInBFSOrder();
 
             // c file code generation
-            for(VarTable c : VarTableSingleton.TheTable)
+            for(VarTable c : allClassesInBFSOrder)
             {
             	int i=0;
             	int size = GetCompleteMethodTable(c.className).size() - 1;
 
             	// check to see if the class is a built in one
-            	if (ClassIsBuiltIn(c.className)) {
+            	if (ClassIsBuiltIn(c.className))
+            	{
                     for (MethodNode m : GetCompleteMethodTable(c.className)) {
                         if (c.className.equals("Obj"))
                         {
@@ -744,7 +787,7 @@ public class Main {
                         }
                     }
                 }
-                // START STATEMENTS "CLASS"
+                // START DUMMY STATEMENTS "CLASS"
                 else if (c.className.equals("$statementsDummyClass"))
                 {
                     TypeChecker.currentClass = "$statementsDummyClass";
@@ -855,9 +898,9 @@ public class Main {
                                 String methArg = "obj_" + c.className+" self";
                                 for(Args.Arg a : methArgs)
                                 {
-                                    Var tempVar = new Var("temp_" + nodeIndex, Main.classHeaderDictionary.get(a._type).objectInstanceName);
-                                    nodeIndex++;
-                                    genTreeAndRegisterTables.theRegisterTable.put(a._ident, tempVar);
+//                                    Var tempVar = new Var("temp_" + nodeIndex, Main.classHeaderDictionary.get(a._type).objectInstanceName);
+//                                    nodeIndex++;
+//                                    genTreeAndRegisterTables.theRegisterTable.put(a._ident, tempVar);
                                     methArg += ", obj_" + a._type + " " + a._ident;
                                 }
                                 outputStream.write("obj_" + m.returnType + " " + classHeaderDictionary.get(c.className).QuackMethodToCMethod.get(m.ident) + "(" + methArg + ") {\n");
@@ -909,6 +952,20 @@ public class Main {
             System.out.println(e.getMessage());
         }
         
+    }
+
+    public static String GetCMethodReturnTypeWithParents(String className, String methodName)
+    {
+        String cType = null;
+        String currentClass = className;
+        while (cType == null)
+        {
+            cType = Main.classHeaderDictionary.get(currentClass).CMethodToReturnType.get(methodName);
+            if (currentClass.equals("Obj"))
+                break;
+            currentClass = ClassesTable.getInstance().getParentClass(className);
+        }
+        return cType;
     }
 
     static void WriteCFromGenTree(GenTreeNode root, FileWriter outputStream)
@@ -1014,7 +1071,7 @@ public class Main {
             Lexer scanner = new Lexer (new FileReader( "built-ins.qk" ), symbolFactory);
                 parser p = new parser( scanner, symbolFactory);
                 result = p.parse();
-            //ast of built in clasess
+            //ast of built in classes
             builtinAST = (Program) result.value;
 
             System.out.println("Built in classes parsed, built-in ast built");

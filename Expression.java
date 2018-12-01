@@ -1,6 +1,5 @@
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public abstract class Expression
@@ -130,12 +129,26 @@ public abstract class Expression
             String tempVarName = "temp_" + Main.nodeIndex;
             Main.nodeIndex++;
             String leftChildType = Main.classHeaderDictionary.get(e1.getType()).objectInstanceName;
-
-            String rightHandExpression = Main.classHeaderDictionary.get(e1.getType()).QuackMethodToCMethod.get(OperatorToString.getOperatorDict().get(op)) + "( ";
             GenTreeNode self = new GenTreeNode(tempVarName, leftChildType);
+            String rightHandExpression;
+            if (op.equals("and"))
+            {
+                rightHandExpression = "(" + registerTable.get(e1.getIdent()).ident + " && " + registerTable.get(e2.getIdent()).ident + ")";
+            }
+            else if (op.equals("or"))
+            {
+                rightHandExpression = "(" + registerTable.get(e1.getIdent()).ident + " || " + registerTable.get(e2.getIdent()).ident + ")";
+            }
+            else
+            {
+                rightHandExpression = Main.classHeaderDictionary.get(e1.getType()).QuackMethodToCMethod.get(OperatorToString.getOperatorDict().get(op)) + "( ";
+                rightHandExpression += self.children.get(0).registerName + ", " + self.children.get(1).registerName + ")";
+            }
+
+
             self.children.add(e1.CreateGenTree(registerTable));
             self.children.add(e2.CreateGenTree(registerTable));
-            rightHandExpression += self.children.get(0).registerName + ", " + self.children.get(1).registerName + ")";
+
             self.rightHandExpression = rightHandExpression;
             self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
 
@@ -741,8 +754,15 @@ public abstract class Expression
                     return "nothing";
                 case "this":
                     return TypeChecker.currentClass;
+                case "self":
+                    return TypeChecker.currentClass;
                 default:
-                    return registerTable.get(this.ident).ident;
+                    if (registerTable.containsKey(this.ident))
+                    {
+                        return registerTable.get(this.ident).ident;
+                    }
+                    return this.ident;
+
             }
         }
 
@@ -816,8 +836,8 @@ public abstract class Expression
             	String CMethodName = Main.classHeaderDictionary.get(varType).QuackMethodToCMethod.get(this.methodName);
 
             	//not a method but trying to access this.var
-            	String methodReturnType = Main.classHeaderDictionary.get(varType).CMethodToReturnType.get(CMethodName);
-	        
+//            	String methodReturnType = Main.classHeaderDictionary.get(varType).CMethodToReturnType.get(CMethodName);
+	            String methodReturnType = Main.GetCMethodReturnTypeWithParents(varType, CMethodName);
 	            String selfName = "temp_" + Main.nodeIndex;
 	            Main.nodeIndex++;
 	

@@ -1,4 +1,4 @@
-//call print method from class A will call Print methon inherited from Obj since A does not have a print Method. 
+//call print method from class A will call Print method inherited from Obj since A does not have a print Method.
 class A(){
 
 }

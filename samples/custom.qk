@@ -1,11 +1,22 @@
-class Pt(x: Int, y: Int) {
-    this.x = x;
-    this.y = y;
 
-     def PLUS(other: Pt):Pt {
-         return Pt(this.x+other.x, this.y+other.y);
-     }
+class A(x: Boolean)
+{
+    this.x = x;
+}
+x = 4;
+y = 2;
+while(x > y)
+{
+    x = x - 1;
 }
 
-f: Obj = Pt(4,5);
-f.PLUS();
+a = x == y;
+b = false;
+
+c = 0;
+if (a and b)
+{
+    c = 1;
+}
+
+c.PRINT();

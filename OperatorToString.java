@@ -34,8 +34,6 @@ public class OperatorToString
             unaryOperatorDict.put("-", "NEG");
             unaryOperatorDict.put("!", "$NOT");
         }
-
         return unaryOperatorDict;
     }
 }
-
