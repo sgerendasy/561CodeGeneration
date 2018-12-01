@@ -130,6 +130,9 @@ public abstract class Expression
             Main.nodeIndex++;
             String leftChildType = Main.classHeaderDictionary.get(e1.getType()).objectInstanceName;
             GenTreeNode self = new GenTreeNode(tempVarName, leftChildType);
+            self.children.add(e1.CreateGenTree(registerTable));
+            self.children.add(e2.CreateGenTree(registerTable));
+
             String rightHandExpression;
             if (op.equals("and"))
             {
@@ -145,9 +148,6 @@ public abstract class Expression
                 rightHandExpression += self.children.get(0).registerName + ", " + self.children.get(1).registerName + ")";
             }
 
-
-            self.children.add(e1.CreateGenTree(registerTable));
-            self.children.add(e2.CreateGenTree(registerTable));
 
             self.rightHandExpression = rightHandExpression;
             self.completeCOutput = "\t" + self.registerType + " " + self.registerName + " = " + self.rightHandExpression + ";\n";
@@ -293,13 +293,22 @@ public abstract class Expression
             String childType = Main.classHeaderDictionary.get(e1.getType()).objectInstanceName;
             String tempVarName = "temp_" + Main.nodeIndex;
             Main.nodeIndex++;
-
-            String rightHandExpression = Main.classHeaderDictionary.get(e1.getType()).QuackMethodToCMethod.get(OperatorToString.getUnaryOperatorDict().get(op)) + "( ";
-
             GenTreeNode self = new GenTreeNode(tempVarName, childType);
             GenTreeNode child = e1.CreateGenTree(registerTable);
             self.children.add(child);
-            rightHandExpression += self.children.get(0).registerName + ")";
+
+            String rightHandExpression;
+            if (op.equals("!"))
+            {
+                rightHandExpression = "(!" + e1.GetCodeGenIdent(registerTable) + ")";
+            }
+            else
+            {
+                rightHandExpression = Main.classHeaderDictionary.get(e1.getType()).QuackMethodToCMethod.get(OperatorToString.getUnaryOperatorDict().get(op)) + "( ";
+                rightHandExpression += self.children.get(0).registerName + ")";
+            }
+
+
             self.rightHandExpression = rightHandExpression;
             return self;
         }

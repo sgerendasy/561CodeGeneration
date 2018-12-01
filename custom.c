@@ -7,10 +7,10 @@
 void quackmain(); 
 
 int main(int argc, char** argv) {
-  printf("--- Begin: %s ---", argv[0]);
+  printf("--- Begin: %s ---\n", argv[0]);
 
   quackmain();
-  printf("--- Terminated successfully ---");
+  printf("\n--- Terminated successfully ---\n");
 
   exit(0);
 }
@@ -52,43 +52,6 @@ obj_Boolean Obj_method_EQUALS(obj_Obj self, obj_Obj other) {
   Obj_method_EQUALS 
 };
 class_Obj class_Obj_Instance = &the_class_Obj_struct;
-
-obj_Nothing new_Nothing(  ) {
-  return nothing; 
-}
-
-obj_Nothing Nothing_method_PRINT(obj_Nothing self) {
-  obj_String str = self->clazz->STR(self);
-  fprintf(stdout, "%s", str->value);
-  return nothing; 
-}
-
-obj_String Nothing_method_STR(obj_Nothing self) {
-    return str_lit("<nothing>");
-}
-
-obj_Boolean Nothing_method_EQUALS(obj_Nothing self, obj_Obj other) {
-obj_Nothing other_nothing = (obj_Nothing) other;
-  if (self == other_nothing) {
-    return lit_true;
-  } else {
-    return lit_false; 
-} 
-}
-
-struct  class_Nothing_struct  the_class_Nothing_struct = {
-  new_Nothing,     
-  Nothing_method_PRINT, 
-  Nothing_method_STR, 
-  Nothing_method_EQUALS
-};
-
-class_Nothing class_Nothing_Instance = &the_class_Nothing_struct; 
-
-struct obj_Nothing_struct nothing_struct =
-  { &the_class_Nothing_struct };
-
-obj_Nothing nothing = &nothing_struct; 
 
 obj_String new_String(  ) {
   obj_String new_thing = (obj_String) malloc(sizeof(struct obj_String_struct));
@@ -231,6 +194,43 @@ struct obj_Boolean_struct lit_true_struct =
 
 obj_Boolean lit_true = &lit_true_struct;
 
+obj_Nothing new_Nothing(  ) {
+  return nothing; 
+}
+
+obj_Nothing Nothing_method_PRINT(obj_Nothing self) {
+  obj_String str = self->clazz->STR(self);
+  fprintf(stdout, "%s", str->value);
+  return nothing; 
+}
+
+obj_String Nothing_method_STR(obj_Nothing self) {
+    return str_lit("<nothing>");
+}
+
+obj_Boolean Nothing_method_EQUALS(obj_Nothing self, obj_Obj other) {
+obj_Nothing other_nothing = (obj_Nothing) other;
+  if (self == other_nothing) {
+    return lit_true;
+  } else {
+    return lit_false; 
+} 
+}
+
+struct  class_Nothing_struct  the_class_Nothing_struct = {
+  new_Nothing,     
+  Nothing_method_PRINT, 
+  Nothing_method_STR, 
+  Nothing_method_EQUALS
+};
+
+class_Nothing class_Nothing_Instance = &the_class_Nothing_struct; 
+
+struct obj_Nothing_struct nothing_struct =
+  { &the_class_Nothing_struct };
+
+obj_Nothing nothing = &nothing_struct; 
+
 obj_Int new_Int(  ) {
   obj_Int new_thing = (obj_Int)
     malloc(sizeof(struct obj_Int_struct));
@@ -334,20 +334,6 @@ obj_Int int_lit(int n) {
   return boxed;
 }
 
-obj_A new_A() {
-  obj_A new_thing = (obj_A) malloc(sizeof(struct obj_A_struct));
-  new_thing->clazz = class_A_Instance;
-  return new_thing; 
-}
-
-struct  class_A_struct  the_class_A_struct = {
-new_A,
-Obj_method_PRINT,
-Obj_method_STR,
-Obj_method_EQUALS,
-};
-class_A class_A_Instance = &the_class_A_struct; 
 void quackmain() {
-	obj_A temp_0 = new_A();
-	Obj_method_PRINT(temp_0);
+	obj_Int temp_0 = int_lit(1);
 }
